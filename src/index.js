@@ -6,10 +6,8 @@ import "./assets/css/index.css";
 import "./assets/css/icons.css";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <React.Suspense fallback="Loading">
-      <App />
-    </React.Suspense>
-  </React.StrictMode>,
+  <React.Suspense fallback="Loading...">
+    <App />
+  </React.Suspense>,
   document.getElementById("root")
 );
