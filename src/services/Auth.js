@@ -1,5 +1,6 @@
-import { setUser, getUser } from "../apis/StorageManager";
-import callServer from "../apis/callServer";
+import { setUser, getUser } from "../services/StorageManager";
+import callServer from "./callServer";
+import jwt_decode from "jwt-decode";
 
 export const isAuthenticated = () => {
   return getUser() !== null;
@@ -16,11 +17,12 @@ export const login = (login, password, onSuccess, onError) => {
       password: password,
     })
     .then((response) => {
-      console.log(response);
+      const token = response.headers.authorization.substring(7);
+      const login = jwt_decode(token).sub;
 
       setUser({
         login: login,
-        token: response.headers.authorization.substring(7),
+        token: token,
       });
 
       onSuccess();
@@ -34,4 +36,14 @@ export const logout = () => {
   setUser(null);
 };
 
-export const refreshToken = () => {};
+export const refreshToken = () => {
+  callServer.post("/auth/refresh_token").then((response) => {
+    const token = response.headers.authorization.substring(7);
+    const login = jwt_decode(token).sub;
+
+    setUser({
+      login: login,
+      token: token,
+    });
+  });
+};

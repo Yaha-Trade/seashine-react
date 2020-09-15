@@ -1,6 +1,6 @@
 import React from "react";
 import Tooltip from "@material-ui/core/Tooltip";
-import { setLanguage } from "../apis/StorageManager";
+import { setLanguage } from "../services/StorageManager";
 import { LanguageEnum } from "../enums/LanguageEnum";
 import english from "../assets/images/english.png";
 import chinese from "../assets/images/chinese.png";
