@@ -47,3 +47,16 @@ export const refreshToken = () => {
     });
   });
 };
+
+export const resetPassword = (email, onSuccess, onError) => {
+  callServer
+    .post("/auth/forgot", {
+      email: email,
+    })
+    .then((response) => {
+      onSuccess();
+    })
+    .catch((error) => {
+      onError();
+    });
+};

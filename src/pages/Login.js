@@ -13,13 +13,9 @@ import loginBackground from "../assets/images/loginBackground.jpg";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { login, isAuthenticated } from "../services/Auth";
 import { useHistory } from "react-router-dom";
-import CloseIcon from "@material-ui/icons/Close";
-import Collapse from "@material-ui/core/Collapse";
-import Alert from "@material-ui/lab/Alert";
-import AlertTitle from "@material-ui/lab/AlertTitle";
-import IconButton from "@material-ui/core/IconButton";
 import { useTranslation } from "react-i18next";
 import LanguageSelector from "../components/LanguageSelector";
+import CollapseAlert from "../components/CollapseAlert";
 
 function Copyright() {
   const { t } = useTranslation();
@@ -66,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignInSide() {
+const Login = () => {
   const { t } = useTranslation();
 
   const classes = useStyles();
@@ -113,26 +109,17 @@ export default function SignInSide() {
           <Typography component="h1" variant="h5">
             {t("seashine")}
           </Typography>
-          <Collapse in={openAlert}>
-            <Alert
-              severity="error"
-              action={
-                <IconButton
-                  aria-label="close"
-                  color="inherit"
-                  size="small"
-                  onClick={() => {
-                    setOpenAlert(false);
-                  }}
-                >
-                  <CloseIcon fontSize="inherit" />
-                </IconButton>
-              }
-            >
-              <AlertTitle>{t("error")}</AlertTitle>
-              {t("loginerror")}
-            </Alert>
-          </Collapse>
+
+          <CollapseAlert
+            title={t("error")}
+            content={t("loginerror")}
+            severity="error"
+            isOpen={openAlert}
+            closeAction={() => {
+              setOpenAlert(false);
+            }}
+          />
+
           <form className={classes.form} autoComplete="off">
             <TextField
               variant="outlined"
@@ -189,4 +176,6 @@ export default function SignInSide() {
       </Grid>
     </Grid>
   );
-}
+};
+
+export default Login;

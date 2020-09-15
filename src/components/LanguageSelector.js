@@ -5,9 +5,18 @@ import { LanguageEnum } from "../enums/LanguageEnum";
 import english from "../assets/images/english.png";
 import chinese from "../assets/images/chinese.png";
 import { useTranslation } from "react-i18next";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+  images: {
+    width: "40px",
+    cursor: "pointer",
+  },
+}));
 
 const LanguageSelector = () => {
   const { t } = useTranslation();
+  const classes = useStyles();
 
   const setSelectedLanguage = (language) => {
     setLanguage(language);
@@ -18,7 +27,7 @@ const LanguageSelector = () => {
     <div>
       <Tooltip title={t("english")}>
         <img
-          style={{ width: "40px" }}
+          className={classes.images}
           src={english}
           alt={t("english")}
           onClick={() => {
@@ -28,7 +37,7 @@ const LanguageSelector = () => {
       </Tooltip>
       <Tooltip title={t("chinese")}>
         <img
-          style={{ width: "40px" }}
+          className={classes.images}
           src={chinese}
           alt={t("chinese")}
           onClick={() => {
