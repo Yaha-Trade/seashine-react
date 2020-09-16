@@ -2,8 +2,9 @@ import React from "react";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import { isAuthenticated } from "./services/Auth";
 import Login from "./pages/Login";
-import App from "./pages/App";
 import ForgotPassword from "./pages/ForgotPassword";
+import MenuApp from "./components/MenuApp";
+import { MenuPages } from "./config/MenuPages";
 
 const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route
@@ -19,14 +20,43 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
 );
 
 const Routes = () => (
-  <BrowserRouter>
-    <Switch>
-      <Route exact path={["/", "/login"]} component={Login} />
-      <PrivateRoute path="/app" component={App} />
-      <Route exact path="/forgot" component={ForgotPassword} />
-      <Route path="*" component={() => <h1>Page not found</h1>} />
-    </Switch>
-  </BrowserRouter>
+  <div>
+    <BrowserRouter>
+      <Switch>
+        <Route exact path={["/", "/login"]} component={Login} />
+        <Route exact path="/forgot" component={ForgotPassword} />
+        <MenuApp>
+          {MenuPages.map((page) => {
+            const innerPages = page.pages;
+            const isParent = innerPages !== undefined;
+
+            if (!isParent) {
+              return (
+                <PrivateRoute
+                  exact
+                  key={page.key}
+                  path={page.path}
+                  component={page.component}
+                />
+              );
+            }
+
+            return innerPages.map((child) => {
+              return (
+                <PrivateRoute
+                  exact
+                  key={child.key}
+                  path={child.path}
+                  component={child.component}
+                />
+              );
+            });
+          })}
+        </MenuApp>
+        <Route path="*" component={() => <h1>Page not found</h1>} />
+      </Switch>
+    </BrowserRouter>
+  </div>
 );
 
 export default Routes;

@@ -73,7 +73,8 @@ const Login = () => {
 
   const goToApp = useCallback(() => {
     if (isAuthenticated()) {
-      history.push("/app");
+      history.push("/home");
+      window.location.reload();
     }
   }, [history]);
 

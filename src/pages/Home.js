@@ -6,7 +6,11 @@ const App = () => {
     refreshToken();
   }, []);
 
-  return <div>Welcome to Seashine!</div>;
+  return (
+    <div>
+      <h1>Home</h1>
+    </div>
+  );
 };
 
 export default App;
