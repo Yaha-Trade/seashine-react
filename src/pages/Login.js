@@ -12,7 +12,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import loginBackground from "../assets/images/loginBackground.jpg";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { login, isAuthenticated } from "../services/Auth";
-import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import LanguageSelector from "../components/LanguageSelector";
 import CollapseAlert from "../components/CollapseAlert";
@@ -62,11 +61,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Login = () => {
+const Login = ({ history }) => {
   const { t } = useTranslation();
 
   const classes = useStyles();
-  const history = useHistory();
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
   const [openAlert, setOpenAlert] = useState(false);

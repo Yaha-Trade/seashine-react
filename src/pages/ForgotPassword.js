@@ -9,7 +9,6 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import loginBackground from "../assets/images/loginBackground.jpg";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Link from "@material-ui/core/Link";
 import CollapseAlert from "../components/CollapseAlert";
@@ -50,10 +49,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ForgotPassword = () => {
+const ForgotPassword = ({ history }) => {
   const { t } = useTranslation();
   const classes = useStyles();
-  const history = useHistory();
   const [email, setEmail] = useState("");
   const [openErrorAlert, setOpenErrorAlert] = useState(false);
   const [openSuccessAlert, setOpenSuccessAlert] = useState(false);
