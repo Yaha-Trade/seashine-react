@@ -14,6 +14,7 @@
     "i18next": "^19.7.0",
     "i18next-http-backend": "^1.0.19",
     "jwt-decode": "^3.0.0-beta.2",
+    "mui-datatables": "^3.4.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-i18next": "^11.7.2",
