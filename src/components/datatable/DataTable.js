@@ -15,6 +15,8 @@ class DataTable extends React.Component {
     sortOrder: this.props.initialSort,
     data: [[]],
     filters: [],
+    totalPages: 1,
+    rowsPerPageOptions: [50],
     tableHeight: window.innerHeight - 215,
   };
 
@@ -59,6 +61,7 @@ class DataTable extends React.Component {
           rowsPerPage: response.data.pageable.pageSize,
           sortOrder: sortOrder,
           filters: filters,
+          totalPages: response.data.totalPages,
           tableHeight:
             filtersString !== ""
               ? window.innerHeight - 255
@@ -79,8 +82,24 @@ class DataTable extends React.Component {
     this.fetchData(0, this.state.sortOrder, this.state.rowsPerPage, filters);
   };
 
+  onAdd = () => {
+    this.props.onAdd();
+  };
+
+  onEdit = (id) => {
+    this.props.onEdit(id);
+  };
+
   render() {
-    const { data, count, rowsPerPage, sortOrder, tableHeight } = this.state;
+    const {
+      data,
+      count,
+      rowsPerPage,
+      sortOrder,
+      tableHeight,
+      page,
+      rowsPerPageOptions,
+    } = this.state;
     const { t } = this.props;
 
     const options = {
@@ -95,7 +114,7 @@ class DataTable extends React.Component {
       sortOrder: sortOrder,
       selectableRowsOnClick: true,
       selectableRows: "single",
-      rowsPerPageOptions: [25, 50, 100],
+      rowsPerPageOptions: rowsPerPageOptions,
       tableBodyHeight: tableHeight,
       tableBodyMaxHeight: tableHeight,
       search: false,
@@ -103,6 +122,7 @@ class DataTable extends React.Component {
       print: false,
       confirmFilters: true,
       jumpToPage: true,
+      page: page,
       textLabels: {
         body: {
           noMatch: t("noregisters"),
@@ -176,15 +196,39 @@ class DataTable extends React.Component {
         this.handleFilterList(filterList);
       },
       customToolbar: () => {
-        return <CustomToolbar onAdd={() => console.log("onAdd")} />;
+        return <CustomToolbar onAdd={this.props.onAdd} />;
       },
       customToolbarSelect: (selectedRows, displayData, setSelectedRows) => (
         <CustomToolbarSelect
           selectedRows={selectedRows}
           displayData={displayData}
           setSelectedRows={setSelectedRows}
-          onDelete={() => console.log("onDelete")}
-          onEdit={() => console.log("onEdit")}
+          onDelete={() => {
+            const selectedId = data[selectedRows.data[0].dataIndex].id;
+
+            if (window.confirm("Deseja realmente excluir?")) {
+              callServer.delete(`factories/${selectedId}`).then((response) => {
+                setSelectedRows([]);
+
+                let newPage = this.state.page;
+                if (displayData.length === 1 && newPage > 0) {
+                  newPage = newPage - 1;
+                }
+
+                this.fetchData(
+                  newPage,
+                  this.state.sortOrder,
+                  this.state.rowsPerPage,
+                  this.state.filters
+                );
+              });
+            }
+          }}
+          onEdit={() => {
+            const selectedId = data[selectedRows.data[0].dataIndex].id;
+
+            this.props.onEdit(selectedId);
+          }}
         />
       ),
       customFooter: (
@@ -203,7 +247,8 @@ class DataTable extends React.Component {
             changeRowsPerPage={changeRowsPerPage}
             changePage={changePage}
             textLabels={textLabels}
-            rowsPerPageOptions={[25, 50, 100]}
+            rowsPerPageOptions={this.state.rowsPerPageOptions}
+            totalPages={this.state.totalPages}
           />
         );
       },

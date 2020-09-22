@@ -4,6 +4,7 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import MuiTablePagination from "@material-ui/core/TablePagination";
 import { withStyles } from "@material-ui/core/styles";
+import { withTranslation } from "react-i18next";
 
 const defaultFooterStyles = {};
 
@@ -23,7 +24,10 @@ class CustomFooter extends React.Component {
       rowsPerPage,
       page,
       rowsPerPageOptions,
+      totalPages,
     } = this.props;
+
+    const { t } = this.props;
 
     const footerStyle = {
       display: "flex",
@@ -42,7 +46,9 @@ class CustomFooter extends React.Component {
               page={page}
               labelRowsPerPage={textLabels.rowsPerPage}
               labelDisplayedRows={({ from, to, count }) =>
-                `${from}-${to} ${textLabels.displayRows} ${count}`
+                `${from}-${to} ${textLabels.displayRows} ${count} | ${t(
+                  "page"
+                )} ${page + 1} ${t("of")} ${totalPages}`
               }
               backIconButtonProps={{
                 "aria-label": textLabels.previous,
@@ -64,5 +70,5 @@ class CustomFooter extends React.Component {
 }
 
 export default withStyles(defaultFooterStyles, { name: "CustomFooter" })(
-  CustomFooter
+  withTranslation()(CustomFooter)
 );

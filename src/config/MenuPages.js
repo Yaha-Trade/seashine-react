@@ -1,6 +1,6 @@
 import React from "react";
 import Home from "../pages/Home";
-import Factory from "../pages/Factory";
+import Factory from "../pages/factory/Factory";
 
 export const MenuPages = [
   {

@@ -1,22 +1,24 @@
 import React from "react";
-import DataTable from "../components/datatable/DataTable";
+import DataTable from "../../components/datatable/DataTable";
 import { useTranslation } from "react-i18next";
 
 const Factory = () => {
   const { t } = useTranslation();
 
   const columns = [
-    {
-      name: "name",
-      label: t("name"),
-    },
-    { name: "address", label: t("address") },
+    { name: "name", label: t("name") },
     { name: "contact", label: t("contact") },
-    {
-      name: "bankAccountNumber",
-      label: t("bankaccount"),
-    },
+    { name: "address", label: t("address") },
+    { name: "bankAccountNumber", label: t("bankaccount") },
   ];
+
+  const onAdd = () => {
+    console.log("adicionando fábrica");
+  };
+
+  const onEdit = (id) => {
+    console.log("editando fábrica -> " + id);
+  };
 
   return (
     <DataTable
@@ -25,6 +27,8 @@ const Factory = () => {
       dataSource="factories"
       serverSide={true}
       initialSort={{ name: "name", direction: "asc" }}
+      onAdd={onAdd}
+      onEdit={onEdit}
     />
   );
 };
