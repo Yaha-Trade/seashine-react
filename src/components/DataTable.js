@@ -4,14 +4,17 @@ import Button from "@material-ui/core/Button";
 import callServer from "../services/callServer";
 import CustomToolbar from "../components/CustomToolbar";
 import CustomToolbarSelect from "../components/CustomToolbarSelect";
+import CustomFooter from "../components/CustomFooter";
+import { withTranslation } from "react-i18next";
 
 class DataTable extends React.Component {
   state = {
     page: 0,
     count: 1,
     rowsPerPage: 50,
-    sortOrder: {},
+    sortOrder: this.props.initialSort,
     data: [["Loading Data..."]],
+    filters: [],
     tableHeight: window.innerHeight - 215,
   };
 
@@ -19,14 +22,16 @@ class DataTable extends React.Component {
     this.fetchData(
       this.state.page,
       this.state.sortOrder,
-      this.state.rowsPerPage
+      this.state.rowsPerPage,
+      this.state.filters
     );
   }
 
-  fetchData = (page, sortOrder, rowsPerPage) => {
+  fetchData = (page, sortOrder, rowsPerPage, filters) => {
     const sortField = sortOrder.name;
     const sortDirection = sortOrder.direction;
 
+    let filtersString = "";
     let orderBy = "";
     let orderByDirection = "";
 
@@ -38,9 +43,13 @@ class DataTable extends React.Component {
       orderByDirection = `&orderByDirection=${sortDirection}`;
     }
 
+    filters.forEach((filter) => {
+      filtersString = `${filtersString}&${filter}`;
+    });
+
     callServer
       .get(
-        `${this.props.dataSource}/page?page=${page}&rowsPerPage=${rowsPerPage}${orderBy}${orderByDirection}`
+        `${this.props.dataSource}/page?page=${page}&rowsPerPage=${rowsPerPage}${orderBy}${orderByDirection}${filtersString}`
       )
       .then((response) => {
         this.setState({
@@ -49,12 +58,30 @@ class DataTable extends React.Component {
           page: response.data.pageable.pageNumber,
           rowsPerPage: response.data.pageable.pageSize,
           sortOrder: sortOrder,
+          filters: filters,
+          tableHeight:
+            filtersString !== ""
+              ? window.innerHeight - 255
+              : window.innerHeight - 215,
         });
       });
   };
 
+  handleFilterList = (filterList) => {
+    const filters = [];
+
+    filterList.forEach((filter, index) => {
+      if (filter.length > 0) {
+        filters.push(`${this.props.columns[index].name}=${filter}`);
+      }
+    });
+
+    this.fetchData(0, this.state.sortOrder, this.state.rowsPerPage, filters);
+  };
+
   render() {
     const { data, count, rowsPerPage, sortOrder, tableHeight } = this.state;
+    const { t } = this.props;
 
     const options = {
       filter: true,
@@ -74,23 +101,60 @@ class DataTable extends React.Component {
       search: false,
       download: false,
       print: false,
+      confirmFilters: true,
+      jumpToPage: true,
+      textLabels: {
+        body: {
+          noMatch: t("noregisters"),
+          toolTip: t("sort"),
+          columnHeaderTooltip: (column) => t("sortfor") + column.label,
+        },
+        pagination: {
+          next: t("nextpage"),
+          previous: t("previouspage"),
+          rowsPerPage: t("rowsperpage"),
+          displayRows: t("of"),
+          jumpToPage: t("gotopage"),
+        },
+        toolbar: {
+          search: t("search"),
+          downloadCsv: t("download"),
+          print: t("print"),
+          viewColumns: t("viewcolumns"),
+          filterTable: t("filter"),
+        },
+        filter: {
+          all: t("all"),
+          title: t("filters"),
+          reset: t("reset"),
+        },
+        viewColumns: {
+          title: t("showcolumns"),
+          titleAria: t("showhidecolumns"),
+        },
+        selectedRows: {
+          text: t("rowselected"),
+          delete: t("delete"),
+          deleteAria: t("deleteselectedrows"),
+        },
+      },
       onTableChange: (action, tableState) => {
         switch (action) {
           case "changePage":
           case "sort":
-            console.log(action);
             this.fetchData(
               tableState.page,
               tableState.sortOrder,
-              tableState.rowsPerPage
+              tableState.rowsPerPage,
+              this.state.filters
             );
             break;
           default:
         }
       },
       onChangeRowsPerPage: (numberOfRows) => {
-        const { page, sortOrder } = this.state;
-        this.fetchData(page, sortOrder, numberOfRows);
+        const { sortOrder, filters } = this.state;
+        this.fetchData(0, sortOrder, numberOfRows, filters);
       },
       customFilterDialogFooter: (currentFilterList, applyNewFilters) => {
         return (
@@ -100,13 +164,16 @@ class DataTable extends React.Component {
               color="primary"
               onClick={() => applyNewFilters()}
             >
-              Aplicar
+              {t("search")}
             </Button>
           </div>
         );
       },
       onFilterConfirm: (filterList) => {
-        console.log(filterList);
+        this.handleFilterList(filterList);
+      },
+      onFilterChipClose: (index, removedFilter, filterList) => {
+        this.handleFilterList(filterList);
       },
       customToolbar: () => {
         return <CustomToolbar onAdd={() => console.log("onAdd")} />;
@@ -120,6 +187,26 @@ class DataTable extends React.Component {
           onEdit={() => console.log("onEdit")}
         />
       ),
+      customFooter: (
+        count,
+        page,
+        rowsPerPage,
+        changeRowsPerPage,
+        changePage,
+        textLabels
+      ) => {
+        return (
+          <CustomFooter
+            count={count}
+            page={page}
+            rowsPerPage={rowsPerPage}
+            changeRowsPerPage={changeRowsPerPage}
+            changePage={changePage}
+            textLabels={textLabels}
+            rowsPerPageOptions={[25, 50, 100]}
+          />
+        );
+      },
     };
 
     return (
@@ -135,4 +222,4 @@ class DataTable extends React.Component {
   }
 }
 
-export default DataTable;
+export default withTranslation()(DataTable);

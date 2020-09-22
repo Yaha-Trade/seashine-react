@@ -4,6 +4,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Delete from "@material-ui/icons/Delete";
 import Edit from "@material-ui/icons/Edit";
 import { makeStyles } from "@material-ui/core/styles";
+import { useTranslation } from "react-i18next";
 
 const useStyles = makeStyles((theme) => ({
   iconContainer: {
@@ -13,15 +14,16 @@ const useStyles = makeStyles((theme) => ({
 
 const CustomToolbarSelect = ({ onEdit, onDelete }) => {
   const classes = useStyles();
+  const { t } = useTranslation();
 
   return (
     <div className={classes.iconContainer}>
-      <Tooltip title="Editar">
+      <Tooltip title={t("edit")}>
         <IconButton onClick={onEdit}>
           <Edit />
         </IconButton>
       </Tooltip>
-      <Tooltip title="Excluir">
+      <Tooltip title={t("delete")}>
         <IconButton onClick={onDelete}>
           <Delete />
         </IconButton>
