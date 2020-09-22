@@ -1,5 +1,5 @@
 import React from "react";
-import DataTable from "../components/DataTable";
+import DataTable from "../components/datatable/DataTable";
 import { useTranslation } from "react-i18next";
 
 const Factory = () => {

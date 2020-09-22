@@ -1,10 +1,10 @@
 import React from "react";
 import MUIDataTable from "mui-datatables";
 import Button from "@material-ui/core/Button";
-import callServer from "../services/callServer";
-import CustomToolbar from "../components/CustomToolbar";
-import CustomToolbarSelect from "../components/CustomToolbarSelect";
-import CustomFooter from "../components/CustomFooter";
+import callServer from "../../services/callServer";
+import CustomToolbar from "./CustomToolbar";
+import CustomToolbarSelect from "./CustomToolbarSelect";
+import CustomFooter from "./CustomFooter";
 import { withTranslation } from "react-i18next";
 
 class DataTable extends React.Component {
@@ -13,7 +13,7 @@ class DataTable extends React.Component {
     count: 1,
     rowsPerPage: 50,
     sortOrder: this.props.initialSort,
-    data: [["Loading Data..."]],
+    data: [[]],
     filters: [],
     tableHeight: window.innerHeight - 215,
   };
