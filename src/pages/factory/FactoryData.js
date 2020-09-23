@@ -5,7 +5,6 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import Fade from "@material-ui/core/Fade";
-import { makeStyles } from "@material-ui/core/styles";
 import { withStyles } from "@material-ui/core/styles";
 import callServer from "../../services/callServer";
 import { useTranslation } from "react-i18next";
@@ -14,15 +13,8 @@ import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    "& > *": {
-      margin: theme.spacing(1),
-      width: "25ch",
-    },
-  },
-}));
+import Grid from "@material-ui/core/Grid";
+import { makeStyles } from "@material-ui/core/styles";
 
 const styles = (theme) => ({
   root: {
@@ -38,6 +30,15 @@ const styles = (theme) => ({
     color: "#FFF",
   },
 });
+
+const useStyles = makeStyles((theme) => ({
+  layout: {
+    width: "auto",
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    padding: theme.spacing(1),
+  },
+}));
 
 const CloseTitle = withStyles(styles)((props) => {
   const { children, classes, onClose, ...other } = props;
@@ -118,48 +119,58 @@ const FactoryData = ({ idFactory, onSave, onClose, isOpen }) => {
         </CloseTitle>
         <DialogContent>
           <Fade in={isOpen}>
-            <form className={classes.root} noValidate autoComplete="off">
-              <TextField
-                id="name"
-                label={t("name")}
-                variant="outlined"
-                value={name}
-                required={true}
-                size="small"
-                fullWidth
-                {...bindName}
-              />
-
-              <TextField
-                id="contact"
-                label={t("contact")}
-                variant="outlined"
-                value={contact}
-                required={true}
-                size="small"
-                {...bindContact}
-              />
-
-              <TextField
-                id="address"
-                label={t("address")}
-                variant="outlined"
-                value={address}
-                required={true}
-                size="small"
-                {...bindAddress}
-              />
-
-              <TextField
-                id="bankAccountNumber"
-                label={t("bankaccount")}
-                variant="outlined"
-                value={bankAccountNumber}
-                required={true}
-                size="small"
-                {...bindBankAccountNumber}
-              />
-            </form>
+            <main className={classes.layout}>
+              <Grid container spacing={3}>
+                <Grid item xs={12} sm={12}>
+                  <TextField
+                    id="name"
+                    label={t("name")}
+                    variant="outlined"
+                    value={name}
+                    fullWidth
+                    required={true}
+                    size="small"
+                    {...bindName}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    id="contact"
+                    label={t("contact")}
+                    variant="outlined"
+                    value={contact}
+                    required={true}
+                    fullWidth
+                    size="small"
+                    {...bindContact}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    id="bankAccountNumber"
+                    label={t("bankaccount")}
+                    variant="outlined"
+                    value={bankAccountNumber}
+                    required={true}
+                    fullWidth
+                    size="small"
+                    {...bindBankAccountNumber}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={12}>
+                  <TextField
+                    id="address"
+                    label={t("address")}
+                    variant="outlined"
+                    value={address}
+                    required={true}
+                    fullWidth
+                    size="small"
+                    {...bindAddress}
+                  />
+                </Grid>
+              </Grid>
+            </main>
           </Fade>
         </DialogContent>
         <DialogActions>
