@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import IconButton from "@material-ui/core/IconButton";
-import EditIcon from "@material-ui/icons/Edit";
 import Fade from "@material-ui/core/Fade";
 import { makeStyles } from "@material-ui/core/styles";
+import callServer from "../../services/callServer";
+import { useTranslation } from "react-i18next";
+import { useInput } from "../../hooks/useInput";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,85 +31,112 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const FactoryData = ({ data, onSave }) => {
+const FactoryData = ({ idFactory, onSave, onClose, isOpen }) => {
+  const { t } = useTranslation();
   const classes = useStyles();
-  const [open, setOpen] = useState(false);
-  const [id, setId] = useState(data.id);
-  const [name, setName] = useState(data.name);
-  const [address, setAddress] = useState(data.address);
-  const [contact, setContact] = useState(data.contact);
-  const [bankAccountNumber, setBankAccountNumber] = useState(
-    data.bankAccountNumber
+  const { value: name, bind: bindName, setValue: setName } = useInput("");
+  const { value: address, bind: bindAddress, setValue: setAddress } = useInput(
+    ""
+  );
+  const { value: contact, bind: bindContact, setValue: setContact } = useInput(
+    ""
   );
 
-  const handleClickOpen = () => {
-    setOpen(true);
+  const {
+    value: bankAccountNumber,
+    bind: bindBankAccountNumber,
+    setValue: setBankAccountNumber,
+  } = useInput("");
+
+  const saveData = (factory) => {
+    onSave(factory);
+    onClose();
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+  useEffect(() => {
+    const fetchData = async (idFactory) => {
+      const response = await callServer.get(`factories/${idFactory}`);
 
-  const saveData = () => {
-    onSave();
-    handleClose();
-  };
+      setName(response.data.name);
+      setAddress(response.data.address);
+      setContact(response.data.contact);
+      setBankAccountNumber(response.data.bankAccountNumber);
+    };
+
+    if (isOpen && idFactory && idFactory !== -1) {
+      fetchData(idFactory);
+    } else {
+      setName("");
+      setAddress("");
+      setContact("");
+      setBankAccountNumber("");
+    }
+  }, [
+    setName,
+    setAddress,
+    setContact,
+    setBankAccountNumber,
+    idFactory,
+    isOpen,
+  ]);
 
   return (
     <div>
-      <IconButton aria-label="delete" onClick={handleClickOpen}>
-        <EditIcon />
-      </IconButton>
       <Dialog
-        open={open}
-        onClose={handleClose}
+        open={isOpen}
+        onClose={onClose}
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle id="form-dialog-title">Dados da fábrica</DialogTitle>
         <DialogContent>
-          <Fade in={open}>
+          <Fade in={isOpen}>
             <form className={classes.root} noValidate autoComplete="off">
               <TextField
                 id="name"
-                label="Nome"
+                label={t("name")}
                 variant="outlined"
                 value={name}
-                onChange={(event) => setName(event.target.value)}
+                {...bindName}
               />
 
               <TextField
                 id="contact"
-                label="Contato"
+                label={t("contact")}
                 variant="outlined"
                 value={contact}
-                onChange={(event) => setContact(event.target.value)}
+                {...bindContact}
               />
 
               <TextField
                 id="address"
-                label="Endereço"
+                label={t("address")}
                 variant="outlined"
                 value={address}
-                onChange={(event) => setAddress(event.target.value)}
+                {...bindAddress}
               />
 
               <TextField
                 id="bankAccountNumber"
-                label="Número da conta no banco"
+                label={t("bankaccount")}
                 variant="outlined"
                 value={bankAccountNumber}
-                onChange={(event) => setBankAccountNumber(event.target.value)}
+                {...bindBankAccountNumber}
               />
             </form>
           </Fade>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={onClose} color="primary">
             Cancel
           </Button>
           <Button
             onClick={() => {
-              saveData();
+              saveData({
+                name,
+                address,
+                contact,
+                bankAccountNumber,
+              });
             }}
             color="primary"
           >
