@@ -4,12 +4,16 @@ import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
 import Fade from "@material-ui/core/Fade";
 import { makeStyles } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
 import callServer from "../../services/callServer";
 import { useTranslation } from "react-i18next";
 import { useInput } from "../../hooks/useInput";
+import Typography from "@material-ui/core/Typography";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";
+import MuiDialogTitle from "@material-ui/core/DialogTitle";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,18 +22,40 @@ const useStyles = makeStyles((theme) => ({
       width: "25ch",
     },
   },
-  modal: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  paper: {
-    backgroundColor: theme.palette.background.paper,
-    border: "2px solid #000",
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
-  },
 }));
+
+const styles = (theme) => ({
+  root: {
+    margin: 0,
+    padding: theme.spacing(2),
+    backgroundColor: "#3f51b5",
+    color: "#FFF",
+  },
+  closeButton: {
+    position: "absolute",
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: "#FFF",
+  },
+});
+
+const CloseTitle = withStyles(styles)((props) => {
+  const { children, classes, onClose, ...other } = props;
+  return (
+    <MuiDialogTitle disableTypography className={classes.root} {...other}>
+      <Typography variant="h6">{children}</Typography>
+      {onClose ? (
+        <IconButton
+          aria-label="close"
+          className={classes.closeButton}
+          onClick={onClose}
+        >
+          <CloseIcon />
+        </IconButton>
+      ) : null}
+    </MuiDialogTitle>
+  );
+});
 
 const FactoryData = ({ idFactory, onSave, onClose, isOpen }) => {
   const { t } = useTranslation();
@@ -87,7 +113,9 @@ const FactoryData = ({ idFactory, onSave, onClose, isOpen }) => {
         onClose={onClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Dados da fábrica</DialogTitle>
+        <CloseTitle id="close-title" onClose={onClose}>
+          {t("factorydata")}
+        </CloseTitle>
         <DialogContent>
           <Fade in={isOpen}>
             <form className={classes.root} noValidate autoComplete="off">
@@ -96,6 +124,9 @@ const FactoryData = ({ idFactory, onSave, onClose, isOpen }) => {
                 label={t("name")}
                 variant="outlined"
                 value={name}
+                required={true}
+                size="small"
+                fullWidth
                 {...bindName}
               />
 
@@ -104,6 +135,8 @@ const FactoryData = ({ idFactory, onSave, onClose, isOpen }) => {
                 label={t("contact")}
                 variant="outlined"
                 value={contact}
+                required={true}
+                size="small"
                 {...bindContact}
               />
 
@@ -112,6 +145,8 @@ const FactoryData = ({ idFactory, onSave, onClose, isOpen }) => {
                 label={t("address")}
                 variant="outlined"
                 value={address}
+                required={true}
+                size="small"
                 {...bindAddress}
               />
 
@@ -120,6 +155,8 @@ const FactoryData = ({ idFactory, onSave, onClose, isOpen }) => {
                 label={t("bankaccount")}
                 variant="outlined"
                 value={bankAccountNumber}
+                required={true}
+                size="small"
                 {...bindBankAccountNumber}
               />
             </form>
@@ -127,7 +164,7 @@ const FactoryData = ({ idFactory, onSave, onClose, isOpen }) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose} color="primary">
-            Cancel
+            {t("cancel")}
           </Button>
           <Button
             onClick={() => {
@@ -140,7 +177,7 @@ const FactoryData = ({ idFactory, onSave, onClose, isOpen }) => {
             }}
             color="primary"
           >
-            Salvar
+            {t("save")}
           </Button>
         </DialogActions>
       </Dialog>

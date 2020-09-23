@@ -9,6 +9,7 @@ const FactoryList = () => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [id, setId] = useState();
+  const [hasToReloadData, setHasToReloadData] = useState(false);
 
   const columns = [
     { name: "name", label: t("name") },
@@ -16,6 +17,10 @@ const FactoryList = () => {
     { name: "address", label: t("address") },
     { name: "bankAccountNumber", label: t("bankaccount") },
   ];
+
+  const getHasToReloadData = () => {
+    return hasToReloadData;
+  };
 
   const onAdd = () => {
     setId(-1);
@@ -37,11 +42,11 @@ const FactoryList = () => {
       callServer.post(`factories`, factory).then((response) => {
         const newId = extractId(response.headers.location);
         setId(newId);
-        console.log("reloading....");
+        setHasToReloadData(true);
       });
     } else {
       callServer.put(`factories/${id}`, factory).then((response) => {
-        console.log("reloading....");
+        setHasToReloadData(true);
       });
     }
   };
@@ -62,6 +67,8 @@ const FactoryList = () => {
         initialSort={{ name: "name", direction: "asc" }}
         onAdd={onAdd}
         onEdit={onEdit}
+        setHasToReloadData={setHasToReloadData}
+        getHasToReloadData={getHasToReloadData}
       />
     </div>
   );

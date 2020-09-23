@@ -20,6 +20,19 @@ class DataTable extends React.Component {
     tableHeight: window.innerHeight - 215,
   };
 
+  componentDidUpdate() {
+    if (this.props.getHasToReloadData()) {
+      this.fetchData(
+        this.state.page,
+        this.state.sortOrder,
+        this.state.rowsPerPage,
+        this.state.filters
+      );
+
+      this.props.setHasToReloadData(false);
+    }
+  }
+
   componentDidMount() {
     this.fetchData(
       this.state.page,
