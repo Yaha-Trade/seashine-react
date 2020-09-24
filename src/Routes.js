@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
 import { isAuthenticated } from "./services/Auth";
 import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -21,7 +21,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
 
 const Routes = () => (
   <div>
-    <BrowserRouter>
+    <HashRouter>
       <Switch>
         <Route exact path={["/", "/login"]} component={Login} />
         <Route exact path="/forgot" component={ForgotPassword} />
@@ -55,7 +55,7 @@ const Routes = () => (
         </MenuApp>
         <Route path="*" component={() => <h1>Page not found</h1>} />
       </Switch>
-    </BrowserRouter>
+    </HashRouter>
   </div>
 );
 
