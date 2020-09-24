@@ -1,6 +1,6 @@
-import React from "react";
 import Home from "../pages/Home";
 import FactoryList from "../pages/factory/FactoryList";
+import CustomerList from "../pages/customer/CustomerList";
 
 export const MenuPages = [
   {
@@ -23,9 +23,7 @@ export const MenuPages = [
         key: "customer",
         text: "customer",
         path: "/customer",
-        component: () => {
-          return <h1>Customer</h1>;
-        },
+        component: CustomerList,
       },
     ],
   },

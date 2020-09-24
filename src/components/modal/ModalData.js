@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ModalData = ({ onSave, onClose, isOpen, children }) => {
+const ModalData = ({ onSave, onClose, isOpen, title, children }) => {
   const { t } = useTranslation();
   const classes = useStyles();
 
@@ -29,7 +29,7 @@ const ModalData = ({ onSave, onClose, isOpen, children }) => {
         aria-labelledby="form-dialog-title"
       >
         <CloseTitle id="close-title" onClose={onClose}>
-          {t("factorydata")}
+          {t(title)}
         </CloseTitle>
         <DialogContent>
           <Fade in={isOpen}>

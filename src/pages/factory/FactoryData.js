@@ -198,7 +198,12 @@ const FactoryData = ({ idFactory, onSave, onClose, isOpen }) => {
 
   return (
     <div>
-      <ModalData onSave={saveData} isOpen={isOpen} onClose={onClose}>
+      <ModalData
+        onSave={saveData}
+        isOpen={isOpen}
+        onClose={onClose}
+        title="factorydata"
+      >
         <Grid container spacing={3}>
           <Grid item xs={12} sm={12}>
             <TextField
