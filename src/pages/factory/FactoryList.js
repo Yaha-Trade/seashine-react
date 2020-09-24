@@ -14,8 +14,8 @@ const FactoryList = () => {
   const columns = [
     { name: "name", label: t("name") },
     { name: "contact", label: t("contact") },
-    { name: "address", label: t("address") },
     { name: "bankAccountNumber", label: t("bankaccount") },
+    { name: "address", label: t("address") },
   ];
 
   const getHasToReloadData = () => {
