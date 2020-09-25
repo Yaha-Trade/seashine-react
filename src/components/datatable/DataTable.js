@@ -219,22 +219,24 @@ class DataTable extends React.Component {
           onDelete={() => {
             const selectedId = data[selectedRows.data[0].dataIndex].id;
 
-            if (window.confirm("Deseja realmente excluir?")) {
-              callServer.delete(`factories/${selectedId}`).then((response) => {
-                setSelectedRows([]);
+            if (window.confirm(t("wanttodelete"))) {
+              callServer
+                .delete(`${this.props.dataSource}/${selectedId}`)
+                .then((response) => {
+                  setSelectedRows([]);
 
-                let newPage = this.state.page;
-                if (displayData.length === 1 && newPage > 0) {
-                  newPage = newPage - 1;
-                }
+                  let newPage = this.state.page;
+                  if (displayData.length === 1 && newPage > 0) {
+                    newPage = newPage - 1;
+                  }
 
-                this.fetchData(
-                  newPage,
-                  this.state.sortOrder,
-                  this.state.rowsPerPage,
-                  this.state.filters
-                );
-              });
+                  this.fetchData(
+                    newPage,
+                    this.state.sortOrder,
+                    this.state.rowsPerPage,
+                    this.state.filters
+                  );
+                });
             }
           }}
           onEdit={() => {

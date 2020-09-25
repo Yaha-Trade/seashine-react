@@ -42,52 +42,6 @@ const FactoryData = ({ idFactory, onSave, onClose, isOpen }) => {
     setHasErrors: setHasErrorsBankAccountNumber,
   } = useInput("");
 
-  const saveData = () => {
-    let hasErrors = false;
-
-    if (name === "") {
-      setHasErrorsName(true);
-      hasErrors = true;
-    }
-
-    if (address === "") {
-      setHasErrorsAddress(true);
-      hasErrors = true;
-    }
-
-    if (contact === "") {
-      setHasErrorsContact(true);
-      hasErrors = true;
-    }
-
-    if (bankAccountNumber === "") {
-      setHasErrorsBankAccountNumber(true);
-      hasErrors = true;
-    }
-
-    if (hasErrors) {
-      return;
-    }
-
-    onSave({
-      name,
-      address,
-      contact,
-      bankAccountNumber,
-      telephone1,
-      telephone2,
-      telephone3,
-      mobilePhone1,
-      mobilePhone2,
-      mobilePhone3,
-      qqNumber1,
-      qqNumber2,
-      qqNumber3,
-    });
-
-    onClose();
-  };
-
   const {
     value: telephone1,
     bind: bindTelephone1,
@@ -141,6 +95,52 @@ const FactoryData = ({ idFactory, onSave, onClose, isOpen }) => {
     bind: bindQqNumber3,
     setValue: setQqNumber3,
   } = useInput("");
+
+  const saveData = () => {
+    let hasErrors = false;
+
+    if (name === "") {
+      setHasErrorsName(true);
+      hasErrors = true;
+    }
+
+    if (address === "") {
+      setHasErrorsAddress(true);
+      hasErrors = true;
+    }
+
+    if (contact === "") {
+      setHasErrorsContact(true);
+      hasErrors = true;
+    }
+
+    if (bankAccountNumber === "") {
+      setHasErrorsBankAccountNumber(true);
+      hasErrors = true;
+    }
+
+    if (hasErrors) {
+      return;
+    }
+
+    onSave({
+      name,
+      address,
+      contact,
+      bankAccountNumber,
+      telephone1,
+      telephone2,
+      telephone3,
+      mobilePhone1,
+      mobilePhone2,
+      mobilePhone3,
+      qqNumber1,
+      qqNumber2,
+      qqNumber3,
+    });
+
+    onClose();
+  };
 
   useEffect(() => {
     const fetchData = async (idFactory) => {
