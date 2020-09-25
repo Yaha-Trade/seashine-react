@@ -1,6 +1,7 @@
 import Home from "../pages/Home";
 import FactoryList from "../pages/factory/FactoryList";
 import CustomerList from "../pages/customer/CustomerList";
+import PackingList from "../pages/packing/PackingList";
 
 export const MenuPages = [
   {
@@ -24,6 +25,12 @@ export const MenuPages = [
         text: "customer",
         path: "/customer",
         component: CustomerList,
+      },
+      {
+        key: "packing",
+        text: "packing",
+        path: "/packing",
+        component: PackingList,
       },
     ],
   },
