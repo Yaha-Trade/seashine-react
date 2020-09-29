@@ -178,6 +178,11 @@ const FactoryData = ({ idFactory, onSave, onClose, isOpen }) => {
       setQqNumber2("");
       setQqNumber3("");
     }
+
+    setHasErrorsName(false);
+    setHasErrorsContact(false);
+    setHasErrorsAddress(false);
+    setHasErrorsBankAccountNumber(false);
   }, [
     setName,
     setAddress,
@@ -192,6 +197,10 @@ const FactoryData = ({ idFactory, onSave, onClose, isOpen }) => {
     setQqNumber1,
     setQqNumber2,
     setQqNumber3,
+    setHasErrorsName,
+    setHasErrorsContact,
+    setHasErrorsAddress,
+    setHasErrorsBankAccountNumber,
     idFactory,
     isOpen,
   ]);
@@ -204,7 +213,7 @@ const FactoryData = ({ idFactory, onSave, onClose, isOpen }) => {
         onClose={onClose}
         title="factorydata"
       >
-        <Grid container spacing={3}>
+        <Grid container spacing={2}>
           <Grid item xs={12} sm={12}>
             <TextField
               id="name"

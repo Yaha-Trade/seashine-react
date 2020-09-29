@@ -5,35 +5,56 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import Fade from "@material-ui/core/Fade";
 import { useTranslation } from "react-i18next";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
 import CloseTitle from "../../components/modal/CloseTitle";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
-const useStyles = makeStyles((theme) => ({
-  layout: {
-    width: "auto",
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-    padding: theme.spacing(1),
-  },
-}));
+const ModalData = ({
+  onSave,
+  onClose,
+  isOpen,
+  title,
+  children,
+  fullWidth = false,
+  minHeight = "auto",
+}) => {
+  const useStyles = makeStyles((theme) => ({
+    layout: {
+      width: "auto",
+      marginLeft: theme.spacing(1),
+      marginRight: theme.spacing(1),
+      padding: theme.spacing(1),
+    },
+    dialogPaper: {
+      minHeight,
+    },
+  }));
 
-const ModalData = ({ onSave, onClose, isOpen, title, children }) => {
   const { t } = useTranslation();
   const classes = useStyles();
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
     <div>
       <Dialog
+        classes={{ paper: classes.dialogPaper }}
         open={isOpen}
         onClose={onClose}
+        maxWidth="md"
+        fullScreen={fullScreen}
+        fullWidth={fullWidth}
         aria-labelledby="form-dialog-title"
+        style={{ minHeight: "620px" }}
       >
         <CloseTitle id="close-title" onClose={onClose}>
           {t(title)}
         </CloseTitle>
         <DialogContent>
           <Fade in={isOpen}>
-            <main className={classes.layout}>{children}</main>
+            <main className={classes.layout}>
+              <form autoComplete="off">{children}</form>
+            </main>
           </Fade>
         </DialogContent>
         <DialogActions>

@@ -43,7 +43,9 @@ const CustomerData = ({ idCustomer, onSave, onClose, isOpen }) => {
     } else {
       setName("");
     }
-  }, [setName, idCustomer, isOpen]);
+
+    setHasErrorsName(false);
+  }, [setName, setHasErrorsName, idCustomer, isOpen]);
 
   return (
     <div>
@@ -53,7 +55,7 @@ const CustomerData = ({ idCustomer, onSave, onClose, isOpen }) => {
         onClose={onClose}
         title="customerdata"
       >
-        <Grid container spacing={3}>
+        <Grid container spacing={2}>
           <Grid item xs={12} sm={12}>
             <TextField
               id="name"

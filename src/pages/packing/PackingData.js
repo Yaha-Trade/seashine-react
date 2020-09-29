@@ -65,7 +65,17 @@ const PackingData = ({ idPacking, onSave, onClose, isOpen }) => {
       setEnglishName("");
       setChineseName("");
     }
-  }, [setEnglishName, setChineseName, idPacking, isOpen]);
+
+    setHasErrorsEnglishName(false);
+    setHasErrorsChineseName(false);
+  }, [
+    setEnglishName,
+    setChineseName,
+    setHasErrorsEnglishName,
+    setHasErrorsChineseName,
+    idPacking,
+    isOpen,
+  ]);
 
   return (
     <div>
@@ -75,7 +85,7 @@ const PackingData = ({ idPacking, onSave, onClose, isOpen }) => {
         onClose={onClose}
         title="packingdata"
       >
-        <Grid container spacing={3}>
+        <Grid container spacing={2}>
           <Grid item xs={12} sm={12}>
             <TextField
               id="englishName"
