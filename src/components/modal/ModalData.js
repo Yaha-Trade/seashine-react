@@ -16,6 +16,7 @@ const ModalData = ({
   title,
   children,
   fullWidth = false,
+  fullScreen = false,
   minHeight = "auto",
 }) => {
   const useStyles = makeStyles((theme) => ({
@@ -33,7 +34,6 @@ const ModalData = ({
   const { t } = useTranslation();
   const classes = useStyles();
   const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
     <div>
@@ -42,10 +42,9 @@ const ModalData = ({
         open={isOpen}
         onClose={onClose}
         maxWidth="md"
-        fullScreen={fullScreen}
+        fullScreen={useMediaQuery(theme.breakpoints.down("sm")) || fullScreen}
         fullWidth={fullWidth}
         aria-labelledby="form-dialog-title"
-        style={{ minHeight: "620px" }}
       >
         <CloseTitle id="close-title" onClose={onClose}>
           {t(title)}

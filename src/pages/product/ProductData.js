@@ -29,6 +29,36 @@ const ProductData = ({ idProduct, onSave, onClose, isOpen }) => {
     setSelectedTab(newValue);
   };
 
+  const onChangeBoxLength = (newValue) => {
+    if (newValue !== "" && boxWidth !== "" && boxHeight !== "") {
+      setBoxCubage(newValue * boxWidth * boxHeight);
+    }
+  };
+
+  const onChangeBoxWidth = (newValue) => {
+    if (boxLength !== "" && newValue !== "" && boxHeight !== "") {
+      setBoxCubage(boxLength * newValue * boxHeight);
+    }
+  };
+
+  const onChangeBoxHeight = (newValue) => {
+    if (boxLength !== "" && boxWidth !== "" && newValue !== "") {
+      setBoxCubage(boxLength * boxWidth * newValue);
+    }
+  };
+
+  const onChangeQuantityOfPieces = (newValue) => {
+    if (newValue !== "" && quantityOfBoxesPerContainer !== "") {
+      setQuantityOfPiecesPerContainer(newValue * quantityOfBoxesPerContainer);
+    }
+  };
+
+  const onChangeQuantityOfBoxesPerContainer = (newValue) => {
+    if (quantityOfPieces !== "" && newValue !== "") {
+      setQuantityOfPiecesPerContainer(quantityOfPieces * newValue);
+    }
+  };
+
   const {
     value: reference,
     bind: bindReference,
@@ -66,7 +96,7 @@ const ProductData = ({ idProduct, onSave, onClose, isOpen }) => {
     setValue: setQuantityOfPieces,
     hasErrors: errorsQuantityOfPieces,
     setHasErrors: setHasErrorsQuantityOfPieces,
-  } = useInput("", true);
+  } = useInput("", true, onChangeQuantityOfPieces);
 
   const {
     value: boxLength,
@@ -74,7 +104,7 @@ const ProductData = ({ idProduct, onSave, onClose, isOpen }) => {
     setValue: setBoxLength,
     hasErrors: errorsBoxLength,
     setHasErrors: setHasErrorsBoxLength,
-  } = useInput("", true);
+  } = useInput("", true, onChangeBoxLength);
 
   const {
     value: boxWidth,
@@ -82,7 +112,7 @@ const ProductData = ({ idProduct, onSave, onClose, isOpen }) => {
     setValue: setBoxWidth,
     hasErrors: errorsBoxWidth,
     setHasErrors: setHasErrorsBoxWidth,
-  } = useInput("", true);
+  } = useInput("", true, onChangeBoxWidth);
 
   const {
     value: boxHeight,
@@ -90,7 +120,7 @@ const ProductData = ({ idProduct, onSave, onClose, isOpen }) => {
     setValue: setBoxHeight,
     hasErrors: errorsBoxHeight,
     setHasErrors: setHasErrorsBoxHeight,
-  } = useInput("", true);
+  } = useInput("", true, onChangeBoxHeight);
 
   const {
     value: packingLength,
@@ -186,7 +216,7 @@ const ProductData = ({ idProduct, onSave, onClose, isOpen }) => {
     setValue: setQuantityOfBoxesPerContainer,
     hasErrors: errorsQuantityOfBoxesPerContainer,
     setHasErrors: setHasErrorsQuantityOfBoxesPerContainer,
-  } = useInput("", true);
+  } = useInput("", true, onChangeQuantityOfBoxesPerContainer);
 
   const {
     value: quantityOfPiecesPerContainer,
@@ -731,20 +761,7 @@ const ProductData = ({ idProduct, onSave, onClose, isOpen }) => {
             helperText={errorsPackingHeight && errorMessage}
           />
         </Grid>
-        <Grid item xs={12} sm={3}>
-          <TextField
-            id="boxGrossWeight"
-            label={t("boxgrossweight")}
-            variant="outlined"
-            value={boxGrossWeight}
-            fullWidth
-            required={true}
-            size="small"
-            {...bindBoxGrossWeight}
-            error={errorsBoxGrossWeight}
-            helperText={errorsBoxGrossWeight && errorMessage}
-          />
-        </Grid>
+        <Grid item xs={12} sm={3}></Grid>
         <Grid item xs={12} sm={3}>
           <TextField
             id="quantityOfPieces"
@@ -759,7 +776,50 @@ const ProductData = ({ idProduct, onSave, onClose, isOpen }) => {
             helperText={errorsQuantityOfPieces && errorMessage}
           />
         </Grid>
-
+        <Grid item xs={12} sm={3}>
+          <TextField
+            id="quantityOfBoxesPerContainer"
+            label={t("quantityofboxespercontainer")}
+            variant="outlined"
+            value={quantityOfBoxesPerContainer}
+            fullWidth
+            required={true}
+            size="small"
+            {...bindQuantityOfBoxesPerContainer}
+            error={errorsQuantityOfBoxesPerContainer}
+            helperText={errorsQuantityOfBoxesPerContainer && errorMessage}
+          />
+        </Grid>
+        <Grid item xs={12} sm={3}>
+          <TextField
+            id="quantityOfPiecesPerContainer"
+            label={t("quantityofpiecespercontainer")}
+            variant="outlined"
+            value={quantityOfPiecesPerContainer}
+            fullWidth
+            required={true}
+            disabled
+            size="small"
+            {...bindQuantityOfPiecesPerContainer}
+            error={errorsQuantityOfPiecesPerContainer}
+            helperText={errorsQuantityOfPiecesPerContainer && errorMessage}
+          />
+        </Grid>
+        <Grid item xs={12} sm={3}></Grid>
+        <Grid item xs={12} sm={3}>
+          <TextField
+            id="boxGrossWeight"
+            label={t("boxgrossweight")}
+            variant="outlined"
+            value={boxGrossWeight}
+            fullWidth
+            required={true}
+            size="small"
+            {...bindBoxGrossWeight}
+            error={errorsBoxGrossWeight}
+            helperText={errorsBoxGrossWeight && errorMessage}
+          />
+        </Grid>
         <Grid item xs={12} sm={3}>
           <TextField
             id="boxNetWeight"
@@ -802,37 +862,16 @@ const ProductData = ({ idProduct, onSave, onClose, isOpen }) => {
             helperText={errorsNetWeightWithoutPacking && errorMessage}
           />
         </Grid>
-        <Grid item xs={12} sm={3}>
-          <TextField
-            id="quantityOfBoxesPerContainer"
-            label={t("quantityofboxespercontainer")}
-            variant="outlined"
-            value={quantityOfBoxesPerContainer}
-            fullWidth
-            required={true}
-            size="small"
-            {...bindQuantityOfBoxesPerContainer}
-            error={errorsQuantityOfBoxesPerContainer}
-            helperText={errorsQuantityOfBoxesPerContainer && errorMessage}
-          />
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <TextField
-            id="quantityOfPiecesPerContainer"
-            label={t("quantityofpiecespercontainer")}
-            variant="outlined"
-            value={quantityOfPiecesPerContainer}
-            fullWidth
-            required={true}
-            disabled
-            size="small"
-            {...bindQuantityOfPiecesPerContainer}
-            error={errorsQuantityOfPiecesPerContainer}
-            helperText={errorsQuantityOfPiecesPerContainer && errorMessage}
-          />
-        </Grid>
       </Grid>
     );
+  };
+
+  const CertificationData = () => {
+    return <div>Certificação</div>;
+  };
+
+  const PictureData = () => {
+    return <div>Picture</div>;
   };
 
   return (
@@ -846,14 +885,14 @@ const ProductData = ({ idProduct, onSave, onClose, isOpen }) => {
         minHeight="620px"
       >
         <TabContext value={selectedTab}>
-          <TabList onChange={handleTabChange} aria-label="simple tabs example">
+          <TabList onChange={handleTabChange}>
             <Tab label={t("factory")} value="1" />
             <Tab label={t("certification")} value="2" />
             <Tab label={t("picture")} value="3" />
           </TabList>
           <TabPanel value="1">{ProductDataFactory()}</TabPanel>
-          <TabPanel value="2">Certificacao</TabPanel>
-          <TabPanel value="3">Picture</TabPanel>
+          <TabPanel value="2">{CertificationData()}</TabPanel>
+          <TabPanel value="3">{PictureData()}</TabPanel>
         </TabContext>
       </ModalData>
     </div>

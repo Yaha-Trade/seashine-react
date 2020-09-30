@@ -1,6 +1,10 @@
 import { useState } from "react";
 
-export const useInput = (initialValue, onlyNumbers = false) => {
+export const useInput = (
+  initialValue,
+  onlyNumbers = false,
+  onChange = () => {}
+) => {
   const [value, setValue] = useState(initialValue);
   const [hasErrors, setHasErrors] = useState(false);
   const onlyNumbersExpression = /^[0-9\b]+$/;
@@ -16,8 +20,10 @@ export const useInput = (initialValue, onlyNumbers = false) => {
 
         if (!onlyNumbers) {
           setValue(newValue);
+          onChange(newValue);
         } else if (newValue === "" || onlyNumbersExpression.test(newValue)) {
           setValue(newValue);
+          onChange(newValue);
         }
 
         setHasErrors(false);
