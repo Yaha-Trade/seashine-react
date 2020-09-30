@@ -14,6 +14,8 @@ import Tab from "@material-ui/core/Tab";
 import TabPanel from "@material-ui/lab/TabPanel";
 import TabContext from "@material-ui/lab/TabContext";
 import TabList from "@material-ui/lab/TabList";
+import Switch from "@material-ui/core/Switch";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 const ProductData = ({ idProduct, onSave, onClose, isOpen }) => {
   const { t } = useTranslation();
@@ -24,6 +26,13 @@ const ProductData = ({ idProduct, onSave, onClose, isOpen }) => {
   const [packing, setPacking] = useState(null);
   const [hasErrorsPacking, setHasErrorsPacking] = useState(false);
   const [selectedTab, setSelectedTab] = useState("1");
+  const [certificationId, setCertificationId] = useState(null);
+  const [sound, setSound] = useState(2);
+  const [light, setLight] = useState(2);
+  const [motor, setMotor] = useState(2);
+  const [metalPart, setMetalPart] = useState(2);
+  const [clip, setClip] = useState(2);
+  const [line, setLine] = useState(2);
 
   const handleTabChange = (event, newValue) => {
     setSelectedTab(newValue);
@@ -226,6 +235,54 @@ const ProductData = ({ idProduct, onSave, onClose, isOpen }) => {
     setHasErrors: setHasErrorsQuantityOfPiecesPerContainer,
   } = useInput("", true);
 
+  const {
+    value: englishDescription,
+    bind: bindEnglishDescription,
+    setValue: setEnglishDescription,
+    hasErrors: errorsEnglishDescription,
+    setHasErrors: setHasErrorsEnglishDescription,
+  } = useInput("");
+
+  const {
+    value: quantityOfParts,
+    setValue: setQuantityOfParts,
+    bind: bindQuantityOfParts,
+    hasErrors: errorsQuantityOfParts,
+    setHasErrors: setHasErrorsQuantityOfParts,
+  } = useInput("", true);
+
+  const {
+    value: model,
+    setValue: setModel,
+    bind: bindModel,
+    hasErrors: errorsModel,
+    setHasErrors: setHasErrorsModel,
+  } = useInput("", true);
+
+  const {
+    value: composition,
+    setValue: setComposition,
+    bind: bindComposition,
+    hasErrors: errorsComposition,
+    setHasErrors: setHasErrorsComposition,
+  } = useInput("");
+
+  const {
+    value: color,
+    setValue: setColor,
+    bind: bindColor,
+    hasErrors: errorsColor,
+    setHasErrors: setHasErrorsColor,
+  } = useInput("");
+
+  const {
+    value: specialRequirements,
+    bind: bindSpecialRequirements,
+    setValue: setSpecialRequirements,
+    hasErrors: errorsSpecialRequirements,
+    setHasErrors: setHasErrorsSpecialRequirements,
+  } = useInput("");
+
   const saveData = () => {
     let hasErrors = false;
 
@@ -344,6 +401,36 @@ const ProductData = ({ idProduct, onSave, onClose, isOpen }) => {
       hasErrors = true;
     }
 
+    if (englishDescription === "") {
+      setHasErrorsEnglishDescription(true);
+      hasErrors = true;
+    }
+
+    if (quantityOfParts === "") {
+      setHasErrorsQuantityOfParts(true);
+      hasErrors = true;
+    }
+
+    if (composition === "") {
+      setHasErrorsComposition(true);
+      hasErrors = true;
+    }
+
+    if (model === "") {
+      setHasErrorsModel(true);
+      hasErrors = true;
+    }
+
+    if (color === "") {
+      setHasErrorsColor(true);
+      hasErrors = true;
+    }
+
+    if (specialRequirements === "") {
+      setHasErrorsSpecialRequirements(true);
+      hasErrors = true;
+    }
+
     if (hasErrors) {
       return;
     }
@@ -372,6 +459,21 @@ const ProductData = ({ idProduct, onSave, onClose, isOpen }) => {
       netWeightWithoutPacking,
       quantityOfBoxesPerContainer,
       quantityOfPiecesPerContainer,
+      certification: {
+        id: certificationId,
+        englishDescription,
+        quantityOfParts,
+        composition,
+        model,
+        color,
+        specialRequirements,
+        sound,
+        light,
+        motor,
+        metalPart,
+        clip,
+        line,
+      },
     });
 
     onClose();
@@ -427,6 +529,20 @@ const ProductData = ({ idProduct, onSave, onClose, isOpen }) => {
         englishName: response.data.packing.englishName,
         chineseName: response.data.packing.chineseName,
       });
+
+      setCertificationId(response.data.certification.id);
+      setEnglishDescription(response.data.certification.englishDescription);
+      setQuantityOfParts(response.data.certification.quantityOfParts);
+      setComposition(response.data.certification.composition);
+      setModel(response.data.certification.model);
+      setColor(response.data.certification.color);
+      setSpecialRequirements(response.data.certification.specialRequirements);
+      setSound(response.data.certification.sound);
+      setLight(response.data.certification.light);
+      setMotor(response.data.certification.motor);
+      setMetalPart(response.data.certification.metalPart);
+      setClip(response.data.certification.clip);
+      setLine(response.data.certification.line);
     };
 
     if (isOpen && idProduct && idProduct !== -1) {
@@ -455,6 +571,20 @@ const ProductData = ({ idProduct, onSave, onClose, isOpen }) => {
       setQuantityOfPiecesPerContainer("");
       setFactory(null);
       setPacking(null);
+
+      setCertificationId(null);
+      setEnglishDescription("");
+      setQuantityOfParts("");
+      setComposition("");
+      setModel("");
+      setColor("");
+      setSpecialRequirements("");
+      setSound(2);
+      setLight(2);
+      setMotor(2);
+      setMetalPart(2);
+      setClip(2);
+      setLine(2);
     }
 
     setHasErrorsReference(false);
@@ -481,6 +611,13 @@ const ProductData = ({ idProduct, onSave, onClose, isOpen }) => {
     setHasErrorsQuantityOfBoxesPerContainer(false);
     setHasErrorsQuantityOfPiecesPerContainer(false);
 
+    setHasErrorsEnglishDescription(false);
+    setHasErrorsQuantityOfParts(false);
+    setHasErrorsComposition(false);
+    setHasErrorsModel(false);
+    setHasErrorsColor(false);
+    setHasErrorsSpecialRequirements(false);
+
     setSelectedTab("1");
   }, [
     setReference,
@@ -504,6 +641,7 @@ const ProductData = ({ idProduct, onSave, onClose, isOpen }) => {
     setNetWeightWithoutPacking,
     setQuantityOfBoxesPerContainer,
     setQuantityOfPiecesPerContainer,
+    setEnglishDescription,
     setHasErrorsReference,
     setHasErrorsDescription,
     setHasErrorsQuantityInner,
@@ -525,9 +663,20 @@ const ProductData = ({ idProduct, onSave, onClose, isOpen }) => {
     setHasErrorsNetWeightWithoutPacking,
     setHasErrorsQuantityOfBoxesPerContainer,
     setHasErrorsQuantityOfPiecesPerContainer,
+    setHasErrorsEnglishDescription,
     idProduct,
     isOpen,
     isEnglishLanguage,
+    setHasErrorsQuantityOfParts,
+    setHasErrorsComposition,
+    setHasErrorsModel,
+    setHasErrorsColor,
+    setHasErrorsSpecialRequirements,
+    setQuantityOfParts,
+    setComposition,
+    setModel,
+    setColor,
+    setSpecialRequirements,
   ]);
 
   const ProductDataFactory = () => {
@@ -867,7 +1016,164 @@ const ProductData = ({ idProduct, onSave, onClose, isOpen }) => {
   };
 
   const CertificationData = () => {
-    return <div>Certificação</div>;
+    return (
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={12}>
+          <TextField
+            id="englishDescription"
+            label={t("englishdescription")}
+            variant="outlined"
+            value={englishDescription}
+            fullWidth
+            required={true}
+            size="small"
+            {...bindEnglishDescription}
+            error={errorsEnglishDescription}
+            helperText={errorsEnglishDescription && errorMessage}
+          />
+        </Grid>
+        <Grid item xs={12} sm={3}>
+          <TextField
+            id="quantityOfParts"
+            label={t("quantityofparts")}
+            variant="outlined"
+            value={quantityOfParts}
+            fullWidth
+            required={true}
+            size="small"
+            {...bindQuantityOfParts}
+            error={errorsQuantityOfParts}
+            helperText={errorsQuantityOfParts && errorMessage}
+          />
+        </Grid>
+        <Grid item xs={12} sm={3}>
+          <TextField
+            id="composition"
+            label={t("composition")}
+            variant="outlined"
+            value={composition}
+            fullWidth
+            required={true}
+            size="small"
+            {...bindComposition}
+            error={errorsComposition}
+            helperText={errorsComposition && errorMessage}
+          />
+        </Grid>
+        <Grid item xs={12} sm={3}>
+          <TextField
+            id="model"
+            label={t("model")}
+            variant="outlined"
+            value={model}
+            fullWidth
+            required={true}
+            size="small"
+            {...bindModel}
+            error={errorsModel}
+            helperText={errorsModel && errorMessage}
+          />
+        </Grid>
+        <Grid item xs={12} sm={3}>
+          <TextField
+            id="color"
+            label={t("color")}
+            variant="outlined"
+            value={color}
+            fullWidth
+            required={true}
+            size="small"
+            {...bindColor}
+            error={errorsColor}
+            helperText={errorsColor && errorMessage}
+          />
+        </Grid>
+        <Grid item xs={12} sm={12}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={sound === 1}
+                onChange={(e) => setSound(e.target.checked ? 1 : 2)}
+                color="primary"
+                name="sound"
+              />
+            }
+            label={t("sound")}
+          />
+          <FormControlLabel
+            control={
+              <Switch
+                checked={light === 1}
+                onChange={(e) => setLight(e.target.checked ? 1 : 2)}
+                color="primary"
+                name="light"
+              />
+            }
+            label={t("light")}
+          />
+          <FormControlLabel
+            control={
+              <Switch
+                checked={motor === 1}
+                onChange={(e) => setMotor(e.target.checked ? 1 : 2)}
+                color="primary"
+                name="motor"
+              />
+            }
+            label={t("motor")}
+          />
+          <FormControlLabel
+            control={
+              <Switch
+                checked={metalPart === 1}
+                onChange={(e) => setMetalPart(e.target.checked ? 1 : 2)}
+                color="primary"
+                name="metalPart"
+              />
+            }
+            label={t("metalpart")}
+          />
+          <FormControlLabel
+            control={
+              <Switch
+                checked={clip === 1}
+                onChange={(e) => setClip(e.target.checked ? 1 : 2)}
+                color="primary"
+                name="clip"
+              />
+            }
+            label={t("clip")}
+          />
+          <FormControlLabel
+            control={
+              <Switch
+                checked={line === 1}
+                onChange={(e) => setLine(e.target.checked ? 1 : 2)}
+                color="primary"
+                name="line"
+              />
+            }
+            label={t("line")}
+          />
+        </Grid>
+        <Grid item xs={12} sm={12}>
+          <TextField
+            id="specialRequirements"
+            label={t("specialrequirements")}
+            variant="outlined"
+            value={specialRequirements}
+            fullWidth
+            multiline
+            rows={4}
+            required={true}
+            size="small"
+            {...bindSpecialRequirements}
+            error={errorsSpecialRequirements}
+            helperText={errorsSpecialRequirements && errorMessage}
+          />
+        </Grid>
+      </Grid>
+    );
   };
 
   const PictureData = () => {
