@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MenuItems = () => {
+const MenuItems = ({ hideDrawer }) => {
   const { t } = useTranslation();
   const openStates = MenuPages.map((page, index) => {
     return true;
@@ -28,6 +28,7 @@ const MenuItems = () => {
 
   const handleRedirect = (page) => {
     history.push(page);
+    hideDrawer();
   };
 
   const handleClick = (clickIndex) => {

@@ -20,12 +20,6 @@ const ModalData = ({
   minHeight = "auto",
 }) => {
   const useStyles = makeStyles((theme) => ({
-    layout: {
-      width: "auto",
-      marginLeft: theme.spacing(1),
-      marginRight: theme.spacing(1),
-      padding: theme.spacing(1),
-    },
     dialogPaper: {
       minHeight,
     },
@@ -51,7 +45,7 @@ const ModalData = ({
         </CloseTitle>
         <DialogContent>
           <Fade in={isOpen}>
-            <main className={classes.layout}>
+            <main>
               <form autoComplete="off">{children}</form>
             </main>
           </Fade>

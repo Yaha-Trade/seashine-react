@@ -128,7 +128,7 @@ const MenuApp = ({ children }) => {
           </IconButton>
         </div>
         <Divider />
-        <MenuItems />
+        <MenuItems hideDrawer={handleDrawerOpenClose} />
       </Drawer>
 
       <main

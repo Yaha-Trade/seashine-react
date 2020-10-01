@@ -4,6 +4,7 @@ import App from "./components/App";
 import "./services/i18n";
 import "./assets/css/index.css";
 import "./assets/css/icons.css";
+import "react-image-lightbox/style.css";
 import Loading from "./components/Loading";
 
 ReactDOM.render(

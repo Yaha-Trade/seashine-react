@@ -22,7 +22,7 @@ i18n
       escapeValue: false, // not needed for react as it escapes by default
     },
     backend: {
-      loadPath: `http://localhost/locales/${DEFAULT_LOCALE}`,
+      loadPath: `http://192.168.1.203/locales/${DEFAULT_LOCALE}`,
     },
   });
 
