@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProductData = ({ idProduct, onSave, onClose, isOpen }) => {
+const ProductData = ({ idProduct, onSave, onClose }) => {
   const { t } = useTranslation();
   const classes = useStyles();
   const isEnglishLanguage = getLanguage() === LanguageEnum.ENGLISH;
@@ -556,7 +556,7 @@ const ProductData = ({ idProduct, onSave, onClose, isOpen }) => {
       setLine(response.data.certification.line);
     };
 
-    if (isOpen && idProduct && idProduct !== -1) {
+    if (idProduct && idProduct !== -1) {
       fetchData(idProduct);
     } else {
       setReference("");
@@ -676,7 +676,6 @@ const ProductData = ({ idProduct, onSave, onClose, isOpen }) => {
     setHasErrorsQuantityOfPiecesPerContainer,
     setHasErrorsEnglishDescription,
     idProduct,
-    isOpen,
     isEnglishLanguage,
     setHasErrorsQuantityOfParts,
     setHasErrorsComposition,
@@ -1217,7 +1216,7 @@ const ProductData = ({ idProduct, onSave, onClose, isOpen }) => {
     <div>
       <ModalData
         onSave={saveData}
-        isOpen={isOpen}
+        isOpen={true}
         onClose={onClose}
         title="productdata"
         fullWidth

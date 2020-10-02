@@ -51,12 +51,7 @@ const PackingList = () => {
 
   return (
     <div>
-      <PackingData
-        idPacking={id}
-        onSave={onSave}
-        onClose={onClose}
-        isOpen={open}
-      />
+      {open && <PackingData idPacking={id} onSave={onSave} onClose={onClose} />}
       <DataTable
         title={t("packing")}
         columns={columns}

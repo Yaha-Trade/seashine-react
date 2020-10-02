@@ -53,12 +53,7 @@ const FactoryList = () => {
 
   return (
     <div>
-      <FactoryData
-        idFactory={id}
-        onSave={onSave}
-        onClose={onClose}
-        isOpen={open}
-      />
+      {open && <FactoryData idFactory={id} onSave={onSave} onClose={onClose} />}
       <DataTable
         title={t("factory")}
         columns={columns}

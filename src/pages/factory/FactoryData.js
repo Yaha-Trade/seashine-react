@@ -6,7 +6,7 @@ import { useInput } from "../../hooks/useInput";
 import Grid from "@material-ui/core/Grid";
 import ModalData from "../../components/modal/ModalData";
 
-const FactoryData = ({ idFactory, onSave, onClose, isOpen }) => {
+const FactoryData = ({ idFactory, onSave, onClose }) => {
   const { t } = useTranslation();
   const errorMessage = t("requiredfield");
 
@@ -161,7 +161,7 @@ const FactoryData = ({ idFactory, onSave, onClose, isOpen }) => {
       setQqNumber3(response.data.qqNumber3);
     };
 
-    if (isOpen && idFactory && idFactory !== -1) {
+    if (idFactory && idFactory !== -1) {
       fetchData(idFactory);
     } else {
       setName("");
@@ -202,14 +202,13 @@ const FactoryData = ({ idFactory, onSave, onClose, isOpen }) => {
     setHasErrorsAddress,
     setHasErrorsBankAccountNumber,
     idFactory,
-    isOpen,
   ]);
 
   return (
     <div>
       <ModalData
         onSave={saveData}
-        isOpen={isOpen}
+        isOpen={true}
         onClose={onClose}
         title="factorydata"
       >

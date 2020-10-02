@@ -48,12 +48,9 @@ const CustomerList = () => {
 
   return (
     <div>
-      <CustomerData
-        idCustomer={id}
-        onSave={onSave}
-        onClose={onClose}
-        isOpen={open}
-      />
+      {open && (
+        <CustomerData idCustomer={id} onSave={onSave} onClose={onClose} />
+      )}
       <DataTable
         title={t("customer")}
         columns={columns}

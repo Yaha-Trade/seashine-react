@@ -6,7 +6,7 @@ import { useInput } from "../../hooks/useInput";
 import Grid from "@material-ui/core/Grid";
 import ModalData from "../../components/modal/ModalData";
 
-const CustomerData = ({ idCustomer, onSave, onClose, isOpen }) => {
+const CustomerData = ({ idCustomer, onSave, onClose }) => {
   const { t } = useTranslation();
   const errorMessage = t("requiredfield");
 
@@ -38,20 +38,20 @@ const CustomerData = ({ idCustomer, onSave, onClose, isOpen }) => {
       setName(response.data.name);
     };
 
-    if (isOpen && idCustomer && idCustomer !== -1) {
+    if (idCustomer && idCustomer !== -1) {
       fetchData(idCustomer);
     } else {
       setName("");
     }
 
     setHasErrorsName(false);
-  }, [setName, setHasErrorsName, idCustomer, isOpen]);
+  }, [setName, setHasErrorsName, idCustomer]);
 
   return (
     <div>
       <ModalData
         onSave={saveData}
-        isOpen={isOpen}
+        isOpen={true}
         onClose={onClose}
         title="customerdata"
       >

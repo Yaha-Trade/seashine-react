@@ -51,12 +51,7 @@ const ProductList = () => {
 
   return (
     <div>
-      <ProductData
-        idProduct={id}
-        onSave={onSave}
-        onClose={onClose}
-        isOpen={open}
-      />
+      {open && <ProductData idProduct={id} onSave={onSave} onClose={onClose} />}
       <DataTable
         title={t("product")}
         columns={columns}
