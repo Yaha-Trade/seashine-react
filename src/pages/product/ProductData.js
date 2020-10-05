@@ -1,452 +1,394 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import TextField from "@material-ui/core/TextField";
 import callServer from "../../services/callServer";
-import { useTranslation } from "react-i18next";
-import { useInput } from "../../hooks/useInput";
+import { withTranslation } from "react-i18next";
 import Grid from "@material-ui/core/Grid";
 import ModalData from "../../components/modal/ModalData";
-import AutoComplete from "../../components/AutoComplete";
 import { getLanguage } from "../../services/StorageManager";
 import { LanguageEnum } from "../../enums/LanguageEnum";
+import AutoComplete from "../../components/AutoComplete";
 import CurrencyTextField from "@unicef/material-ui-currency-textfield";
 import { CurrencyEnum } from "../../enums/CurrencyEnum";
+import Switch from "@material-ui/core/Switch";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Tab from "@material-ui/core/Tab";
 import TabPanel from "@material-ui/lab/TabPanel";
 import TabContext from "@material-ui/lab/TabContext";
 import TabList from "@material-ui/lab/TabList";
-import Switch from "@material-ui/core/Switch";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 import ImageList from "../../components/ImageList";
-import { makeStyles } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = (theme) => ({
   tabPanel: {
     paddingTop: "10px",
     paddingRight: "0px",
     paddingLeft: "0px",
   },
-}));
+});
 
-const ProductData = ({ idProduct, onSave, onClose }) => {
-  const { t } = useTranslation();
-  const classes = useStyles();
-  const isEnglishLanguage = getLanguage() === LanguageEnum.ENGLISH;
-  const errorMessage = t("requiredfield");
-  const [factory, setFactory] = useState(null);
-  const [hasErrorsFactory, setHasErrorsFactory] = useState(false);
-  const [packing, setPacking] = useState(null);
-  const [hasErrorsPacking, setHasErrorsPacking] = useState(false);
-  const [selectedTab, setSelectedTab] = useState("1");
-  const [certificationId, setCertificationId] = useState(null);
-  const [sound, setSound] = useState(2);
-  const [light, setLight] = useState(2);
-  const [motor, setMotor] = useState(2);
-  const [metalPart, setMetalPart] = useState(2);
-  const [clip, setClip] = useState(2);
-  const [line, setLine] = useState(2);
-
-  const handleTabChange = (event, newValue) => {
-    setSelectedTab(newValue);
+class ProductData extends React.Component {
+  state = {
+    reference: "",
+    price: "",
+    description: "",
+    quantityInner: "",
+    quantityOfPieces: "",
+    boxLength: "",
+    boxWidth: "",
+    boxHeight: "",
+    packingLength: "",
+    packingWidth: "",
+    packingHeight: "",
+    productLength: "",
+    productWidth: "",
+    productHeight: "",
+    boxCubage: "",
+    boxGrossWeight: "",
+    boxNetWeight: "",
+    netWeightWithPacking: "",
+    netWeightWithoutPacking: "",
+    quantityOfBoxesPerContainer: "",
+    quantityOfPiecesPerContainer: "",
+    factory: null,
+    packing: null,
+    certificationId: null,
+    englishDescription: "",
+    quantityOfParts: "",
+    model: "",
+    composition: "",
+    color: "",
+    specialRequirements: "",
+    sound: 2,
+    light: 2,
+    motor: 2,
+    metalPart: 2,
+    clip: 2,
+    line: 2,
+    selectedTab: "1",
+    errors: [],
   };
 
-  const onChangeBoxLength = (newValue) => {
+  onChangeForField = (
+    id,
+    newValue,
+    onlyNumbers = false,
+    onChange = () => {}
+  ) => {
+    const onlyNumbersExpression = /^[0-9\b]+$/;
+    if (!onlyNumbers) {
+      this.setState({
+        [id]: newValue,
+        errors: this.state.errors.filter((value) => {
+          return id !== value;
+        }),
+      });
+      onChange(newValue);
+    } else if (newValue === "" || onlyNumbersExpression.test(newValue)) {
+      this.setState({
+        [id]: newValue,
+        errors: this.state.errors.filter((value) => {
+          return id !== value;
+        }),
+      });
+      onChange(newValue);
+    }
+  };
+
+  onChangeFactorySelect = (event, value) => {
+    this.setState({ factory: value });
+    if (value !== null) {
+      this.setState({
+        errors: this.state.errors.filter((value) => {
+          return value !== "factory";
+        }),
+      });
+    }
+  };
+
+  onChangePackingSelect = (event, value) => {
+    this.setState({ packing: value });
+    if (value !== null) {
+      this.setState({
+        errors: this.state.errors.filter((value) => {
+          return value !== "packing";
+        }),
+      });
+    }
+  };
+
+  handleTabChange = (event, newValue) => {
+    this.setState({ selectedTab: newValue });
+  };
+
+  onChangeBoxLength = (newValue) => {
+    const { boxWidth, boxHeight } = this.state;
     if (newValue !== "" && boxWidth !== "" && boxHeight !== "") {
-      setBoxCubage(newValue * boxWidth * boxHeight);
+      this.setState({
+        boxCubage: newValue * boxWidth * boxHeight,
+        errors: this.state.errors.filter((value) => {
+          return (
+            value !== "boxCubage" &&
+            value !== "boxLength" &&
+            value !== "boxWidth" &&
+            value !== "boxHeight"
+          );
+        }),
+      });
+    } else {
+      this.setState({
+        boxCubage: "",
+      });
     }
   };
 
-  const onChangeBoxWidth = (newValue) => {
+  onChangeBoxWidth = (newValue) => {
+    const { boxLength, boxHeight } = this.state;
     if (boxLength !== "" && newValue !== "" && boxHeight !== "") {
-      setBoxCubage(boxLength * newValue * boxHeight);
+      this.setState({
+        boxCubage: boxLength * newValue * boxHeight,
+        errors: this.state.errors.filter((value) => {
+          return (
+            value !== "boxCubage" &&
+            value !== "boxLength" &&
+            value !== "boxWidth" &&
+            value !== "boxHeight"
+          );
+        }),
+      });
+    } else {
+      this.setState({
+        boxCubage: "",
+      });
     }
   };
 
-  const onChangeBoxHeight = (newValue) => {
+  onChangeBoxHeight = (newValue) => {
+    const { boxLength, boxWidth } = this.state;
     if (boxLength !== "" && boxWidth !== "" && newValue !== "") {
-      setBoxCubage(boxLength * boxWidth * newValue);
+      this.setState({
+        boxCubage: boxLength * boxWidth * newValue,
+        errors: this.state.errors.filter((value) => {
+          return (
+            value !== "boxCubage" &&
+            value !== "boxLength" &&
+            value !== "boxWidth" &&
+            value !== "boxHeight"
+          );
+        }),
+      });
+    } else {
+      this.setState({
+        boxCubage: "",
+      });
     }
   };
 
-  const onChangeQuantityOfPieces = (newValue) => {
+  onChangeQuantityOfPieces = (newValue) => {
+    const { quantityOfBoxesPerContainer } = this.state;
     if (newValue !== "" && quantityOfBoxesPerContainer !== "") {
-      setQuantityOfPiecesPerContainer(newValue * quantityOfBoxesPerContainer);
+      this.setState({
+        quantityOfPiecesPerContainer: newValue * quantityOfBoxesPerContainer,
+        errors: this.state.errors.filter((value) => {
+          return (
+            value !== "quantityOfPiecesPerContainer" &&
+            value !== "quantityOfPieces" &&
+            value !== "quantityOfBoxesPerContainer"
+          );
+        }),
+      });
+    } else {
+      this.setState({
+        quantityOfPiecesPerContainer: "",
+      });
     }
   };
 
-  const onChangeQuantityOfBoxesPerContainer = (newValue) => {
+  onChangeQuantityOfBoxesPerContainer = (newValue) => {
+    const { quantityOfPieces } = this.state;
     if (quantityOfPieces !== "" && newValue !== "") {
-      setQuantityOfPiecesPerContainer(quantityOfPieces * newValue);
+      this.setState({
+        quantityOfPiecesPerContainer: quantityOfPieces * newValue,
+        errors: this.state.errors.filter((value) => {
+          return (
+            value !== "quantityOfPiecesPerContainer" &&
+            value !== "quantityOfPieces" &&
+            value !== "quantityOfBoxesPerContainer"
+          );
+        }),
+      });
+    } else {
+      this.setState({
+        quantityOfPiecesPerContainer: "",
+      });
     }
   };
 
-  const {
-    value: reference,
-    bind: bindReference,
-    setValue: setReference,
-    hasErrors: errorsReference,
-    setHasErrors: setHasErrorsReference,
-  } = useInput("");
-
-  const {
-    value: price,
-    setValue: setPrice,
-    hasErrors: errorsPrice,
-    setHasErrors: setHasErrorsPrice,
-  } = useInput("");
-
-  const {
-    value: description,
-    bind: bindDescription,
-    setValue: setDescription,
-    hasErrors: errorsDescription,
-    setHasErrors: setHasErrorsDescription,
-  } = useInput("");
-
-  const {
-    value: quantityInner,
-    bind: bindQuantityInner,
-    setValue: setQuantityInner,
-    hasErrors: errorsQuantityInner,
-    setHasErrors: setHasErrorsQuantityInner,
-  } = useInput("", true);
-
-  const {
-    value: quantityOfPieces,
-    bind: bindQuantityOfPieces,
-    setValue: setQuantityOfPieces,
-    hasErrors: errorsQuantityOfPieces,
-    setHasErrors: setHasErrorsQuantityOfPieces,
-  } = useInput("", true, onChangeQuantityOfPieces);
-
-  const {
-    value: boxLength,
-    bind: bindBoxLength,
-    setValue: setBoxLength,
-    hasErrors: errorsBoxLength,
-    setHasErrors: setHasErrorsBoxLength,
-  } = useInput("", true, onChangeBoxLength);
-
-  const {
-    value: boxWidth,
-    bind: bindBoxWidth,
-    setValue: setBoxWidth,
-    hasErrors: errorsBoxWidth,
-    setHasErrors: setHasErrorsBoxWidth,
-  } = useInput("", true, onChangeBoxWidth);
-
-  const {
-    value: boxHeight,
-    bind: bindBoxHeight,
-    setValue: setBoxHeight,
-    hasErrors: errorsBoxHeight,
-    setHasErrors: setHasErrorsBoxHeight,
-  } = useInput("", true, onChangeBoxHeight);
-
-  const {
-    value: packingLength,
-    bind: bindPackingLength,
-    setValue: setPackingLength,
-    hasErrors: errorsPackingLength,
-    setHasErrors: setHasErrorsPackingLength,
-  } = useInput("", true);
-
-  const {
-    value: packingWidth,
-    bind: bindPackingWidth,
-    setValue: setPackingWidth,
-    hasErrors: errorsPackingWidth,
-    setHasErrors: setHasErrorsPackingWidth,
-  } = useInput("", true);
-
-  const {
-    value: packingHeight,
-    bind: bindPackingHeight,
-    setValue: setPackingHeight,
-    hasErrors: errorsPackingHeight,
-    setHasErrors: setHasErrorsPackingHeight,
-  } = useInput("", true);
-
-  const {
-    value: productLength,
-    bind: bindProductLength,
-    setValue: setProductLength,
-    hasErrors: errorsProductLength,
-    setHasErrors: setHasErrorsProductLength,
-  } = useInput("", true);
-
-  const {
-    value: productWidth,
-    bind: bindProductWidth,
-    setValue: setProductWidth,
-    hasErrors: errorsProductWidth,
-    setHasErrors: setHasErrorsProductWidth,
-  } = useInput("", true);
-
-  const {
-    value: productHeight,
-    bind: bindProductHeight,
-    setValue: setProductHeight,
-    hasErrors: errorsProductHeight,
-    setHasErrors: setHasErrorsProductHeight,
-  } = useInput("", true);
-
-  const {
-    value: boxCubage,
-    bind: bindBoxCubage,
-    setValue: setBoxCubage,
-    hasErrors: errorsBoxCubage,
-    setHasErrors: setHasErrorsBoxCubage,
-  } = useInput("", true);
-
-  const {
-    value: boxGrossWeight,
-    bind: bindBoxGrossWeight,
-    setValue: setBoxGrossWeight,
-    hasErrors: errorsBoxGrossWeight,
-    setHasErrors: setHasErrorsBoxGrossWeight,
-  } = useInput("", true);
-
-  const {
-    value: boxNetWeight,
-    bind: bindBoxNetWeight,
-    setValue: setBoxNetWeight,
-    hasErrors: errorsBoxNetWeight,
-    setHasErrors: setHasErrorsBoxNetWeight,
-  } = useInput("", true);
-
-  const {
-    value: netWeightWithPacking,
-    bind: bindNetWeightWithPacking,
-    setValue: setNetWeightWithPacking,
-    hasErrors: errorsNetWeightWithPacking,
-    setHasErrors: setHasErrorsNetWeightWithPacking,
-  } = useInput("", true);
-
-  const {
-    value: netWeightWithoutPacking,
-    bind: bindNetWeightWithoutPacking,
-    setValue: setNetWeightWithoutPacking,
-    hasErrors: errorsNetWeightWithoutPacking,
-    setHasErrors: setHasErrorsNetWeightWithoutPacking,
-  } = useInput("", true);
-
-  const {
-    value: quantityOfBoxesPerContainer,
-    bind: bindQuantityOfBoxesPerContainer,
-    setValue: setQuantityOfBoxesPerContainer,
-    hasErrors: errorsQuantityOfBoxesPerContainer,
-    setHasErrors: setHasErrorsQuantityOfBoxesPerContainer,
-  } = useInput("", true, onChangeQuantityOfBoxesPerContainer);
-
-  const {
-    value: quantityOfPiecesPerContainer,
-    bind: bindQuantityOfPiecesPerContainer,
-    setValue: setQuantityOfPiecesPerContainer,
-    hasErrors: errorsQuantityOfPiecesPerContainer,
-    setHasErrors: setHasErrorsQuantityOfPiecesPerContainer,
-  } = useInput("", true);
-
-  const {
-    value: englishDescription,
-    bind: bindEnglishDescription,
-    setValue: setEnglishDescription,
-    hasErrors: errorsEnglishDescription,
-    setHasErrors: setHasErrorsEnglishDescription,
-  } = useInput("");
-
-  const {
-    value: quantityOfParts,
-    setValue: setQuantityOfParts,
-    bind: bindQuantityOfParts,
-    hasErrors: errorsQuantityOfParts,
-    setHasErrors: setHasErrorsQuantityOfParts,
-  } = useInput("", true);
-
-  const {
-    value: model,
-    setValue: setModel,
-    bind: bindModel,
-    hasErrors: errorsModel,
-    setHasErrors: setHasErrorsModel,
-  } = useInput("", true);
-
-  const {
-    value: composition,
-    setValue: setComposition,
-    bind: bindComposition,
-    hasErrors: errorsComposition,
-    setHasErrors: setHasErrorsComposition,
-  } = useInput("");
-
-  const {
-    value: color,
-    setValue: setColor,
-    bind: bindColor,
-    hasErrors: errorsColor,
-    setHasErrors: setHasErrorsColor,
-  } = useInput("");
-
-  const {
-    value: specialRequirements,
-    bind: bindSpecialRequirements,
-    setValue: setSpecialRequirements,
-    hasErrors: errorsSpecialRequirements,
-    setHasErrors: setHasErrorsSpecialRequirements,
-  } = useInput("");
-
-  const saveData = () => {
-    let hasErrors = false;
+  saveData = () => {
+    const errors = [];
+    const {
+      reference,
+      description,
+      factory,
+      packing,
+      price,
+      quantityInner,
+      quantityOfPieces,
+      boxLength,
+      boxWidth,
+      boxHeight,
+      packingLength,
+      packingWidth,
+      packingHeight,
+      productLength,
+      productWidth,
+      productHeight,
+      boxCubage,
+      boxGrossWeight,
+      boxNetWeight,
+      netWeightWithPacking,
+      netWeightWithoutPacking,
+      quantityOfBoxesPerContainer,
+      quantityOfPiecesPerContainer,
+      englishDescription,
+      quantityOfParts,
+      composition,
+      model,
+      color,
+      specialRequirements,
+      certificationId,
+      sound,
+      light,
+      motor,
+      metalPart,
+      clip,
+      line,
+    } = this.state;
 
     if (reference === "") {
-      setHasErrorsReference(true);
-      hasErrors = true;
+      errors.push("reference");
     }
 
     if (description === "") {
-      setHasErrorsDescription(true);
-      hasErrors = true;
+      errors.push("description");
     }
 
     if (factory === null) {
-      setHasErrorsFactory(true);
-      hasErrors = true;
+      errors.push("factory");
     }
 
     if (packing === null) {
-      setHasErrorsPacking(true);
-      hasErrors = true;
+      errors.push("packing");
     }
 
     if (price === "") {
-      setHasErrorsPrice(true);
-      hasErrors = true;
+      errors.push("price");
     }
 
     if (quantityInner === "") {
-      setHasErrorsQuantityInner(true);
-      hasErrors = true;
+      errors.push("quantityInner");
     }
 
     if (quantityOfPieces === "") {
-      setHasErrorsQuantityOfPieces(true);
-      hasErrors = true;
+      errors.push("quantityOfPieces");
     }
 
     if (boxLength === "") {
-      setHasErrorsBoxLength(true);
-      hasErrors = true;
+      errors.push("boxLength");
     }
 
     if (boxWidth === "") {
-      setHasErrorsBoxWidth(true);
-      hasErrors = true;
+      errors.push("boxWidth");
     }
 
     if (boxHeight === "") {
-      setHasErrorsBoxHeight(true);
-      hasErrors = true;
+      errors.push("boxHeight");
     }
 
     if (packingLength === "") {
-      setHasErrorsPackingLength(true);
-      hasErrors = true;
+      errors.push("packingLength");
     }
 
     if (packingWidth === "") {
-      setHasErrorsPackingWidth(true);
-      hasErrors = true;
+      errors.push("packingWidth");
     }
 
     if (packingHeight === "") {
-      setHasErrorsPackingHeight(true);
-      hasErrors = true;
+      errors.push("packingHeight");
     }
 
     if (productLength === "") {
-      setHasErrorsProductLength(true);
-      hasErrors = true;
+      errors.push("productLength");
     }
 
     if (productWidth === "") {
-      setHasErrorsProductWidth(true);
-      hasErrors = true;
+      errors.push("productWidth");
     }
 
     if (productHeight === "") {
-      setHasErrorsProductHeight(true);
-      hasErrors = true;
+      errors.push("productHeight");
     }
 
     if (boxCubage === "") {
-      setHasErrorsBoxCubage(true);
-      hasErrors = true;
+      errors.push("boxCubage");
     }
 
     if (boxGrossWeight === "") {
-      setHasErrorsBoxGrossWeight(true);
-      hasErrors = true;
+      errors.push("boxGrossWeight");
     }
 
     if (boxNetWeight === "") {
-      setHasErrorsBoxNetWeight(true);
-      hasErrors = true;
+      errors.push("boxNetWeight");
     }
 
     if (netWeightWithPacking === "") {
-      setHasErrorsNetWeightWithPacking(true);
-      hasErrors = true;
+      errors.push("netWeightWithPacking");
     }
 
     if (netWeightWithoutPacking === "") {
-      setHasErrorsNetWeightWithoutPacking(true);
-      hasErrors = true;
+      errors.push("netWeightWithoutPacking");
     }
 
     if (quantityOfBoxesPerContainer === "") {
-      setHasErrorsQuantityOfBoxesPerContainer(true);
-      hasErrors = true;
+      errors.push("quantityOfBoxesPerContainer");
     }
 
     if (quantityOfPiecesPerContainer === "") {
-      setHasErrorsQuantityOfPiecesPerContainer(true);
-      hasErrors = true;
+      errors.push("quantityOfPiecesPerContainer");
     }
 
     if (englishDescription === "") {
-      setHasErrorsEnglishDescription(true);
-      hasErrors = true;
+      errors.push("englishDescription");
     }
 
     if (quantityOfParts === "") {
-      setHasErrorsQuantityOfParts(true);
-      hasErrors = true;
+      errors.push("quantityOfParts");
     }
 
     if (composition === "") {
-      setHasErrorsComposition(true);
-      hasErrors = true;
+      errors.push("composition");
     }
 
     if (model === "") {
-      setHasErrorsModel(true);
-      hasErrors = true;
+      errors.push("model");
     }
 
     if (color === "") {
-      setHasErrorsColor(true);
-      hasErrors = true;
+      errors.push("color");
     }
 
     if (specialRequirements === "") {
-      setHasErrorsSpecialRequirements(true);
-      hasErrors = true;
+      errors.push("specialRequirements");
     }
 
-    if (hasErrors) {
+    this.setState({
+      errors: errors,
+    });
+
+    if (errors.length > 0) {
       return;
     }
 
-    onSave({
+    this.props.onSave({
       reference,
       description,
       factory: { id: factory.id },
@@ -487,209 +429,101 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
       },
     });
 
-    onClose();
+    this.props.onClose();
   };
 
-  const onChangeFactorySelect = (event, value) => {
-    setFactory(value);
-    if (value !== null) {
-      setHasErrorsFactory(false);
-    }
-  };
+  fetchData = (idProduct) => {
+    callServer.get(`products/${idProduct}`).then((response) => {
+      this.setState({
+        reference: response.data.reference,
+        description: response.data.description,
+        price: response.data.price,
+        quantityInner: response.data.quantityInner,
+        quantityOfPieces: response.data.quantityOfPieces,
+        boxLength: response.data.boxLength,
+        boxWidth: response.data.boxWidth,
+        boxHeight: response.data.boxHeight,
+        packingLength: response.data.packingLength,
+        packingWidth: response.data.packingWidth,
+        packingHeight: response.data.packingHeight,
+        productLength: response.data.productLength,
+        productWidth: response.data.productWidth,
+        productHeight: response.data.productHeight,
+        boxCubage: response.data.boxCubage,
+        boxGrossWeight: response.data.boxGrossWeight,
+        boxNetWeight: response.data.boxNetWeight,
+        netWeightWithPacking: response.data.netWeightWithPacking,
+        netWeightWithoutPacking: response.data.netWeightWithoutPacking,
+        quantityOfBoxesPerContainer: response.data.quantityOfBoxesPerContainer,
+        quantityOfPiecesPerContainer:
+          response.data.quantityOfPiecesPerContainer,
+        factory: {
+          id: response.data.factory.id,
+          name: response.data.factory.name,
+        },
+        packing: {
+          id: response.data.packing.id,
+          englishName: response.data.packing.englishName,
+          chineseName: response.data.packing.chineseName,
+        },
 
-  const onChangePackingSelect = (event, value) => {
-    setPacking(value);
-    if (value !== null) {
-      setHasErrorsPacking(false);
-    }
-  };
-
-  useEffect(() => {
-    const fetchData = async (idProduct) => {
-      const response = await callServer.get(`products/${idProduct}`);
-
-      setReference(response.data.reference);
-      setDescription(response.data.description);
-      setPrice(response.data.price);
-      setQuantityInner(response.data.quantityInner);
-      setQuantityOfPieces(response.data.quantityOfPieces);
-      setBoxLength(response.data.boxLength);
-      setBoxWidth(response.data.boxWidth);
-      setBoxHeight(response.data.boxHeight);
-      setPackingLength(response.data.packingLength);
-      setPackingWidth(response.data.packingWidth);
-      setPackingHeight(response.data.packingHeight);
-      setProductLength(response.data.productLength);
-      setProductWidth(response.data.productWidth);
-      setProductHeight(response.data.productHeight);
-      setBoxCubage(response.data.boxCubage);
-      setBoxGrossWeight(response.data.boxGrossWeight);
-      setBoxNetWeight(response.data.boxNetWeight);
-      setNetWeightWithPacking(response.data.netWeightWithPacking);
-      setNetWeightWithoutPacking(response.data.netWeightWithoutPacking);
-      setQuantityOfBoxesPerContainer(response.data.quantityOfBoxesPerContainer);
-      setQuantityOfPiecesPerContainer(
-        response.data.quantityOfPiecesPerContainer
-      );
-      setFactory({
-        id: response.data.factory.id,
-        name: response.data.factory.name,
+        certificationId: response.data.certification.id,
+        englishDescription: response.data.certification.englishDescription,
+        quantityOfParts: response.data.certification.quantityOfParts,
+        composition: response.data.certification.composition,
+        model: response.data.certification.model,
+        color: response.data.certification.color,
+        specialRequirements: response.data.certification.specialRequirements,
+        sound: response.data.certification.sound,
+        light: response.data.certification.light,
+        motor: response.data.certification.motor,
+        metalPart: response.data.certification.metalPart,
+        clip: response.data.certification.clip,
+        line: response.data.certification.line,
       });
-      setPacking({
-        id: response.data.packing.id,
-        englishName: response.data.packing.englishName,
-        chineseName: response.data.packing.chineseName,
-      });
+    });
+  };
 
-      setCertificationId(response.data.certification.id);
-      setEnglishDescription(response.data.certification.englishDescription);
-      setQuantityOfParts(response.data.certification.quantityOfParts);
-      setComposition(response.data.certification.composition);
-      setModel(response.data.certification.model);
-      setColor(response.data.certification.color);
-      setSpecialRequirements(response.data.certification.specialRequirements);
-      setSound(response.data.certification.sound);
-      setLight(response.data.certification.light);
-      setMotor(response.data.certification.motor);
-      setMetalPart(response.data.certification.metalPart);
-      setClip(response.data.certification.clip);
-      setLine(response.data.certification.line);
-    };
+  componentDidMount() {
+    const { idProduct } = this.props;
 
     if (idProduct && idProduct !== -1) {
-      fetchData(idProduct);
-    } else {
-      setReference("");
-      setDescription("");
-      setPrice("");
-      setQuantityInner("");
-      setQuantityOfPieces("");
-      setBoxLength("");
-      setBoxWidth("");
-      setBoxHeight("");
-      setPackingLength("");
-      setPackingWidth("");
-      setPackingHeight("");
-      setProductLength("");
-      setProductWidth("");
-      setProductHeight("");
-      setBoxCubage("");
-      setBoxGrossWeight("");
-      setBoxNetWeight("");
-      setNetWeightWithPacking("");
-      setNetWeightWithoutPacking("");
-      setQuantityOfBoxesPerContainer("");
-      setQuantityOfPiecesPerContainer("");
-      setFactory(null);
-      setPacking(null);
-
-      setCertificationId(null);
-      setEnglishDescription("");
-      setQuantityOfParts("");
-      setComposition("");
-      setModel("");
-      setColor("");
-      setSpecialRequirements("");
-      setSound(2);
-      setLight(2);
-      setMotor(2);
-      setMetalPart(2);
-      setClip(2);
-      setLine(2);
+      this.fetchData(idProduct);
     }
+  }
 
-    setHasErrorsReference(false);
-    setHasErrorsDescription(false);
-    setHasErrorsPrice(false);
-    setHasErrorsQuantityInner(false);
-    setHasErrorsQuantityOfPieces(false);
-    setHasErrorsBoxLength(false);
-    setHasErrorsBoxWidth(false);
-    setHasErrorsBoxHeight(false);
-    setHasErrorsPackingLength(false);
-    setHasErrorsPackingWidth(false);
-    setHasErrorsPackingHeight(false);
-    setHasErrorsProductLength(false);
-    setHasErrorsProductWidth(false);
-    setHasErrorsProductHeight(false);
-    setHasErrorsBoxCubage(false);
-    setHasErrorsFactory(false);
-    setHasErrorsPacking(false);
-    setHasErrorsBoxGrossWeight(false);
-    setHasErrorsBoxNetWeight(false);
-    setHasErrorsNetWeightWithPacking(false);
-    setHasErrorsNetWeightWithoutPacking(false);
-    setHasErrorsQuantityOfBoxesPerContainer(false);
-    setHasErrorsQuantityOfPiecesPerContainer(false);
+  ProductDataFactory = () => {
+    const {
+      reference,
+      description,
+      factory,
+      packing,
+      price,
+      quantityInner,
+      quantityOfPieces,
+      boxLength,
+      boxWidth,
+      boxHeight,
+      packingLength,
+      packingWidth,
+      packingHeight,
+      productLength,
+      productWidth,
+      productHeight,
+      boxCubage,
+      boxGrossWeight,
+      boxNetWeight,
+      netWeightWithPacking,
+      netWeightWithoutPacking,
+      quantityOfBoxesPerContainer,
+      quantityOfPiecesPerContainer,
+      errors,
+    } = this.state;
+    const { t } = this.props;
+    const errorMessage = t("requiredfield");
 
-    setHasErrorsEnglishDescription(false);
-    setHasErrorsQuantityOfParts(false);
-    setHasErrorsComposition(false);
-    setHasErrorsModel(false);
-    setHasErrorsColor(false);
-    setHasErrorsSpecialRequirements(false);
+    const isEnglishLanguage = getLanguage() === LanguageEnum.ENGLISH;
 
-    setSelectedTab("1");
-  }, [
-    setReference,
-    setDescription,
-    setPrice,
-    setQuantityOfPieces,
-    setQuantityInner,
-    setBoxLength,
-    setBoxWidth,
-    setBoxHeight,
-    setPackingLength,
-    setPackingWidth,
-    setPackingHeight,
-    setProductLength,
-    setProductWidth,
-    setProductHeight,
-    setBoxCubage,
-    setBoxGrossWeight,
-    setBoxNetWeight,
-    setNetWeightWithPacking,
-    setNetWeightWithoutPacking,
-    setQuantityOfBoxesPerContainer,
-    setQuantityOfPiecesPerContainer,
-    setEnglishDescription,
-    setHasErrorsReference,
-    setHasErrorsDescription,
-    setHasErrorsQuantityInner,
-    setHasErrorsPrice,
-    setHasErrorsQuantityOfPieces,
-    setHasErrorsBoxLength,
-    setHasErrorsBoxHeight,
-    setHasErrorsBoxWidth,
-    setHasErrorsPackingLength,
-    setHasErrorsPackingHeight,
-    setHasErrorsPackingWidth,
-    setHasErrorsProductLength,
-    setHasErrorsProductWidth,
-    setHasErrorsProductHeight,
-    setHasErrorsBoxCubage,
-    setHasErrorsBoxGrossWeight,
-    setHasErrorsBoxNetWeight,
-    setHasErrorsNetWeightWithPacking,
-    setHasErrorsNetWeightWithoutPacking,
-    setHasErrorsQuantityOfBoxesPerContainer,
-    setHasErrorsQuantityOfPiecesPerContainer,
-    setHasErrorsEnglishDescription,
-    idProduct,
-    isEnglishLanguage,
-    setHasErrorsQuantityOfParts,
-    setHasErrorsComposition,
-    setHasErrorsModel,
-    setHasErrorsColor,
-    setHasErrorsSpecialRequirements,
-    setQuantityOfParts,
-    setComposition,
-    setModel,
-    setColor,
-    setSpecialRequirements,
-  ]);
-
-  const ProductDataFactory = () => {
     return (
       <Grid container spacing={2}>
         <Grid item xs={12} sm={3}>
@@ -701,9 +535,9 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             fullWidth
             required={true}
             size="small"
-            {...bindReference}
-            error={errorsReference}
-            helperText={errorsReference && errorMessage}
+            onChange={(e) => this.onChangeForField(e.target.id, e.target.value)}
+            error={errors.includes("reference")}
+            helperText={errors.includes("reference") && errorMessage}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -712,9 +546,9 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             dataSource="factories"
             idField="id"
             displayField="name"
-            onChange={onChangeFactorySelect}
+            onChange={this.onChangeFactorySelect}
             selectedValue={factory}
-            hasErrors={hasErrorsFactory}
+            hasErrors={errors.includes("factory")}
             label={t("factory")}
           />
         </Grid>
@@ -724,9 +558,9 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             dataSource="packings"
             idField="id"
             displayField={isEnglishLanguage ? "englishName" : "chineseName"}
-            onChange={onChangePackingSelect}
+            onChange={this.onChangePackingSelect}
             selectedValue={packing}
-            hasErrors={hasErrorsPacking}
+            hasErrors={errors.includes("packing")}
             label={t("packing")}
           />
         </Grid>
@@ -743,12 +577,16 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             outputFormat="string"
             decimalCharacter={CurrencyEnum.DECIMALCHARACTER}
             digitGroupSeparator={CurrencyEnum.DIGITGROUPSEPARATOR}
-            error={errorsPrice}
-            helperText={errorsPrice && errorMessage}
             onChange={(event, value) => {
-              setPrice(value);
-              setHasErrorsPrice(false);
+              this.setState({
+                price: value,
+                errors: this.state.errors.filter((value) => {
+                  return value !== "price";
+                }),
+              });
             }}
+            error={errors.includes("price")}
+            helperText={errors.includes("price") && errorMessage}
           />
         </Grid>
         <Grid item xs={12} sm={12}>
@@ -760,9 +598,9 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             fullWidth
             required={true}
             size="small"
-            {...bindDescription}
-            error={errorsDescription}
-            helperText={errorsDescription && errorMessage}
+            onChange={(e) => this.onChangeForField(e.target.id, e.target.value)}
+            error={errors.includes("description")}
+            helperText={errors.includes("description") && errorMessage}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -774,9 +612,11 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             fullWidth
             required={true}
             size="small"
-            {...bindProductLength}
-            error={errorsProductLength}
-            helperText={errorsProductLength && errorMessage}
+            onChange={(e) =>
+              this.onChangeForField(e.target.id, e.target.value, true)
+            }
+            error={errors.includes("productLength")}
+            helperText={errors.includes("productLength") && errorMessage}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -788,9 +628,11 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             fullWidth
             required={true}
             size="small"
-            {...bindProductWidth}
-            error={errorsProductWidth}
-            helperText={errorsProductWidth && errorMessage}
+            onChange={(e) =>
+              this.onChangeForField(e.target.id, e.target.value, true)
+            }
+            error={errors.includes("productWidth")}
+            helperText={errors.includes("productWidth") && errorMessage}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -802,9 +644,11 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             fullWidth
             required={true}
             size="small"
-            {...bindProductHeight}
-            error={errorsProductHeight}
-            helperText={errorsProductHeight && errorMessage}
+            onChange={(e) =>
+              this.onChangeForField(e.target.id, e.target.value, true)
+            }
+            error={errors.includes("productHeight")}
+            helperText={errors.includes("productHeight") && errorMessage}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -816,9 +660,11 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             fullWidth
             required={true}
             size="small"
-            {...bindQuantityInner}
-            error={errorsQuantityInner}
-            helperText={errorsQuantityInner && errorMessage}
+            onChange={(e) =>
+              this.onChangeForField(e.target.id, e.target.value, true)
+            }
+            error={errors.includes("quantityInner")}
+            helperText={errors.includes("quantityInner") && errorMessage}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -830,9 +676,16 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             fullWidth
             required={true}
             size="small"
-            {...bindBoxLength}
-            error={errorsBoxLength}
-            helperText={errorsBoxLength && errorMessage}
+            onChange={(e) =>
+              this.onChangeForField(
+                e.target.id,
+                e.target.value,
+                true,
+                this.onChangeBoxLength
+              )
+            }
+            error={errors.includes("boxLength")}
+            helperText={errors.includes("boxLength") && errorMessage}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -844,9 +697,16 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             fullWidth
             required={true}
             size="small"
-            {...bindBoxWidth}
-            error={errorsBoxWidth}
-            helperText={errorsBoxWidth && errorMessage}
+            onChange={(e) =>
+              this.onChangeForField(
+                e.target.id,
+                e.target.value,
+                true,
+                this.onChangeBoxWidth
+              )
+            }
+            error={errors.includes("boxWidth")}
+            helperText={errors.includes("boxWidth") && errorMessage}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -858,9 +718,16 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             fullWidth
             required={true}
             size="small"
-            {...bindBoxHeight}
-            error={errorsBoxHeight}
-            helperText={errorsBoxHeight && errorMessage}
+            onChange={(e) =>
+              this.onChangeForField(
+                e.target.id,
+                e.target.value,
+                true,
+                this.onChangeBoxHeight
+              )
+            }
+            error={errors.includes("boxHeight")}
+            helperText={errors.includes("boxHeight") && errorMessage}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -873,9 +740,8 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             required={true}
             size="small"
             disabled
-            {...bindBoxCubage}
-            error={errorsBoxCubage}
-            helperText={errorsBoxCubage && errorMessage}
+            error={errors.includes("boxCubage")}
+            helperText={errors.includes("boxCubage") && errorMessage}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -887,9 +753,11 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             fullWidth
             required={true}
             size="small"
-            {...bindPackingLength}
-            error={errorsPackingLength}
-            helperText={errorsPackingLength && errorMessage}
+            onChange={(e) =>
+              this.onChangeForField(e.target.id, e.target.value, true)
+            }
+            error={errors.includes("packingLength")}
+            helperText={errors.includes("packingLength") && errorMessage}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -901,9 +769,11 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             fullWidth
             required={true}
             size="small"
-            {...bindPackingWidth}
-            error={errorsPackingWidth}
-            helperText={errorsPackingWidth && errorMessage}
+            onChange={(e) =>
+              this.onChangeForField(e.target.id, e.target.value, true)
+            }
+            error={errors.includes("packingWidth")}
+            helperText={errors.includes("packingWidth") && errorMessage}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -915,9 +785,11 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             fullWidth
             required={true}
             size="small"
-            {...bindPackingHeight}
-            error={errorsPackingHeight}
-            helperText={errorsPackingHeight && errorMessage}
+            onChange={(e) =>
+              this.onChangeForField(e.target.id, e.target.value, true)
+            }
+            error={errors.includes("packingHeight")}
+            helperText={errors.includes("packingHeight") && errorMessage}
           />
         </Grid>
         <Grid item xs={12} sm={3}></Grid>
@@ -930,9 +802,16 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             fullWidth
             required={true}
             size="small"
-            {...bindQuantityOfPieces}
-            error={errorsQuantityOfPieces}
-            helperText={errorsQuantityOfPieces && errorMessage}
+            onChange={(e) =>
+              this.onChangeForField(
+                e.target.id,
+                e.target.value,
+                true,
+                this.onChangeQuantityOfPieces
+              )
+            }
+            error={errors.includes("quantityOfPieces")}
+            helperText={errors.includes("quantityOfPieces") && errorMessage}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -944,9 +823,18 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             fullWidth
             required={true}
             size="small"
-            {...bindQuantityOfBoxesPerContainer}
-            error={errorsQuantityOfBoxesPerContainer}
-            helperText={errorsQuantityOfBoxesPerContainer && errorMessage}
+            onChange={(e) =>
+              this.onChangeForField(
+                e.target.id,
+                e.target.value,
+                true,
+                this.onChangeQuantityOfBoxesPerContainer
+              )
+            }
+            error={errors.includes("quantityOfBoxesPerContainer")}
+            helperText={
+              errors.includes("quantityOfBoxesPerContainer") && errorMessage
+            }
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -959,9 +847,10 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             required={true}
             disabled
             size="small"
-            {...bindQuantityOfPiecesPerContainer}
-            error={errorsQuantityOfPiecesPerContainer}
-            helperText={errorsQuantityOfPiecesPerContainer && errorMessage}
+            error={errors.includes("quantityOfPiecesPerContainer")}
+            helperText={
+              errors.includes("quantityOfPiecesPerContainer") && errorMessage
+            }
           />
         </Grid>
         <Grid item xs={12} sm={3}></Grid>
@@ -974,9 +863,11 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             fullWidth
             required={true}
             size="small"
-            {...bindBoxGrossWeight}
-            error={errorsBoxGrossWeight}
-            helperText={errorsBoxGrossWeight && errorMessage}
+            onChange={(e) =>
+              this.onChangeForField(e.target.id, e.target.value, true)
+            }
+            error={errors.includes("boxGrossWeight")}
+            helperText={errors.includes("boxGrossWeight") && errorMessage}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -988,9 +879,11 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             fullWidth
             required={true}
             size="small"
-            {...bindBoxNetWeight}
-            error={errorsBoxNetWeight}
-            helperText={errorsBoxNetWeight && errorMessage}
+            onChange={(e) =>
+              this.onChangeForField(e.target.id, e.target.value, true)
+            }
+            error={errors.includes("boxNetWeight")}
+            helperText={errors.includes("boxNetWeight") && errorMessage}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -1002,9 +895,11 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             fullWidth
             required={true}
             size="small"
-            {...bindNetWeightWithPacking}
-            error={errorsNetWeightWithPacking}
-            helperText={errorsNetWeightWithPacking && errorMessage}
+            onChange={(e) =>
+              this.onChangeForField(e.target.id, e.target.value, true)
+            }
+            error={errors.includes("netWeightWithPacking")}
+            helperText={errors.includes("netWeightWithPacking") && errorMessage}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -1016,16 +911,38 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             fullWidth
             required={true}
             size="small"
-            {...bindNetWeightWithoutPacking}
-            error={errorsNetWeightWithoutPacking}
-            helperText={errorsNetWeightWithoutPacking && errorMessage}
+            onChange={(e) =>
+              this.onChangeForField(e.target.id, e.target.value, true)
+            }
+            error={errors.includes("netWeightWithoutPacking")}
+            helperText={
+              errors.includes("netWeightWithoutPacking") && errorMessage
+            }
           />
         </Grid>
       </Grid>
     );
   };
 
-  const CertificationData = () => {
+  CertificationData = () => {
+    const {
+      englishDescription,
+      quantityOfParts,
+      composition,
+      model,
+      color,
+      specialRequirements,
+      sound,
+      light,
+      motor,
+      metalPart,
+      clip,
+      line,
+      errors,
+    } = this.state;
+    const { t } = this.props;
+    const errorMessage = t("requiredfield");
+
     return (
       <Grid container spacing={2}>
         <Grid item xs={12} sm={12}>
@@ -1037,9 +954,9 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             fullWidth
             required={true}
             size="small"
-            {...bindEnglishDescription}
-            error={errorsEnglishDescription}
-            helperText={errorsEnglishDescription && errorMessage}
+            onChange={(e) => this.onChangeForField(e.target.id, e.target.value)}
+            error={errors.includes("englishDescription")}
+            helperText={errors.includes("englishDescription") && errorMessage}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -1051,9 +968,11 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             fullWidth
             required={true}
             size="small"
-            {...bindQuantityOfParts}
-            error={errorsQuantityOfParts}
-            helperText={errorsQuantityOfParts && errorMessage}
+            onChange={(e) =>
+              this.onChangeForField(e.target.id, e.target.value, true)
+            }
+            error={errors.includes("quantityOfParts")}
+            helperText={errors.includes("quantityOfParts") && errorMessage}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -1065,9 +984,9 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             fullWidth
             required={true}
             size="small"
-            {...bindComposition}
-            error={errorsComposition}
-            helperText={errorsComposition && errorMessage}
+            onChange={(e) => this.onChangeForField(e.target.id, e.target.value)}
+            error={errors.includes("composition")}
+            helperText={errors.includes("composition") && errorMessage}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -1079,9 +998,11 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             fullWidth
             required={true}
             size="small"
-            {...bindModel}
-            error={errorsModel}
-            helperText={errorsModel && errorMessage}
+            onChange={(e) =>
+              this.onChangeForField(e.target.id, e.target.value, true)
+            }
+            error={errors.includes("model")}
+            helperText={errors.includes("model") && errorMessage}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -1093,9 +1014,9 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             fullWidth
             required={true}
             size="small"
-            {...bindColor}
-            error={errorsColor}
-            helperText={errorsColor && errorMessage}
+            onChange={(e) => this.onChangeForField(e.target.id, e.target.value)}
+            error={errors.includes("color")}
+            helperText={errors.includes("color") && errorMessage}
           />
         </Grid>
         <Grid item xs={12} sm={12}>
@@ -1103,7 +1024,9 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             control={
               <Switch
                 checked={sound === 1}
-                onChange={(e) => setSound(e.target.checked ? 1 : 2)}
+                onChange={(e) =>
+                  this.setState({ sound: e.target.checked ? 1 : 2 })
+                }
                 color="primary"
                 name="sound"
               />
@@ -1114,7 +1037,9 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             control={
               <Switch
                 checked={light === 1}
-                onChange={(e) => setLight(e.target.checked ? 1 : 2)}
+                onChange={(e) =>
+                  this.setState({ light: e.target.checked ? 1 : 2 })
+                }
                 color="primary"
                 name="light"
               />
@@ -1125,7 +1050,9 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             control={
               <Switch
                 checked={motor === 1}
-                onChange={(e) => setMotor(e.target.checked ? 1 : 2)}
+                onChange={(e) =>
+                  this.setState({ motor: e.target.checked ? 1 : 2 })
+                }
                 color="primary"
                 name="motor"
               />
@@ -1136,7 +1063,9 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             control={
               <Switch
                 checked={metalPart === 1}
-                onChange={(e) => setMetalPart(e.target.checked ? 1 : 2)}
+                onChange={(e) =>
+                  this.setState({ metalPart: e.target.checked ? 1 : 2 })
+                }
                 color="primary"
                 name="metalPart"
               />
@@ -1147,7 +1076,9 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             control={
               <Switch
                 checked={clip === 1}
-                onChange={(e) => setClip(e.target.checked ? 1 : 2)}
+                onChange={(e) =>
+                  this.setState({ clip: e.target.checked ? 1 : 2 })
+                }
                 color="primary"
                 name="clip"
               />
@@ -1158,7 +1089,9 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             control={
               <Switch
                 checked={line === 1}
-                onChange={(e) => setLine(e.target.checked ? 1 : 2)}
+                onChange={(e) =>
+                  this.setState({ line: e.target.checked ? 1 : 2 })
+                }
                 color="primary"
                 name="line"
               />
@@ -1177,16 +1110,16 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
             rows={4}
             required={true}
             size="small"
-            {...bindSpecialRequirements}
-            error={errorsSpecialRequirements}
-            helperText={errorsSpecialRequirements && errorMessage}
+            onChange={(e) => this.onChangeForField(e.target.id, e.target.value)}
+            error={errors.includes("specialRequirements")}
+            helperText={errors.includes("specialRequirements") && errorMessage}
           />
         </Grid>
       </Grid>
     );
   };
 
-  const PictureData = () => {
+  PictureData = () => {
     const images = [
       "https://c2.staticflickr.com/9/8817/28973449265_07e3aa5d2e_b.jpg",
       "https://c2.staticflickr.com/9/8356/28897120681_3b2c0f43e0_b.jpg",
@@ -1212,35 +1145,42 @@ const ProductData = ({ idProduct, onSave, onClose }) => {
     );
   };
 
-  return (
-    <div>
-      <ModalData
-        onSave={saveData}
-        isOpen={true}
-        onClose={onClose}
-        title="productdata"
-        fullWidth
-        minHeight="620px"
-      >
-        <TabContext value={selectedTab}>
-          <TabList onChange={handleTabChange}>
-            <Tab label={t("factory")} value="1" />
-            <Tab label={t("certification")} value="2" />
-            <Tab label={t("picture")} value="3" />
-          </TabList>
-          <TabPanel className={classes.tabPanel} value="1">
-            {ProductDataFactory()}
-          </TabPanel>
-          <TabPanel className={classes.tabPanel} value="2">
-            {CertificationData()}
-          </TabPanel>
-          <TabPanel className={classes.tabPanel} value="3">
-            {PictureData()}
-          </TabPanel>
-        </TabContext>
-      </ModalData>
-    </div>
-  );
-};
+  render() {
+    const { t, onClose, classes } = this.props;
+    const { selectedTab } = this.state;
 
-export default ProductData;
+    return (
+      <div>
+        <ModalData
+          onSave={this.saveData}
+          isOpen={true}
+          onClose={onClose}
+          title="productdata"
+          fullWidth
+          minHeight="620px"
+        >
+          <TabContext value={selectedTab}>
+            <TabList onChange={this.handleTabChange}>
+              <Tab label={t("factory")} value="1" />
+              <Tab label={t("certification")} value="2" />
+              <Tab label={t("picture")} value="3" />
+            </TabList>
+            <TabPanel className={classes.tabPanel} value="1">
+              {this.ProductDataFactory()}
+            </TabPanel>
+            <TabPanel className={classes.tabPanel} value="2">
+              {this.CertificationData()}
+            </TabPanel>
+            <TabPanel className={classes.tabPanel} value="3">
+              {this.PictureData()}
+            </TabPanel>
+          </TabContext>
+        </ModalData>
+      </div>
+    );
+  }
+}
+
+export default withStyles(useStyles, { name: "ProductData" })(
+  withTranslation()(ProductData)
+);
