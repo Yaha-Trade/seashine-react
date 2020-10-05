@@ -17,12 +17,32 @@ import TabContext from "@material-ui/lab/TabContext";
 import TabList from "@material-ui/lab/TabList";
 import ImageList from "../../components/ImageList";
 import { withStyles } from "@material-ui/core/styles";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
+import IconButton from "@material-ui/core/IconButton";
+import Tooltip from "@material-ui/core/Tooltip";
+import Add from "@material-ui/icons/Add";
+import Delete from "@material-ui/icons/Delete";
 
 const useStyles = (theme) => ({
   tabPanel: {
     paddingTop: "10px",
     paddingRight: "0px",
     paddingLeft: "0px",
+  },
+  root: {
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(1),
+  },
+  title: {
+    flex: "1 1 100%",
   },
 });
 
@@ -64,6 +84,7 @@ class ProductData extends React.Component {
     metalPart: 2,
     clip: 2,
     line: 2,
+    batteries: [],
     selectedTab: "1",
     errors: [],
   };
@@ -262,6 +283,7 @@ class ProductData extends React.Component {
       metalPart,
       clip,
       line,
+      batteries,
     } = this.state;
 
     if (reference === "") {
@@ -380,6 +402,20 @@ class ProductData extends React.Component {
       errors.push("specialRequirements");
     }
 
+    batteries.forEach((battery, index) => {
+      if (battery.quantity === "") {
+        errors.push("quantity" + index);
+      }
+
+      if (battery.batteryType === null) {
+        errors.push("batteryType" + index);
+      }
+
+      if (battery.voltage === null) {
+        errors.push("voltage" + index);
+      }
+    });
+
     this.setState({
       errors: errors,
     });
@@ -426,6 +462,7 @@ class ProductData extends React.Component {
         metalPart,
         clip,
         line,
+        batteries,
       },
     });
 
@@ -480,6 +517,7 @@ class ProductData extends React.Component {
         metalPart: response.data.certification.metalPart,
         clip: response.data.certification.clip,
         line: response.data.certification.line,
+        batteries: response.data.certification.batteries,
       });
     });
   };
@@ -924,6 +962,30 @@ class ProductData extends React.Component {
     );
   };
 
+  addNewLineBattery = () => {
+    this.setState({
+      batteries: [
+        ...this.state.batteries,
+        {
+          id: null,
+          numberOrder: this.state.batteries.length,
+          quantity: "",
+          batteryType: null,
+          included: 2,
+          voltage: null,
+        },
+      ],
+    });
+  };
+
+  removeLineBattery = (index) => {
+    this.setState({
+      batteries: this.state.batteries.filter((value, i) => {
+        return index !== i;
+      }),
+    });
+  };
+
   CertificationData = () => {
     const {
       englishDescription,
@@ -938,9 +1000,10 @@ class ProductData extends React.Component {
       metalPart,
       clip,
       line,
+      batteries,
       errors,
     } = this.state;
-    const { t } = this.props;
+    const { t, classes } = this.props;
     const errorMessage = t("requiredfield");
 
     return (
@@ -1100,6 +1163,137 @@ class ProductData extends React.Component {
           />
         </Grid>
         <Grid item xs={12} sm={12}>
+          <Paper>
+            <Toolbar className={classes.root}>
+              <Typography
+                className={classes.title}
+                variant="h6"
+                id="tableTitle"
+                component="div"
+              >
+                {t("battery")}
+              </Typography>
+              <Tooltip title={t("add")}>
+                <IconButton onClick={this.addNewLineBattery}>
+                  <Add />
+                </IconButton>
+              </Tooltip>
+            </Toolbar>
+            <TableContainer>
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell style={{ width: "15%" }}>
+                      {t("quantity")}
+                    </TableCell>
+                    <TableCell>{t("type")}</TableCell>
+                    <TableCell>{t("voltage")}</TableCell>
+                    <TableCell>{t("included")}</TableCell>
+                    <TableCell>{t("actions")}</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {batteries.map((row, index) => (
+                    <TableRow key={index}>
+                      <TableCell component="th" scope="row">
+                        <TextField
+                          id={"quantity" + index}
+                          value={row.quantity}
+                          required={true}
+                          size="small"
+                          type="number"
+                          inputProps={{ min: 1 }}
+                          onChange={(e) => {
+                            const batteries = this.state.batteries;
+                            batteries[index].quantity = e.target.value;
+                            this.setState({
+                              batteries: batteries,
+                              errors: this.state.errors.filter((value) => {
+                                return "quantity" + index !== value;
+                              }),
+                            });
+                          }}
+                          error={errors.includes("quantity" + index)}
+                          helperText={
+                            errors.includes("quantity" + index) && errorMessage
+                          }
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <AutoComplete
+                          id={"batteryType" + index}
+                          dataSource="batterytypes"
+                          idField="id"
+                          displayField="name"
+                          inputVariant="standard"
+                          onChange={(event, value) => {
+                            const batteries = this.state.batteries;
+                            batteries[index].batteryType = value;
+                            this.setState({
+                              batteries: batteries,
+                              errors: this.state.errors.filter((value) => {
+                                return "batteryType" + index !== value;
+                              }),
+                            });
+                          }}
+                          selectedValue={row.batteryType}
+                          hasErrors={errors.includes("batteryType" + index)}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <AutoComplete
+                          id={"voltage" + index}
+                          dataSource="voltages"
+                          idField="id"
+                          displayField="name"
+                          inputVariant="standard"
+                          onChange={(event, value) => {
+                            const batteries = this.state.batteries;
+                            batteries[index].voltage = value;
+                            this.setState({
+                              batteries: batteries,
+                              errors: this.state.errors.filter((value) => {
+                                return "voltage" + index !== value;
+                              }),
+                            });
+                          }}
+                          selectedValue={row.voltage}
+                          hasErrors={errors.includes("voltage" + index)}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Switch
+                          id={"included" + index}
+                          color="primary"
+                          name="line"
+                          checked={this.state.batteries[index].included === 1}
+                          onChange={(e) => {
+                            const batteries = this.state.batteries;
+                            batteries[index].included = e.target.checked
+                              ? 1
+                              : 2;
+
+                            this.setState({ batteries: batteries });
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Tooltip title={t("delete")}>
+                          <IconButton
+                            onClick={() => this.removeLineBattery(index)}
+                          >
+                            <Delete />
+                          </IconButton>
+                        </Tooltip>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} sm={12}>
           <TextField
             id="specialRequirements"
             label={t("specialrequirements")}
@@ -1107,7 +1301,7 @@ class ProductData extends React.Component {
             value={specialRequirements}
             fullWidth
             multiline
-            rows={4}
+            rows={2}
             required={true}
             size="small"
             onChange={(e) => this.onChangeForField(e.target.id, e.target.value)}

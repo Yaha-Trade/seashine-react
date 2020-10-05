@@ -13,6 +13,7 @@ const AutoComplete = ({
   selectedValue,
   hasErrors,
   label,
+  inputVariant = "outlined",
 }) => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
@@ -74,7 +75,7 @@ const AutoComplete = ({
           <TextField
             {...params}
             label={label}
-            variant="outlined"
+            variant={inputVariant}
             error={hasErrors}
             helperText={hasErrors && t("requiredfield")}
             required
