@@ -1,27 +1,11 @@
 import React, { useState } from "react";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-import GridList from "@material-ui/core/GridList";
-import GridListTile from "@material-ui/core/GridListTile";
 import ImageViewer from "./ImageViewer";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
 import ImageUpload from "./ImageUpload";
+import "./ImageList.css";
+import IconButton from "@material-ui/core/IconButton";
+import Delete from "@material-ui/icons/Delete";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "space-around",
-    overflow: "hidden",
-    backgroundColor: theme.palette.background.paper,
-  },
-  gridList: {
-    maxHeight: "410px",
-  },
-}));
-
-const ImageList = ({ images, onChangePicture }) => {
-  const classes = useStyles();
-  const theme = useTheme();
+const ImageList = ({ images, onChangePicture, removePicture }) => {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [imageIndex, setImageIndex] = useState(0);
 
@@ -32,39 +16,56 @@ const ImageList = ({ images, onChangePicture }) => {
   });
 
   return (
-    <div className={classes.root}>
-      <GridList
-        className={
-          useMediaQuery(theme.breakpoints.down("sm")) ? null : classes.gridList
-        }
-        cols={useMediaQuery(theme.breakpoints.down("sm")) ? 1 : 3}
-        spacing={1}
-      >
-        {imageOjects.map((image, index) => (
-          <GridListTile key={image.img} cols={imageOjects.length === 1 ? 3 : 1}>
-            <img
-              src={image.img}
-              alt="Product"
+    <div>
+      <div className="outer-grid">
+        {imageOjects.map((image, index) => {
+          return (
+            <div
+              className="inner-grid"
+              key={`div-${index}`}
               style={{ cursor: "pointer" }}
-              onClick={() => {
+              onClick={(e) => {
                 setImageIndex(index);
                 setIsGalleryOpen(true);
               }}
-            />
-          </GridListTile>
-        ))}
-      </GridList>
-      <ImageViewer
-        images={images}
-        isOpen={isGalleryOpen}
-        imageIndex={imageIndex}
-        onUpdateIndex={setImageIndex}
-        onClose={() => {
-          setIsGalleryOpen(false);
-          setImageIndex(0);
-        }}
-      />
-      <ImageUpload onChangePicture={onChangePicture} />
+            >
+              <IconButton
+                color="secondary"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  removePicture(index);
+                }}
+              >
+                <Delete />
+              </IconButton>
+
+              <img
+                key={index}
+                onClick={() => {
+                  setImageIndex(index);
+                  setIsGalleryOpen(true);
+                }}
+                src={image.img}
+                alt="Product"
+                style={{ cursor: "pointer" }}
+              />
+            </div>
+          );
+        })}
+      </div>
+      <div>
+        <ImageViewer
+          images={images}
+          isOpen={isGalleryOpen}
+          imageIndex={imageIndex}
+          onUpdateIndex={setImageIndex}
+          onClose={() => {
+            setIsGalleryOpen(false);
+            setImageIndex(0);
+          }}
+        />
+        <ImageUpload onChangePicture={onChangePicture} />
+      </div>
     </div>
   );
 };

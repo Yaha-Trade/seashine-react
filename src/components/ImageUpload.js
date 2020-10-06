@@ -24,8 +24,8 @@ const ImageUpload = ({ onChangePicture }) => {
     margin: 0,
     top: "auto",
     left: "auto",
-    right: useMediaQuery(theme.breakpoints.down("sm")) ? 35 : 50,
-    bottom: useMediaQuery(theme.breakpoints.down("sm")) ? 65 : 95,
+    right: useMediaQuery(theme.breakpoints.down("sm")) ? 35 : 40,
+    bottom: useMediaQuery(theme.breakpoints.down("sm")) ? 65 : 75,
   };
 
   return (

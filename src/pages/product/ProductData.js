@@ -1320,6 +1320,14 @@ class ProductData extends React.Component {
     }
   };
 
+  removePicture = (index) => {
+    this.setState({
+      images: this.state.images.filter((value, i) => {
+        return index !== i;
+      }),
+    });
+  };
+
   PictureData = () => {
     return (
       <Grid container spacing={2}>
@@ -1327,6 +1335,7 @@ class ProductData extends React.Component {
           <ImageList
             images={this.state.images}
             onChangePicture={this.onChangePicture}
+            removePicture={this.removePicture}
           />
         </Grid>
       </Grid>
