@@ -87,6 +87,7 @@ class ProductData extends React.Component {
     batteries: [],
     selectedTab: "1",
     errors: [],
+    images: [],
   };
 
   onChangeForField = (
@@ -1313,27 +1314,20 @@ class ProductData extends React.Component {
     );
   };
 
-  PictureData = () => {
-    const images = [
-      "https://c2.staticflickr.com/9/8817/28973449265_07e3aa5d2e_b.jpg",
-      "https://c2.staticflickr.com/9/8356/28897120681_3b2c0f43e0_b.jpg",
-      "https://c4.staticflickr.com/9/8887/28897124891_98c4fdd82b_b.jpg",
-      "https://www.gannett-cdn.com/-mm-/f8e8e4dbb93c58491ba96567817cd3497b476408/c=0-298-5848-3602/local/-/media/2018/08/09/USATODAY/USATODAY/636694027098784397-020.jpg?width=660&height=373&fit=crop&format=pjpg&auto=webp",
-      "https://i.guim.co.uk/img/media/e8f6e2839f90aa29229d2cfa92007c4863303e4a/0_0_2740_1959/master/2740.jpg?width=1920&quality=85&auto=format&fit=max&s=83a3aa15d37f8c5a1f51cf2d9429b5f3",
-      "https://cdn.motor1.com/images/mgl/g6wem/s3/most-expensive-lead.jpg",
-      "https://www.kbb.com/wp-content/uploads/make/ford/ford-other/mustang-mach-e/2021-ford-mustang-mach-e-front-16-9.jpg?w=768",
-      "https://www.futurity.org/wp/wp-content/uploads/2020/04/moon-tectonic-system_1600.jpg",
-      "https://scitechdaily.com/images/Lunar-Reconnaissance-Orbiter-Moon-777x583.jpg",
-      "https://medias.pylones.com/9387-large_default/pen-rocket-pen-astronaute.jpg",
-      "https://ichef.bbci.co.uk/news/800/cpsprodpb/32CB/production/_107830031_artist_s_view_of_vega_carrying_aeolus.jpg",
-      "https://www.teclasap.com.br/wp-content/uploads/2009/09/house-1.jpg",
-      "https://www.thehousedesigners.com/images/plans/LJD/uploads/7263/1881_Front_NoRailing_THD.jpg",
-    ];
+  onChangePicture = (imageURL) => {
+    if (!this.state.images.includes(imageURL)) {
+      this.setState({ images: [...this.state.images, imageURL] });
+    }
+  };
 
+  PictureData = () => {
     return (
       <Grid container spacing={2}>
         <Grid item xs={12} sm={12}>
-          <ImageList images={images} />
+          <ImageList
+            images={this.state.images}
+            onChangePicture={this.onChangePicture}
+          />
         </Grid>
       </Grid>
     );

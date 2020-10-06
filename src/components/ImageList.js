@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ImageList = ({ images }) => {
+const ImageList = ({ images, onChangePicture }) => {
   const classes = useStyles();
   const theme = useTheme();
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
@@ -38,9 +38,10 @@ const ImageList = ({ images }) => {
           useMediaQuery(theme.breakpoints.down("sm")) ? null : classes.gridList
         }
         cols={useMediaQuery(theme.breakpoints.down("sm")) ? 1 : 3}
+        spacing={1}
       >
         {imageOjects.map((image, index) => (
-          <GridListTile key={image.img} cols={1}>
+          <GridListTile key={image.img} cols={imageOjects.length === 1 ? 3 : 1}>
             <img
               src={image.img}
               alt="Product"
@@ -63,7 +64,7 @@ const ImageList = ({ images }) => {
           setImageIndex(0);
         }}
       />
-      <ImageUpload />
+      <ImageUpload onChangePicture={onChangePicture} />
     </div>
   );
 };
