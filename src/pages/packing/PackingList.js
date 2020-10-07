@@ -35,18 +35,15 @@ const PackingList = () => {
     setOpen(false);
   };
 
-  const onSave = (packing) => {
+  const onSave = async (packing) => {
     if (id === -1) {
-      callServer.post(`packings`, packing).then((response) => {
-        const newId = extractId(response.headers.location);
-        setId(newId);
-        setHasToReloadData(true);
-      });
+      const response = await callServer.post(`packings`, packing);
+      const newId = extractId(response.headers.location);
+      setId(newId);
     } else {
-      callServer.put(`packings/${id}`, packing).then((response) => {
-        setHasToReloadData(true);
-      });
+      await callServer.put(`packings/${id}`, packing);
     }
+    setHasToReloadData(true);
   };
 
   return (

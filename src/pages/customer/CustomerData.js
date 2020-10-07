@@ -4,11 +4,13 @@ import callServer from "../../services/callServer";
 import { withTranslation } from "react-i18next";
 import Grid from "@material-ui/core/Grid";
 import ModalData from "../../components/modal/ModalData";
+import Loading from "../../components/Loading";
 
 class CustomerData extends React.Component {
   state = {
     name: "",
     errors: [],
+    isLoading: false,
   };
 
   onChangeForField = (id, newValue) => {
@@ -20,7 +22,7 @@ class CustomerData extends React.Component {
     });
   };
 
-  saveData = () => {
+  saveData = async (saveAndExit) => {
     const errors = [];
     const { name } = this.state;
 
@@ -36,17 +38,24 @@ class CustomerData extends React.Component {
       return;
     }
 
-    this.props.onSave({
+    this.setState({ isLoading: true });
+
+    await this.props.onSave({
       name,
     });
 
-    this.props.onClose();
+    this.setState({ isLoading: false });
+
+    if (saveAndExit) {
+      this.props.onClose();
+    }
   };
 
   fetchData = (idCustomer) => {
     callServer.get(`customers/${idCustomer}`).then((response) => {
       this.setState({
         name: response.data.name,
+        isLoading: false,
       });
     });
   };
@@ -55,13 +64,14 @@ class CustomerData extends React.Component {
     const { idCustomer } = this.props;
 
     if (idCustomer && idCustomer !== -1) {
+      this.setState({ isLoading: true });
       this.fetchData(idCustomer);
     }
   }
 
   render() {
     const { t, onClose } = this.props;
-    const { name, errors } = this.state;
+    const { name, errors, isLoading } = this.state;
     const errorMessage = t("requiredfield");
 
     return (
@@ -72,6 +82,7 @@ class CustomerData extends React.Component {
           onClose={onClose}
           title="customerdata"
         >
+          <Loading isOpen={isLoading} />
           <Grid container spacing={2}>
             <Grid item xs={12} sm={12}>
               <TextField

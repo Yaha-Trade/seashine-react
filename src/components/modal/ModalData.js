@@ -54,8 +54,11 @@ const ModalData = ({
           <Button onClick={onClose} color="primary">
             {t("cancel")}
           </Button>
-          <Button onClick={onSave} color="primary">
+          <Button onClick={() => onSave(false)} color="primary">
             {t("save")}
+          </Button>
+          <Button onClick={() => onSave(true)} color="primary">
+            {t("saveandexit")}
           </Button>
         </DialogActions>
       </Dialog>

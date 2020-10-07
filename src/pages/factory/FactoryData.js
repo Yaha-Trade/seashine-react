@@ -4,6 +4,7 @@ import callServer from "../../services/callServer";
 import { withTranslation } from "react-i18next";
 import Grid from "@material-ui/core/Grid";
 import ModalData from "../../components/modal/ModalData";
+import Loading from "../../components/Loading";
 
 class FactoryData extends React.Component {
   state = {
@@ -21,6 +22,7 @@ class FactoryData extends React.Component {
     qqNumber2: "",
     qqNumber3: "",
     errors: [],
+    isLoading: false,
   };
 
   onChangeForField = (id, newValue) => {
@@ -32,7 +34,7 @@ class FactoryData extends React.Component {
     });
   };
 
-  saveData = () => {
+  saveData = async (saveAndExit) => {
     const errors = [];
     const {
       name,
@@ -74,7 +76,9 @@ class FactoryData extends React.Component {
       return;
     }
 
-    this.props.onSave({
+    this.setState({ isLoading: true });
+
+    await this.props.onSave({
       name,
       address,
       contact,
@@ -90,7 +94,11 @@ class FactoryData extends React.Component {
       qqNumber3,
     });
 
-    this.props.onClose();
+    this.setState({ isLoading: false });
+
+    if (saveAndExit) {
+      this.props.onClose();
+    }
   };
 
   fetchData = (idFactory) => {
@@ -109,6 +117,7 @@ class FactoryData extends React.Component {
         qqNumber1: response.data.qqNumber1,
         qqNumber2: response.data.qqNumber2,
         qqNumber3: response.data.qqNumber3,
+        isLoading: false,
       });
     });
   };
@@ -117,6 +126,7 @@ class FactoryData extends React.Component {
     const { idFactory } = this.props;
 
     if (idFactory && idFactory !== -1) {
+      this.setState({ isLoading: true });
       this.fetchData(idFactory);
     }
   }
@@ -138,6 +148,7 @@ class FactoryData extends React.Component {
       qqNumber2,
       qqNumber3,
       errors,
+      isLoading,
     } = this.state;
     const errorMessage = t("requiredfield");
 
@@ -149,6 +160,7 @@ class FactoryData extends React.Component {
           onClose={onClose}
           title="factorydata"
         >
+          <Loading isOpen={isLoading} />
           <Grid container spacing={2}>
             <Grid item xs={12} sm={12}>
               <TextField

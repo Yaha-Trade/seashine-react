@@ -37,18 +37,16 @@ const FactoryList = () => {
     setOpen(false);
   };
 
-  const onSave = (factory) => {
+  const onSave = async (factory) => {
     if (id === -1) {
-      callServer.post(`factories`, factory).then((response) => {
-        const newId = extractId(response.headers.location);
-        setId(newId);
-        setHasToReloadData(true);
-      });
+      const response = await callServer.post(`factories`, factory);
+      const newId = extractId(response.headers.location);
+      setId(newId);
+      setHasToReloadData(true);
     } else {
-      callServer.put(`factories/${id}`, factory).then((response) => {
-        setHasToReloadData(true);
-      });
+      await callServer.put(`factories/${id}`, factory);
     }
+    setHasToReloadData(true);
   };
 
   return (

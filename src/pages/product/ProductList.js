@@ -35,18 +35,15 @@ const ProductList = () => {
     setOpen(false);
   };
 
-  const onSave = (product) => {
+  const onSave = async (product) => {
     if (id === -1) {
-      callServer.post(`products`, product).then((response) => {
-        const newId = extractId(response.headers.location);
-        setId(newId);
-        setHasToReloadData(true);
-      });
+      const response = await callServer.post(`products`, product);
+      const newId = extractId(response.headers.location);
+      setId(newId);
     } else {
-      callServer.put(`products/${id}`, product).then((response) => {
-        setHasToReloadData(true);
-      });
+      await callServer.put(`products/${id}`, product);
     }
+    setHasToReloadData(true);
   };
 
   return (

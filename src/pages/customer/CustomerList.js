@@ -32,18 +32,16 @@ const CustomerList = () => {
     setOpen(false);
   };
 
-  const onSave = (customer) => {
+  const onSave = async (customer) => {
     if (id === -1) {
-      callServer.post(`customers`, customer).then((response) => {
-        const newId = extractId(response.headers.location);
-        setId(newId);
-        setHasToReloadData(true);
-      });
+      const response = await callServer.post(`customers`, customer);
+      const newId = extractId(response.headers.location);
+      setId(newId);
+      setHasToReloadData(true);
     } else {
-      callServer.put(`customers/${id}`, customer).then((response) => {
-        setHasToReloadData(true);
-      });
+      await callServer.put(`customers/${id}`, customer);
     }
+    setHasToReloadData(true);
   };
 
   return (

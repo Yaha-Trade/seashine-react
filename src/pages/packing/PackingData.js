@@ -4,12 +4,14 @@ import callServer from "../../services/callServer";
 import { withTranslation } from "react-i18next";
 import Grid from "@material-ui/core/Grid";
 import ModalData from "../../components/modal/ModalData";
+import Loading from "../../components/Loading";
 
 class PackingData extends React.Component {
   state = {
     englishName: "",
     chineseName: "",
     errors: [],
+    isLoading: false,
   };
 
   onChangeForField = (id, newValue) => {
@@ -21,7 +23,7 @@ class PackingData extends React.Component {
     });
   };
 
-  saveData = () => {
+  saveData = async (saveAndExit) => {
     const errors = [];
     const { englishName, chineseName } = this.state;
 
@@ -41,12 +43,18 @@ class PackingData extends React.Component {
       return;
     }
 
-    this.props.onSave({
+    this.setState({ isLoading: true });
+
+    await this.props.onSave({
       englishName,
       chineseName,
     });
 
-    this.props.onClose();
+    this.setState({ isLoading: false });
+
+    if (saveAndExit) {
+      this.props.onClose();
+    }
   };
 
   fetchData = (idPacking) => {
@@ -54,6 +62,7 @@ class PackingData extends React.Component {
       this.setState({
         englishName: response.data.englishName,
         chineseName: response.data.chineseName,
+        isLoading: false,
       });
     });
   };
@@ -62,13 +71,14 @@ class PackingData extends React.Component {
     const { idPacking } = this.props;
 
     if (idPacking && idPacking !== -1) {
+      this.setState({ isLoading: true });
       this.fetchData(idPacking);
     }
   }
 
   render() {
     const { t, onClose } = this.props;
-    const { englishName, chineseName, errors } = this.state;
+    const { englishName, chineseName, errors, isLoading } = this.state;
     const errorMessage = t("requiredfield");
 
     return (
@@ -79,6 +89,7 @@ class PackingData extends React.Component {
           onClose={onClose}
           title="packingdata"
         >
+          <Loading isOpen={isLoading} />
           <Grid container spacing={2}>
             <Grid item xs={12} sm={12}>
               <TextField

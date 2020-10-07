@@ -30,6 +30,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import Add from "@material-ui/icons/Add";
 import Delete from "@material-ui/icons/Delete";
+import Loading from "../../components/Loading";
 
 const useStyles = (theme) => ({
   tabPanel: {
@@ -88,6 +89,7 @@ class ProductData extends React.Component {
     selectedTab: "1",
     errors: [],
     images: [],
+    isLoading: false,
   };
 
   onChangeForField = (
@@ -251,7 +253,7 @@ class ProductData extends React.Component {
     }
   };
 
-  saveData = () => {
+  saveData = async (saveExit) => {
     const errors = [];
     const {
       reference,
@@ -431,7 +433,9 @@ class ProductData extends React.Component {
       return;
     }
 
-    this.props.onSave({
+    this.setState({ isLoading: true });
+
+    await this.props.onSave({
       reference,
       description,
       factory: { id: factory.id },
@@ -473,7 +477,11 @@ class ProductData extends React.Component {
       },
     });
 
-    this.props.onClose();
+    this.setState({ isLoading: false });
+
+    if (saveExit) {
+      this.props.onClose();
+    }
   };
 
   fetchData = (idProduct) => {
@@ -526,6 +534,7 @@ class ProductData extends React.Component {
         line: response.data.certification.line,
         batteries: response.data.certification.batteries,
         images: response.data.images,
+        isLoading: false,
       });
     });
   };
@@ -534,6 +543,7 @@ class ProductData extends React.Component {
     const { idProduct } = this.props;
 
     if (idProduct && idProduct !== -1) {
+      this.setState({ isLoading: true });
       this.fetchData(idProduct);
     }
   }
@@ -1347,6 +1357,7 @@ class ProductData extends React.Component {
   };
 
   saveImage = async (images) => {
+    this.setState({ isLoading: true });
     const data = new FormData();
     for (let index = 0; index < images.length; index++) {
       data.append("images", await this.getImageFromFile(images[index]));
@@ -1363,6 +1374,7 @@ class ProductData extends React.Component {
         imageIds.forEach((id) => {
           this.getImageFromServer(id);
         });
+        this.setState({ isLoading: false });
       })
       .catch((error) => {});
   };
@@ -1429,7 +1441,7 @@ class ProductData extends React.Component {
 
   render() {
     const { t, onClose, classes } = this.props;
-    const { selectedTab } = this.state;
+    const { selectedTab, isLoading } = this.state;
 
     return (
       <div>
@@ -1441,6 +1453,7 @@ class ProductData extends React.Component {
           fullWidth
           minHeight="620px"
         >
+          <Loading isOpen={isLoading} />
           <TabContext value={selectedTab}>
             <TabList onChange={this.handleTabChange}>
               <Tab label={t("factory")} value="1" />
