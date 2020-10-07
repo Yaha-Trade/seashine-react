@@ -30,7 +30,6 @@ import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import Add from "@material-ui/icons/Add";
 import Delete from "@material-ui/icons/Delete";
-import { extractId } from "../../services/Utils";
 
 const useStyles = (theme) => ({
   tabPanel: {
@@ -1335,10 +1334,23 @@ class ProductData extends React.Component {
     return new File([u8arr], filename, { type: mime });
   };
 
-  saveImage = (img, fileObject) => {
+  getImageFromFile = async (file) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        resolve(this.dataURLtoFile(reader.result, file.name));
+      };
+
+      reader.readAsDataURL(file);
+    });
+  };
+
+  saveImage = async (images) => {
     const data = new FormData();
-    const file = this.dataURLtoFile(img);
-    data.append("images", file, fileObject.name);
+    for (let index = 0; index < images.length; index++) {
+      data.append("images", await this.getImageFromFile(images[index]));
+    }
 
     const config = {
       headers: { "Content-Type": "multipart/form-data" },
@@ -1347,8 +1359,10 @@ class ProductData extends React.Component {
     callServer
       .post(`/products/image/${this.props.idProduct}`, data, config)
       .then((response) => {
-        const newId = extractId(response.headers.location);
-        this.getImageFromServer(newId);
+        const imageIds = response.data;
+        imageIds.forEach((id) => {
+          this.getImageFromServer(id);
+        });
       })
       .catch((error) => {});
   };

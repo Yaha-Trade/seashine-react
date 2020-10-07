@@ -8,16 +8,7 @@ const ImageUpload = ({ onChangeImage }) => {
   const theme = useTheme();
 
   const handleUploadClick = (event) => {
-    for (let index = 0; index < event.target.files.length; index++) {
-      const reader = new FileReader();
-      const file = event.target.files[index];
-
-      reader.onload = function () {
-        onChangeImage(reader.result, file);
-      };
-
-      reader.readAsDataURL(file);
-    }
+    onChangeImage(event.target.files);
   };
 
   const fabStyle = {
