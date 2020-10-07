@@ -4,18 +4,19 @@ import AddToPhotosIcon from "@material-ui/icons/AddToPhotos";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useTheme } from "@material-ui/core/styles";
 
-const ImageUpload = ({ onChangePicture }) => {
+const ImageUpload = ({ onChangeImage }) => {
   const theme = useTheme();
 
   const handleUploadClick = (event) => {
     for (let index = 0; index < event.target.files.length; index++) {
       const reader = new FileReader();
+      const file = event.target.files[index];
 
       reader.onload = function () {
-        onChangePicture(reader.result);
+        onChangeImage(reader.result, file);
       };
 
-      reader.readAsDataURL(event.target.files[index]);
+      reader.readAsDataURL(file);
     }
   };
 

@@ -5,7 +5,7 @@ import "./ImageList.css";
 import IconButton from "@material-ui/core/IconButton";
 import Delete from "@material-ui/icons/Delete";
 
-const ImageList = ({ images, onChangePicture, removePicture }) => {
+const ImageList = ({ images, onChangeImage, removeImage }) => {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [imageIndex, setImageIndex] = useState(0);
 
@@ -33,7 +33,7 @@ const ImageList = ({ images, onChangePicture, removePicture }) => {
                 color="secondary"
                 onClick={(e) => {
                   e.stopPropagation();
-                  removePicture(index);
+                  removeImage(index);
                 }}
               >
                 <Delete />
@@ -64,7 +64,7 @@ const ImageList = ({ images, onChangePicture, removePicture }) => {
             setImageIndex(0);
           }}
         />
-        <ImageUpload onChangePicture={onChangePicture} />
+        <ImageUpload onChangeImage={onChangeImage} />
       </div>
     </div>
   );

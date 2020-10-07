@@ -30,6 +30,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import Add from "@material-ui/icons/Add";
 import Delete from "@material-ui/icons/Delete";
+import { extractId } from "../../services/Utils";
 
 const useStyles = (theme) => ({
   tabPanel: {
@@ -140,6 +141,10 @@ class ProductData extends React.Component {
 
   handleTabChange = (event, newValue) => {
     this.setState({ selectedTab: newValue });
+
+    if (newValue === "3") {
+      console.log("clicou");
+    }
   };
 
   onChangeBoxLength = (newValue) => {
@@ -1314,13 +1319,60 @@ class ProductData extends React.Component {
     );
   };
 
-  onChangePicture = (imageURL) => {
+  dataURLtoFile = (dataurl, filename) => {
+    const arr = dataurl.split(",");
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n) {
+      u8arr[n - 1] = bstr.charCodeAt(n - 1);
+      n -= 1;
+    }
+    return new File([u8arr], filename, { type: mime });
+  };
+
+  saveImage = (img, fileObject) => {
+    const data = new FormData();
+    const file = this.dataURLtoFile(img);
+    data.append("images", file, fileObject.name);
+
+    const config = {
+      headers: { "Content-Type": "multipart/form-data" },
+    };
+
+    callServer
+      .post(`/products/image/${this.props.idProduct}`, data, config)
+      .then((response) => {
+        const newId = extractId(response.headers.location);
+        this.getImageFromServer(newId);
+      })
+      .catch((error) => {});
+  };
+
+  getImageFromServer = (imageId) => {
+    callServer
+      .get(`/products/image/${imageId}`, {
+        responseType: "blob",
+      })
+      .then((response) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          this.setState({ images: [...this.state.images, reader.result] });
+        };
+
+        reader.readAsDataURL(response.data);
+      })
+      .catch((error) => {});
+  };
+
+  onChangeImage = (imageURL, fileObject) => {
     if (!this.state.images.includes(imageURL)) {
-      this.setState({ images: [...this.state.images, imageURL] });
+      this.saveImage(imageURL, fileObject);
     }
   };
 
-  removePicture = (index) => {
+  removeImage = (index) => {
     this.setState({
       images: this.state.images.filter((value, i) => {
         return index !== i;
@@ -1328,14 +1380,14 @@ class ProductData extends React.Component {
     });
   };
 
-  PictureData = () => {
+  ImageData = () => {
     return (
       <Grid container spacing={2}>
         <Grid item xs={12} sm={12}>
           <ImageList
             images={this.state.images}
-            onChangePicture={this.onChangePicture}
-            removePicture={this.removePicture}
+            onChangeImage={this.onChangeImage}
+            removeImage={this.removeImage}
           />
         </Grid>
       </Grid>
@@ -1360,7 +1412,11 @@ class ProductData extends React.Component {
             <TabList onChange={this.handleTabChange}>
               <Tab label={t("factory")} value="1" />
               <Tab label={t("certification")} value="2" />
-              <Tab label={t("picture")} value="3" />
+              <Tab
+                label={t("picture")}
+                disabled={this.props.idProduct === -1}
+                value="3"
+              />
             </TabList>
             <TabPanel className={classes.tabPanel} value="1">
               {this.ProductDataFactory()}
@@ -1369,7 +1425,7 @@ class ProductData extends React.Component {
               {this.CertificationData()}
             </TabPanel>
             <TabPanel className={classes.tabPanel} value="3">
-              {this.PictureData()}
+              {this.ImageData()}
             </TabPanel>
           </TabContext>
         </ModalData>
