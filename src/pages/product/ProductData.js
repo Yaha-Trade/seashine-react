@@ -143,7 +143,9 @@ class ProductData extends React.Component {
     this.setState({ selectedTab: newValue });
 
     if (newValue === "3") {
-      console.log("clicou");
+      this.state.images.forEach((image, index) => {
+        this.getImageFromServer(image.id, index);
+      });
     }
   };
 
@@ -524,6 +526,7 @@ class ProductData extends React.Component {
         clip: response.data.certification.clip,
         line: response.data.certification.line,
         batteries: response.data.certification.batteries,
+        images: response.data.images,
       });
     });
   };
@@ -1350,7 +1353,7 @@ class ProductData extends React.Component {
       .catch((error) => {});
   };
 
-  getImageFromServer = (imageId) => {
+  getImageFromServer = (imageId, index = undefined) => {
     callServer
       .get(`/products/image/${imageId}`, {
         responseType: "blob",
@@ -1358,18 +1361,29 @@ class ProductData extends React.Component {
       .then((response) => {
         const reader = new FileReader();
         reader.onload = () => {
-          this.setState({ images: [...this.state.images, reader.result] });
+          if (index !== undefined) {
+            const images = this.state.images;
+            images[index].image = reader.result;
+            this.setState({
+              images: images,
+            });
+          } else {
+            this.setState({
+              images: [
+                ...this.state.images,
+                {
+                  id: response.headers.imageId,
+                  name: response.headers.imageName,
+                  image: reader.result,
+                },
+              ],
+            });
+          }
         };
 
         reader.readAsDataURL(response.data);
       })
       .catch((error) => {});
-  };
-
-  onChangeImage = (imageURL, fileObject) => {
-    if (!this.state.images.includes(imageURL)) {
-      this.saveImage(imageURL, fileObject);
-    }
   };
 
   removeImage = (index) => {
@@ -1386,7 +1400,7 @@ class ProductData extends React.Component {
         <Grid item xs={12} sm={12}>
           <ImageList
             images={this.state.images}
-            onChangeImage={this.onChangeImage}
+            onChangeImage={this.saveImage}
             removeImage={this.removeImage}
           />
         </Grid>

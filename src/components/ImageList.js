@@ -9,24 +9,26 @@ const ImageList = ({ images, onChangeImage, removeImage }) => {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [imageIndex, setImageIndex] = useState(0);
 
-  const imageOjects = images.map((image) => {
-    return {
-      img: image,
-    };
+  const imageArray = images.map((image) => {
+    return image.image;
   });
+
+  const showGallery = (index) => {
+    setImageIndex(index);
+    setIsGalleryOpen(true);
+  };
 
   return (
     <div>
       <div className="outer-grid">
-        {imageOjects.map((image, index) => {
+        {images.map((image, index) => {
           return (
             <div
               className="inner-grid"
               key={`div-${index}`}
               style={{ cursor: "pointer" }}
               onClick={(e) => {
-                setImageIndex(index);
-                setIsGalleryOpen(true);
+                showGallery(index);
               }}
             >
               <IconButton
@@ -42,10 +44,9 @@ const ImageList = ({ images, onChangeImage, removeImage }) => {
               <img
                 key={index}
                 onClick={() => {
-                  setImageIndex(index);
-                  setIsGalleryOpen(true);
+                  showGallery(index);
                 }}
-                src={image.img}
+                src={image.image}
                 alt="Product"
                 style={{ cursor: "pointer" }}
               />
@@ -55,7 +56,7 @@ const ImageList = ({ images, onChangeImage, removeImage }) => {
       </div>
       <div>
         <ImageViewer
-          images={images}
+          images={imageArray}
           isOpen={isGalleryOpen}
           imageIndex={imageIndex}
           onUpdateIndex={setImageIndex}
