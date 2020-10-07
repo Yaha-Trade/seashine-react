@@ -1372,8 +1372,7 @@ class ProductData extends React.Component {
               images: [
                 ...this.state.images,
                 {
-                  id: response.headers.imageId,
-                  name: response.headers.imageName,
+                  id: imageId,
                   image: reader.result,
                 },
               ],
@@ -1387,11 +1386,17 @@ class ProductData extends React.Component {
   };
 
   removeImage = (index) => {
-    this.setState({
-      images: this.state.images.filter((value, i) => {
-        return index !== i;
-      }),
-    });
+    const imageId = this.state.images[index].id;
+    const { idProduct } = this.props;
+    callServer
+      .delete(`products/image/${idProduct}/${imageId}`)
+      .then((response) => {
+        this.setState({
+          images: this.state.images.filter((value, i) => {
+            return index !== i;
+          }),
+        });
+      });
   };
 
   ImageData = () => {
