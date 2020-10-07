@@ -39,6 +39,7 @@ const ModalData = ({
         fullScreen={useMediaQuery(theme.breakpoints.down("sm")) || fullScreen}
         fullWidth={fullWidth}
         aria-labelledby="form-dialog-title"
+        disableBackdropClick={true}
       >
         <CloseTitle id="close-title" onClose={onClose}>
           {t(title)}
