@@ -47,7 +47,7 @@ const ImageList = ({ images, onChangeImage, removeImage }) => {
                   showGallery(index);
                 }}
                 src={image.image}
-                alt="Product"
+                alt="Not Found!"
                 style={{ cursor: "pointer" }}
               />
             </div>

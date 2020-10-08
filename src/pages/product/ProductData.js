@@ -31,6 +31,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Add from "@material-ui/icons/Add";
 import Delete from "@material-ui/icons/Delete";
 import Loading from "../../components/Loading";
+import ImageCarousel from "../../components/ImageCarousel";
 
 const useStyles = (theme) => ({
   tabPanel: {
@@ -142,12 +143,6 @@ class ProductData extends React.Component {
 
   handleTabChange = (event, newValue) => {
     this.setState({ selectedTab: newValue });
-
-    if (newValue === "3") {
-      this.state.images.forEach((image, index) => {
-        this.getImageFromServer(image.id, index);
-      });
-    }
   };
 
   onChangeBoxLength = (newValue) => {
@@ -534,8 +529,17 @@ class ProductData extends React.Component {
         line: response.data.certification.line,
         batteries: response.data.certification.batteries,
         images: response.data.images,
-        isLoading: false,
       });
+
+      this.fetchImages();
+
+      this.setState({ isLoading: false });
+    });
+  };
+
+  fetchImages = () => {
+    this.state.images.forEach(async (image, index) => {
+      await this.getImageFromServer(image.id, index);
     });
   };
 
@@ -574,6 +578,7 @@ class ProductData extends React.Component {
       quantityOfBoxesPerContainer,
       quantityOfPiecesPerContainer,
       errors,
+      images,
     } = this.state;
     const { t } = this.props;
     const errorMessage = t("requiredfield");
@@ -582,6 +587,9 @@ class ProductData extends React.Component {
 
     return (
       <Grid container spacing={2}>
+        <Grid item xs={12} sm={12}>
+          <ImageCarousel images={images} />
+        </Grid>
         <Grid item xs={12} sm={3}>
           <TextField
             id="reference"
@@ -1379,36 +1387,33 @@ class ProductData extends React.Component {
       .catch((error) => {});
   };
 
-  getImageFromServer = (imageId, index = undefined) => {
-    callServer
-      .get(`/products/image/${imageId}`, {
-        responseType: "blob",
-      })
-      .then((response) => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          if (index !== undefined) {
-            const images = this.state.images;
-            images[index].image = reader.result;
-            this.setState({
-              images: images,
-            });
-          } else {
-            this.setState({
-              images: [
-                ...this.state.images,
-                {
-                  id: imageId,
-                  image: reader.result,
-                },
-              ],
-            });
-          }
-        };
+  getImageFromServer = async (imageId, index = undefined) => {
+    const response = await callServer.get(`/products/image/${imageId}`, {
+      responseType: "blob",
+    });
 
-        reader.readAsDataURL(response.data);
-      })
-      .catch((error) => {});
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (index !== undefined) {
+        const images = this.state.images;
+        images[index].image = reader.result;
+        this.setState({
+          images: images,
+        });
+      } else {
+        this.setState({
+          images: [
+            ...this.state.images,
+            {
+              id: imageId,
+              image: reader.result,
+            },
+          ],
+        });
+      }
+    };
+
+    reader.readAsDataURL(response.data);
   };
 
   removeImage = (index) => {
