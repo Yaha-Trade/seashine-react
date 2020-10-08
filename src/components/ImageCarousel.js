@@ -6,6 +6,7 @@ import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import SwipeableViews from "react-swipeable-views";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import ImageViewer from "./ImageViewer";
 
 const ImageCarousel = ({ images }) => {
   const theme = useTheme();
@@ -26,6 +27,11 @@ const ImageCarousel = ({ images }) => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const maxSteps = images.length;
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+
+  const imageArray = images.map((image) => {
+    return image.image;
+  });
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -39,6 +45,10 @@ const ImageCarousel = ({ images }) => {
     setActiveStep(step);
   };
 
+  const onUpdateIndex = (index) => {
+    setActiveStep(index);
+  };
+
   return (
     <div className={classes.root}>
       <SwipeableViews
@@ -48,7 +58,13 @@ const ImageCarousel = ({ images }) => {
         enableMouseEvents
       >
         {images.map((image, index) => (
-          <div key={index}>
+          <div
+            key={index}
+            onClick={() => {
+              setIsGalleryOpen(true);
+            }}
+            style={{ cursor: "pointer" }}
+          >
             {Math.abs(activeStep - index) <= 2 ? (
               <img className={classes.img} src={image.image} alt="Not found!" />
             ) : null}
@@ -74,6 +90,15 @@ const ImageCarousel = ({ images }) => {
             <KeyboardArrowLeft />
           </Button>
         }
+      />
+      <ImageViewer
+        images={imageArray}
+        isOpen={isGalleryOpen}
+        imageIndex={activeStep}
+        onUpdateIndex={onUpdateIndex}
+        onClose={() => {
+          setIsGalleryOpen(false);
+        }}
       />
     </div>
   );
