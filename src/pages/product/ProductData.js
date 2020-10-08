@@ -46,6 +46,9 @@ const useStyles = (theme) => ({
   title: {
     flex: "1 1 100%",
   },
+  dataDiv: {
+    flexGrow: 1,
+  },
 });
 
 class ProductData extends React.Component {
@@ -552,6 +555,19 @@ class ProductData extends React.Component {
     }
   }
 
+  getImageCarousel = () => {
+    const { images } = this.state;
+    if (images.length === 0) {
+      return null;
+    }
+
+    return (
+      <Grid item>
+        <ImageCarousel images={images} />
+      </Grid>
+    );
+  };
+
   ProductDataFactory = () => {
     const {
       reference,
@@ -578,413 +594,428 @@ class ProductData extends React.Component {
       quantityOfBoxesPerContainer,
       quantityOfPiecesPerContainer,
       errors,
-      images,
     } = this.state;
-    const { t } = this.props;
+    const { t, classes } = this.props;
     const errorMessage = t("requiredfield");
 
     const isEnglishLanguage = getLanguage() === LanguageEnum.ENGLISH;
 
     return (
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={12}>
-          <ImageCarousel images={images} />
+      <div className={classes.dataDiv}>
+        <Grid container spacing={1}>
+          {this.getImageCarousel()}
+          <Grid item xs={12} sm container>
+            <Grid item xs container spacing={2}>
+              <Grid item xs={12} sm={3}>
+                <TextField
+                  id="reference"
+                  label={t("reference")}
+                  variant="outlined"
+                  value={reference}
+                  fullWidth
+                  required={true}
+                  size="small"
+                  onChange={(e) =>
+                    this.onChangeForField(e.target.id, e.target.value)
+                  }
+                  error={errors.includes("reference")}
+                  helperText={errors.includes("reference") && errorMessage}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <AutoComplete
+                  id="factory"
+                  dataSource="factories"
+                  idField="id"
+                  displayField="name"
+                  onChange={this.onChangeFactorySelect}
+                  selectedValue={factory}
+                  hasErrors={errors.includes("factory")}
+                  label={t("factory")}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <AutoComplete
+                  id="packing"
+                  dataSource="packings"
+                  idField="id"
+                  displayField={
+                    isEnglishLanguage ? "englishName" : "chineseName"
+                  }
+                  onChange={this.onChangePackingSelect}
+                  selectedValue={packing}
+                  hasErrors={errors.includes("packing")}
+                  label={t("packing")}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <CurrencyTextField
+                  id="price"
+                  label={t("price")}
+                  size="small"
+                  variant="outlined"
+                  value={price}
+                  fullWidth
+                  required={true}
+                  currencySymbol={CurrencyEnum.CURRENCYSYMBOL}
+                  outputFormat="string"
+                  decimalCharacter={CurrencyEnum.DECIMALCHARACTER}
+                  digitGroupSeparator={CurrencyEnum.DIGITGROUPSEPARATOR}
+                  onChange={(event, value) => {
+                    this.setState({
+                      price: value,
+                      errors: this.state.errors.filter((value) => {
+                        return value !== "price";
+                      }),
+                    });
+                  }}
+                  error={errors.includes("price")}
+                  helperText={errors.includes("price") && errorMessage}
+                />
+              </Grid>
+              <Grid item xs={12} sm={12}>
+                <TextField
+                  id="description"
+                  label={t("description")}
+                  variant="outlined"
+                  value={description}
+                  fullWidth
+                  required={true}
+                  size="small"
+                  onChange={(e) =>
+                    this.onChangeForField(e.target.id, e.target.value)
+                  }
+                  error={errors.includes("description")}
+                  helperText={errors.includes("description") && errorMessage}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField
+                  id="productLength"
+                  label={t("productlength")}
+                  variant="outlined"
+                  value={productLength}
+                  fullWidth
+                  required={true}
+                  size="small"
+                  onChange={(e) =>
+                    this.onChangeForField(e.target.id, e.target.value, true)
+                  }
+                  error={errors.includes("productLength")}
+                  helperText={errors.includes("productLength") && errorMessage}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField
+                  id="productWidth"
+                  label={t("productwidth")}
+                  variant="outlined"
+                  value={productWidth}
+                  fullWidth
+                  required={true}
+                  size="small"
+                  onChange={(e) =>
+                    this.onChangeForField(e.target.id, e.target.value, true)
+                  }
+                  error={errors.includes("productWidth")}
+                  helperText={errors.includes("productWidth") && errorMessage}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField
+                  id="productHeight"
+                  label={t("productheight")}
+                  variant="outlined"
+                  value={productHeight}
+                  fullWidth
+                  required={true}
+                  size="small"
+                  onChange={(e) =>
+                    this.onChangeForField(e.target.id, e.target.value, true)
+                  }
+                  error={errors.includes("productHeight")}
+                  helperText={errors.includes("productHeight") && errorMessage}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField
+                  id="quantityInner"
+                  label={t("quantityinner")}
+                  variant="outlined"
+                  value={quantityInner}
+                  fullWidth
+                  required={true}
+                  size="small"
+                  onChange={(e) =>
+                    this.onChangeForField(e.target.id, e.target.value, true)
+                  }
+                  error={errors.includes("quantityInner")}
+                  helperText={errors.includes("quantityInner") && errorMessage}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField
+                  id="boxLength"
+                  label={t("boxlength")}
+                  variant="outlined"
+                  value={boxLength}
+                  fullWidth
+                  required={true}
+                  size="small"
+                  onChange={(e) =>
+                    this.onChangeForField(
+                      e.target.id,
+                      e.target.value,
+                      true,
+                      this.onChangeBoxLength
+                    )
+                  }
+                  error={errors.includes("boxLength")}
+                  helperText={errors.includes("boxLength") && errorMessage}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField
+                  id="boxWidth"
+                  label={t("boxwidth")}
+                  variant="outlined"
+                  value={boxWidth}
+                  fullWidth
+                  required={true}
+                  size="small"
+                  onChange={(e) =>
+                    this.onChangeForField(
+                      e.target.id,
+                      e.target.value,
+                      true,
+                      this.onChangeBoxWidth
+                    )
+                  }
+                  error={errors.includes("boxWidth")}
+                  helperText={errors.includes("boxWidth") && errorMessage}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField
+                  id="boxHeight"
+                  label={t("boxheight")}
+                  variant="outlined"
+                  value={boxHeight}
+                  fullWidth
+                  required={true}
+                  size="small"
+                  onChange={(e) =>
+                    this.onChangeForField(
+                      e.target.id,
+                      e.target.value,
+                      true,
+                      this.onChangeBoxHeight
+                    )
+                  }
+                  error={errors.includes("boxHeight")}
+                  helperText={errors.includes("boxHeight") && errorMessage}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField
+                  id="boxCubage"
+                  label={t("boxcubage")}
+                  variant="outlined"
+                  value={boxCubage}
+                  fullWidth
+                  required={true}
+                  size="small"
+                  disabled
+                  error={errors.includes("boxCubage")}
+                  helperText={errors.includes("boxCubage") && errorMessage}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField
+                  id="packingLength"
+                  label={t("packinglength")}
+                  variant="outlined"
+                  value={packingLength}
+                  fullWidth
+                  required={true}
+                  size="small"
+                  onChange={(e) =>
+                    this.onChangeForField(e.target.id, e.target.value, true)
+                  }
+                  error={errors.includes("packingLength")}
+                  helperText={errors.includes("packingLength") && errorMessage}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField
+                  id="packingWidth"
+                  label={t("packingwidth")}
+                  variant="outlined"
+                  value={packingWidth}
+                  fullWidth
+                  required={true}
+                  size="small"
+                  onChange={(e) =>
+                    this.onChangeForField(e.target.id, e.target.value, true)
+                  }
+                  error={errors.includes("packingWidth")}
+                  helperText={errors.includes("packingWidth") && errorMessage}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField
+                  id="packingHeight"
+                  label={t("packingheight")}
+                  variant="outlined"
+                  value={packingHeight}
+                  fullWidth
+                  required={true}
+                  size="small"
+                  onChange={(e) =>
+                    this.onChangeForField(e.target.id, e.target.value, true)
+                  }
+                  error={errors.includes("packingHeight")}
+                  helperText={errors.includes("packingHeight") && errorMessage}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}></Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField
+                  id="quantityOfPieces"
+                  label={t("quantityofpieces")}
+                  variant="outlined"
+                  value={quantityOfPieces}
+                  fullWidth
+                  required={true}
+                  size="small"
+                  onChange={(e) =>
+                    this.onChangeForField(
+                      e.target.id,
+                      e.target.value,
+                      true,
+                      this.onChangeQuantityOfPieces
+                    )
+                  }
+                  error={errors.includes("quantityOfPieces")}
+                  helperText={
+                    errors.includes("quantityOfPieces") && errorMessage
+                  }
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField
+                  id="quantityOfBoxesPerContainer"
+                  label={t("quantityofboxespercontainer")}
+                  variant="outlined"
+                  value={quantityOfBoxesPerContainer}
+                  fullWidth
+                  required={true}
+                  size="small"
+                  onChange={(e) =>
+                    this.onChangeForField(
+                      e.target.id,
+                      e.target.value,
+                      true,
+                      this.onChangeQuantityOfBoxesPerContainer
+                    )
+                  }
+                  error={errors.includes("quantityOfBoxesPerContainer")}
+                  helperText={
+                    errors.includes("quantityOfBoxesPerContainer") &&
+                    errorMessage
+                  }
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField
+                  id="quantityOfPiecesPerContainer"
+                  label={t("quantityofpiecespercontainer")}
+                  variant="outlined"
+                  value={quantityOfPiecesPerContainer}
+                  fullWidth
+                  required={true}
+                  disabled
+                  size="small"
+                  error={errors.includes("quantityOfPiecesPerContainer")}
+                  helperText={
+                    errors.includes("quantityOfPiecesPerContainer") &&
+                    errorMessage
+                  }
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}></Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField
+                  id="boxGrossWeight"
+                  label={t("boxgrossweight")}
+                  variant="outlined"
+                  value={boxGrossWeight}
+                  fullWidth
+                  required={true}
+                  size="small"
+                  onChange={(e) =>
+                    this.onChangeForField(e.target.id, e.target.value, true)
+                  }
+                  error={errors.includes("boxGrossWeight")}
+                  helperText={errors.includes("boxGrossWeight") && errorMessage}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField
+                  id="boxNetWeight"
+                  label={t("boxnetweight")}
+                  variant="outlined"
+                  value={boxNetWeight}
+                  fullWidth
+                  required={true}
+                  size="small"
+                  onChange={(e) =>
+                    this.onChangeForField(e.target.id, e.target.value, true)
+                  }
+                  error={errors.includes("boxNetWeight")}
+                  helperText={errors.includes("boxNetWeight") && errorMessage}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField
+                  id="netWeightWithPacking"
+                  label={t("netweightwithpacking")}
+                  variant="outlined"
+                  value={netWeightWithPacking}
+                  fullWidth
+                  required={true}
+                  size="small"
+                  onChange={(e) =>
+                    this.onChangeForField(e.target.id, e.target.value, true)
+                  }
+                  error={errors.includes("netWeightWithPacking")}
+                  helperText={
+                    errors.includes("netWeightWithPacking") && errorMessage
+                  }
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField
+                  id="netWeightWithoutPacking"
+                  label={t("netweightwithoutpacking")}
+                  variant="outlined"
+                  value={netWeightWithoutPacking}
+                  fullWidth
+                  required={true}
+                  size="small"
+                  onChange={(e) =>
+                    this.onChangeForField(e.target.id, e.target.value, true)
+                  }
+                  error={errors.includes("netWeightWithoutPacking")}
+                  helperText={
+                    errors.includes("netWeightWithoutPacking") && errorMessage
+                  }
+                />
+              </Grid>
+            </Grid>
+          </Grid>
         </Grid>
-        <Grid item xs={12} sm={3}>
-          <TextField
-            id="reference"
-            label={t("reference")}
-            variant="outlined"
-            value={reference}
-            fullWidth
-            required={true}
-            size="small"
-            onChange={(e) => this.onChangeForField(e.target.id, e.target.value)}
-            error={errors.includes("reference")}
-            helperText={errors.includes("reference") && errorMessage}
-          />
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <AutoComplete
-            id="factory"
-            dataSource="factories"
-            idField="id"
-            displayField="name"
-            onChange={this.onChangeFactorySelect}
-            selectedValue={factory}
-            hasErrors={errors.includes("factory")}
-            label={t("factory")}
-          />
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <AutoComplete
-            id="packing"
-            dataSource="packings"
-            idField="id"
-            displayField={isEnglishLanguage ? "englishName" : "chineseName"}
-            onChange={this.onChangePackingSelect}
-            selectedValue={packing}
-            hasErrors={errors.includes("packing")}
-            label={t("packing")}
-          />
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <CurrencyTextField
-            id="price"
-            label={t("price")}
-            size="small"
-            variant="outlined"
-            value={price}
-            fullWidth
-            required={true}
-            currencySymbol={CurrencyEnum.CURRENCYSYMBOL}
-            outputFormat="string"
-            decimalCharacter={CurrencyEnum.DECIMALCHARACTER}
-            digitGroupSeparator={CurrencyEnum.DIGITGROUPSEPARATOR}
-            onChange={(event, value) => {
-              this.setState({
-                price: value,
-                errors: this.state.errors.filter((value) => {
-                  return value !== "price";
-                }),
-              });
-            }}
-            error={errors.includes("price")}
-            helperText={errors.includes("price") && errorMessage}
-          />
-        </Grid>
-        <Grid item xs={12} sm={12}>
-          <TextField
-            id="description"
-            label={t("description")}
-            variant="outlined"
-            value={description}
-            fullWidth
-            required={true}
-            size="small"
-            onChange={(e) => this.onChangeForField(e.target.id, e.target.value)}
-            error={errors.includes("description")}
-            helperText={errors.includes("description") && errorMessage}
-          />
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <TextField
-            id="productLength"
-            label={t("productlength")}
-            variant="outlined"
-            value={productLength}
-            fullWidth
-            required={true}
-            size="small"
-            onChange={(e) =>
-              this.onChangeForField(e.target.id, e.target.value, true)
-            }
-            error={errors.includes("productLength")}
-            helperText={errors.includes("productLength") && errorMessage}
-          />
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <TextField
-            id="productWidth"
-            label={t("productwidth")}
-            variant="outlined"
-            value={productWidth}
-            fullWidth
-            required={true}
-            size="small"
-            onChange={(e) =>
-              this.onChangeForField(e.target.id, e.target.value, true)
-            }
-            error={errors.includes("productWidth")}
-            helperText={errors.includes("productWidth") && errorMessage}
-          />
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <TextField
-            id="productHeight"
-            label={t("productheight")}
-            variant="outlined"
-            value={productHeight}
-            fullWidth
-            required={true}
-            size="small"
-            onChange={(e) =>
-              this.onChangeForField(e.target.id, e.target.value, true)
-            }
-            error={errors.includes("productHeight")}
-            helperText={errors.includes("productHeight") && errorMessage}
-          />
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <TextField
-            id="quantityInner"
-            label={t("quantityinner")}
-            variant="outlined"
-            value={quantityInner}
-            fullWidth
-            required={true}
-            size="small"
-            onChange={(e) =>
-              this.onChangeForField(e.target.id, e.target.value, true)
-            }
-            error={errors.includes("quantityInner")}
-            helperText={errors.includes("quantityInner") && errorMessage}
-          />
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <TextField
-            id="boxLength"
-            label={t("boxlength")}
-            variant="outlined"
-            value={boxLength}
-            fullWidth
-            required={true}
-            size="small"
-            onChange={(e) =>
-              this.onChangeForField(
-                e.target.id,
-                e.target.value,
-                true,
-                this.onChangeBoxLength
-              )
-            }
-            error={errors.includes("boxLength")}
-            helperText={errors.includes("boxLength") && errorMessage}
-          />
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <TextField
-            id="boxWidth"
-            label={t("boxwidth")}
-            variant="outlined"
-            value={boxWidth}
-            fullWidth
-            required={true}
-            size="small"
-            onChange={(e) =>
-              this.onChangeForField(
-                e.target.id,
-                e.target.value,
-                true,
-                this.onChangeBoxWidth
-              )
-            }
-            error={errors.includes("boxWidth")}
-            helperText={errors.includes("boxWidth") && errorMessage}
-          />
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <TextField
-            id="boxHeight"
-            label={t("boxheight")}
-            variant="outlined"
-            value={boxHeight}
-            fullWidth
-            required={true}
-            size="small"
-            onChange={(e) =>
-              this.onChangeForField(
-                e.target.id,
-                e.target.value,
-                true,
-                this.onChangeBoxHeight
-              )
-            }
-            error={errors.includes("boxHeight")}
-            helperText={errors.includes("boxHeight") && errorMessage}
-          />
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <TextField
-            id="boxCubage"
-            label={t("boxcubage")}
-            variant="outlined"
-            value={boxCubage}
-            fullWidth
-            required={true}
-            size="small"
-            disabled
-            error={errors.includes("boxCubage")}
-            helperText={errors.includes("boxCubage") && errorMessage}
-          />
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <TextField
-            id="packingLength"
-            label={t("packinglength")}
-            variant="outlined"
-            value={packingLength}
-            fullWidth
-            required={true}
-            size="small"
-            onChange={(e) =>
-              this.onChangeForField(e.target.id, e.target.value, true)
-            }
-            error={errors.includes("packingLength")}
-            helperText={errors.includes("packingLength") && errorMessage}
-          />
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <TextField
-            id="packingWidth"
-            label={t("packingwidth")}
-            variant="outlined"
-            value={packingWidth}
-            fullWidth
-            required={true}
-            size="small"
-            onChange={(e) =>
-              this.onChangeForField(e.target.id, e.target.value, true)
-            }
-            error={errors.includes("packingWidth")}
-            helperText={errors.includes("packingWidth") && errorMessage}
-          />
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <TextField
-            id="packingHeight"
-            label={t("packingheight")}
-            variant="outlined"
-            value={packingHeight}
-            fullWidth
-            required={true}
-            size="small"
-            onChange={(e) =>
-              this.onChangeForField(e.target.id, e.target.value, true)
-            }
-            error={errors.includes("packingHeight")}
-            helperText={errors.includes("packingHeight") && errorMessage}
-          />
-        </Grid>
-        <Grid item xs={12} sm={3}></Grid>
-        <Grid item xs={12} sm={3}>
-          <TextField
-            id="quantityOfPieces"
-            label={t("quantityofpieces")}
-            variant="outlined"
-            value={quantityOfPieces}
-            fullWidth
-            required={true}
-            size="small"
-            onChange={(e) =>
-              this.onChangeForField(
-                e.target.id,
-                e.target.value,
-                true,
-                this.onChangeQuantityOfPieces
-              )
-            }
-            error={errors.includes("quantityOfPieces")}
-            helperText={errors.includes("quantityOfPieces") && errorMessage}
-          />
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <TextField
-            id="quantityOfBoxesPerContainer"
-            label={t("quantityofboxespercontainer")}
-            variant="outlined"
-            value={quantityOfBoxesPerContainer}
-            fullWidth
-            required={true}
-            size="small"
-            onChange={(e) =>
-              this.onChangeForField(
-                e.target.id,
-                e.target.value,
-                true,
-                this.onChangeQuantityOfBoxesPerContainer
-              )
-            }
-            error={errors.includes("quantityOfBoxesPerContainer")}
-            helperText={
-              errors.includes("quantityOfBoxesPerContainer") && errorMessage
-            }
-          />
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <TextField
-            id="quantityOfPiecesPerContainer"
-            label={t("quantityofpiecespercontainer")}
-            variant="outlined"
-            value={quantityOfPiecesPerContainer}
-            fullWidth
-            required={true}
-            disabled
-            size="small"
-            error={errors.includes("quantityOfPiecesPerContainer")}
-            helperText={
-              errors.includes("quantityOfPiecesPerContainer") && errorMessage
-            }
-          />
-        </Grid>
-        <Grid item xs={12} sm={3}></Grid>
-        <Grid item xs={12} sm={3}>
-          <TextField
-            id="boxGrossWeight"
-            label={t("boxgrossweight")}
-            variant="outlined"
-            value={boxGrossWeight}
-            fullWidth
-            required={true}
-            size="small"
-            onChange={(e) =>
-              this.onChangeForField(e.target.id, e.target.value, true)
-            }
-            error={errors.includes("boxGrossWeight")}
-            helperText={errors.includes("boxGrossWeight") && errorMessage}
-          />
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <TextField
-            id="boxNetWeight"
-            label={t("boxnetweight")}
-            variant="outlined"
-            value={boxNetWeight}
-            fullWidth
-            required={true}
-            size="small"
-            onChange={(e) =>
-              this.onChangeForField(e.target.id, e.target.value, true)
-            }
-            error={errors.includes("boxNetWeight")}
-            helperText={errors.includes("boxNetWeight") && errorMessage}
-          />
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <TextField
-            id="netWeightWithPacking"
-            label={t("netweightwithpacking")}
-            variant="outlined"
-            value={netWeightWithPacking}
-            fullWidth
-            required={true}
-            size="small"
-            onChange={(e) =>
-              this.onChangeForField(e.target.id, e.target.value, true)
-            }
-            error={errors.includes("netWeightWithPacking")}
-            helperText={errors.includes("netWeightWithPacking") && errorMessage}
-          />
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <TextField
-            id="netWeightWithoutPacking"
-            label={t("netweightwithoutpacking")}
-            variant="outlined"
-            value={netWeightWithoutPacking}
-            fullWidth
-            required={true}
-            size="small"
-            onChange={(e) =>
-              this.onChangeForField(e.target.id, e.target.value, true)
-            }
-            error={errors.includes("netWeightWithoutPacking")}
-            helperText={
-              errors.includes("netWeightWithoutPacking") && errorMessage
-            }
-          />
-        </Grid>
-      </Grid>
+      </div>
     );
   };
 

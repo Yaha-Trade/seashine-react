@@ -1,34 +1,30 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import React, { useState } from "react";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
 import MobileStepper from "@material-ui/core/MobileStepper";
 import Button from "@material-ui/core/Button";
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import SwipeableViews from "react-swipeable-views";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    maxWidth: 400,
-    flexGrow: 1,
-  },
-  header: {
-    display: "flex",
-    alignItems: "center",
-    height: 50,
-    paddingLeft: theme.spacing(4),
-    backgroundColor: theme.palette.background.default,
-  },
-  img: {
-    height: "100%",
-    display: "block",
-    overflow: "hidden",
-    width: "100%",
-  },
-}));
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const ImageCarousel = ({ images }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      maxWidth: isMobile ? 400 : 200,
+      flexGrow: 1,
+    },
+    img: {
+      height: "100%",
+      display: "block",
+      overflow: "hidden",
+      width: "100%",
+      maxWidth: "100%",
+    },
+  }));
   const classes = useStyles();
-  const [activeStep, setActiveStep] = React.useState(0);
+  const [activeStep, setActiveStep] = useState(0);
   const maxSteps = images.length;
 
   const handleNext = () => {
