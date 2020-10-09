@@ -33,6 +33,7 @@ const CurrencyField = ({
       required={required}
       disabled={disabled}
       isNumericString={true}
+      fixedDecimalScale={true}
       onValueChange={(value) => {
         onChange(id, value.value);
       }}

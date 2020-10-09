@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import ProductData from "./ProductData";
 import callServer from "../../services/callServer";
 import { extractId } from "../../services/Utils";
+import DisplayCurrency from "../../components/display/DisplayCurrency";
 
 const ProductList = () => {
   const { t } = useTranslation();
@@ -23,6 +24,9 @@ const ProductList = () => {
       label: t("price"),
       options: {
         filter: false,
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return <DisplayCurrency value={value} />;
+        },
       },
     },
   ];
