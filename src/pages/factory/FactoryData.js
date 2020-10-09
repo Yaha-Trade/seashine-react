@@ -3,7 +3,7 @@ import callServer from "../../services/callServer";
 import Grid from "@material-ui/core/Grid";
 import ModalData from "../../components/modal/ModalData";
 import Loading from "../../components/Loading";
-import TextField from "../../components/FormFields/TextField";
+import TextField from "../../components/formfields/TextField";
 
 class FactoryData extends React.Component {
   state = {

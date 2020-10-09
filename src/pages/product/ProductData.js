@@ -12,7 +12,7 @@ import Tab from "@material-ui/core/Tab";
 import TabPanel from "@material-ui/lab/TabPanel";
 import TabContext from "@material-ui/lab/TabContext";
 import TabList from "@material-ui/lab/TabList";
-import ImageList from "../../components/ImageList";
+import ImageList from "../../components/image/ImageList";
 import { withStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -28,11 +28,11 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Add from "@material-ui/icons/Add";
 import Delete from "@material-ui/icons/Delete";
 import Loading from "../../components/Loading";
-import ImageCarousel from "../../components/ImageCarousel";
-import TextField from "../../components/FormFields/TextField";
-import CurrencyField from "../../components/FormFields/CurrencyField";
-import DecimalField from "../../components/FormFields/DecimalField";
-import IntegerField from "../../components/FormFields/IntegerField";
+import ImageCarousel from "../../components/image/ImageCarousel";
+import TextField from "../../components/formfields/TextField";
+import CurrencyField from "../../components/formfields/CurrencyField";
+import DecimalField from "../../components/formfields/DecimalField";
+import IntegerField from "../../components/formfields/IntegerField";
 
 const useStyles = (theme) => ({
   tabPanel: {
