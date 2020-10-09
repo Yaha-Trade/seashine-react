@@ -14,6 +14,17 @@ const ProductList = () => {
   const columns = [
     { name: "reference", label: t("reference") },
     { name: "description", label: t("description") },
+    {
+      name: "factoryName",
+      label: t("factory"),
+    },
+    {
+      name: "price",
+      label: t("price"),
+      options: {
+        filter: false,
+      },
+    },
   ];
 
   const getHasToReloadData = () => {
