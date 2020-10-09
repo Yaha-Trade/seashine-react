@@ -1,10 +1,9 @@
 import React from "react";
-import TextField from "@material-ui/core/TextField";
 import callServer from "../../services/callServer";
-import { withTranslation } from "react-i18next";
 import Grid from "@material-ui/core/Grid";
 import ModalData from "../../components/modal/ModalData";
 import Loading from "../../components/Loading";
+import TextField from "../../components/FormFields/TextField";
 
 class FactoryData extends React.Component {
   state = {
@@ -26,8 +25,8 @@ class FactoryData extends React.Component {
   };
 
   onChangeForField = (id, newValue) => {
-    this.setState({ [id]: newValue });
     this.setState({
+      [id]: newValue,
       errors: this.state.errors.filter((value) => {
         return id !== value;
       }),
@@ -98,6 +97,11 @@ class FactoryData extends React.Component {
 
     if (saveAndExit) {
       this.props.onClose();
+    } else {
+      const { idFactory } = this.props;
+      if (idFactory && idFactory !== -1) {
+        this.fetchData(idFactory);
+      }
     }
   };
 
@@ -132,7 +136,7 @@ class FactoryData extends React.Component {
   }
 
   render() {
-    const { t, onClose } = this.props;
+    const { onClose } = this.props;
     const {
       name,
       address,
@@ -150,7 +154,6 @@ class FactoryData extends React.Component {
       errors,
       isLoading,
     } = this.state;
-    const errorMessage = t("requiredfield");
 
     return (
       <div>
@@ -165,184 +168,113 @@ class FactoryData extends React.Component {
             <Grid item xs={12} sm={12}>
               <TextField
                 id="name"
-                label={t("name")}
-                variant="outlined"
+                label="name"
                 value={name}
-                fullWidth
                 required={true}
-                size="small"
-                onChange={(e) =>
-                  this.onChangeForField(e.target.id, e.target.value)
-                }
-                error={errors.includes("name")}
-                helperText={errors.includes("name") && errorMessage}
+                onChange={this.onChangeForField}
+                errors={errors}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
                 id="contact"
-                label={t("contact")}
-                variant="outlined"
+                label="contact"
                 value={contact}
                 required={true}
-                fullWidth
-                size="small"
-                onChange={(e) =>
-                  this.onChangeForField(e.target.id, e.target.value)
-                }
-                error={errors.includes("contact")}
-                helperText={errors.includes("contact") && errorMessage}
+                onChange={this.onChangeForField}
+                errors={errors}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
                 id="bankAccountNumber"
-                label={t("bankaccount")}
-                variant="outlined"
+                label="bankaccount"
                 value={bankAccountNumber}
                 required={true}
-                fullWidth
-                size="small"
-                onChange={(e) =>
-                  this.onChangeForField(e.target.id, e.target.value)
-                }
-                error={errors.includes("bankAccountNumber")}
-                helperText={
-                  errors.includes("bankAccountNumber") && errorMessage
-                }
+                onChange={this.onChangeForField}
+                errors={errors}
               />
             </Grid>
             <Grid item xs={12} sm={12}>
               <TextField
                 id="address"
-                label={t("address")}
-                variant="outlined"
+                label="address"
                 value={address}
                 required={true}
-                fullWidth
-                size="small"
-                onChange={(e) =>
-                  this.onChangeForField(e.target.id, e.target.value)
-                }
-                error={errors.includes("address")}
-                helperText={errors.includes("address") && errorMessage}
+                onChange={this.onChangeForField}
+                errors={errors}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
               <TextField
                 id="telephone1"
-                label={t("telephone")}
-                variant="outlined"
+                label="telephone"
                 value={telephone1}
-                fullWidth
-                size="small"
-                onChange={(e) =>
-                  this.onChangeForField(e.target.id, e.target.value)
-                }
+                onChange={this.onChangeForField}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
               <TextField
                 id="telephone2"
-                label={t("telephone")}
-                variant="outlined"
+                label="telephone"
                 value={telephone2}
-                fullWidth
-                size="small"
-                onChange={(e) =>
-                  this.onChangeForField(e.target.id, e.target.value)
-                }
+                onChange={this.onChangeForField}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
               <TextField
                 id="telephone3"
-                label={t("telephone")}
-                variant="outlined"
+                label="telephone"
                 value={telephone3}
-                fullWidth
-                size="small"
-                onChange={(e) =>
-                  this.onChangeForField(e.target.id, e.target.value)
-                }
+                onChange={this.onChangeForField}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
               <TextField
                 id="mobilePhone1"
-                label={t("mobilephone")}
-                variant="outlined"
+                label="mobilephone"
                 value={mobilePhone1}
-                fullWidth
-                size="small"
-                onChange={(e) =>
-                  this.onChangeForField(e.target.id, e.target.value)
-                }
+                onChange={this.onChangeForField}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
               <TextField
                 id="mobilePhone2"
-                label={t("mobilephone")}
-                variant="outlined"
+                label="mobilephone"
                 value={mobilePhone2}
-                fullWidth
-                size="small"
-                onChange={(e) =>
-                  this.onChangeForField(e.target.id, e.target.value)
-                }
+                onChange={this.onChangeForField}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
               <TextField
                 id="mobilePhone3"
-                label={t("mobilephone")}
-                variant="outlined"
+                label="mobilephone"
                 value={mobilePhone3}
-                fullWidth
-                size="small"
-                onChange={(e) =>
-                  this.onChangeForField(e.target.id, e.target.value)
-                }
+                onChange={this.onChangeForField}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
               <TextField
                 id="qqNumber1"
-                label={t("qqnumber")}
-                variant="outlined"
+                label="qqnumber"
                 value={qqNumber1}
-                fullWidth
-                size="small"
-                onChange={(e) =>
-                  this.onChangeForField(e.target.id, e.target.value)
-                }
+                onChange={this.onChangeForField}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
               <TextField
                 id="qqNumber2"
-                label={t("qqnumber")}
-                variant="outlined"
+                label="qqnumber"
                 value={qqNumber2}
-                fullWidth
-                size="small"
-                onChange={(e) =>
-                  this.onChangeForField(e.target.id, e.target.value)
-                }
+                onChange={this.onChangeForField}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
               <TextField
                 id="qqNumber3"
-                label={t("qqnumber")}
-                variant="outlined"
+                label="qqnumber"
                 value={qqNumber3}
-                fullWidth
-                size="small"
-                onChange={(e) =>
-                  this.onChangeForField(e.target.id, e.target.value)
-                }
+                onChange={this.onChangeForField}
               />
             </Grid>
           </Grid>
@@ -352,4 +284,4 @@ class FactoryData extends React.Component {
   }
 }
 
-export default withTranslation()(FactoryData);
+export default FactoryData;

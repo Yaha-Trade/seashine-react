@@ -1,5 +1,4 @@
 import React from "react";
-import TextField from "@material-ui/core/TextField";
 import callServer from "../../services/callServer";
 import { withTranslation } from "react-i18next";
 import Grid from "@material-ui/core/Grid";
@@ -7,8 +6,6 @@ import ModalData from "../../components/modal/ModalData";
 import { getLanguage } from "../../services/StorageManager";
 import { LanguageEnum } from "../../enums/LanguageEnum";
 import AutoComplete from "../../components/AutoComplete";
-import CurrencyTextField from "@unicef/material-ui-currency-textfield";
-import { CurrencyEnum } from "../../enums/CurrencyEnum";
 import Switch from "@material-ui/core/Switch";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Tab from "@material-ui/core/Tab";
@@ -32,6 +29,10 @@ import Add from "@material-ui/icons/Add";
 import Delete from "@material-ui/icons/Delete";
 import Loading from "../../components/Loading";
 import ImageCarousel from "../../components/ImageCarousel";
+import TextField from "../../components/FormFields/TextField";
+import CurrencyField from "../../components/FormFields/CurrencyField";
+import DecimalField from "../../components/FormFields/DecimalField";
+import IntegerField from "../../components/FormFields/IntegerField";
 
 const useStyles = (theme) => ({
   tabPanel: {
@@ -96,30 +97,14 @@ class ProductData extends React.Component {
     isLoading: false,
   };
 
-  onChangeForField = (
-    id,
-    newValue,
-    onlyNumbers = false,
-    onChange = () => {}
-  ) => {
-    const onlyNumbersExpression = /^[0-9\b]+$/;
-    if (!onlyNumbers) {
-      this.setState({
-        [id]: newValue,
-        errors: this.state.errors.filter((value) => {
-          return id !== value;
-        }),
-      });
-      onChange(newValue);
-    } else if (newValue === "" || onlyNumbersExpression.test(newValue)) {
-      this.setState({
-        [id]: newValue,
-        errors: this.state.errors.filter((value) => {
-          return id !== value;
-        }),
-      });
-      onChange(newValue);
-    }
+  onChangeForField = (id, newValue, onChange = () => {}) => {
+    this.setState({
+      [id]: newValue,
+      errors: this.state.errors.filter((value) => {
+        return id !== value;
+      }),
+    });
+    onChange(newValue);
   };
 
   onChangeFactorySelect = (event, value) => {
@@ -479,6 +464,11 @@ class ProductData extends React.Component {
 
     if (saveExit) {
       this.props.onClose();
+    } else {
+      const { idProduct } = this.props;
+      if (idProduct && idProduct !== -1) {
+        this.fetchData(idProduct);
+      }
     }
   };
 
@@ -596,7 +586,6 @@ class ProductData extends React.Component {
       errors,
     } = this.state;
     const { t, classes } = this.props;
-    const errorMessage = t("requiredfield");
 
     const isEnglishLanguage = getLanguage() === LanguageEnum.ENGLISH;
 
@@ -609,17 +598,11 @@ class ProductData extends React.Component {
               <Grid item xs={12} sm={3}>
                 <TextField
                   id="reference"
-                  label={t("reference")}
-                  variant="outlined"
+                  label="reference"
                   value={reference}
-                  fullWidth
                   required={true}
-                  size="small"
-                  onChange={(e) =>
-                    this.onChangeForField(e.target.id, e.target.value)
-                  }
-                  error={errors.includes("reference")}
-                  helperText={errors.includes("reference") && errorMessage}
+                  onChange={this.onChangeForField}
+                  errors={errors}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -649,367 +632,210 @@ class ProductData extends React.Component {
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
-                <CurrencyTextField
+                <CurrencyField
                   id="price"
-                  label={t("price")}
-                  size="small"
-                  variant="outlined"
+                  label="price"
                   value={price}
-                  fullWidth
                   required={true}
-                  currencySymbol={CurrencyEnum.CURRENCYSYMBOL}
-                  outputFormat="string"
-                  decimalCharacter={CurrencyEnum.DECIMALCHARACTER}
-                  digitGroupSeparator={CurrencyEnum.DIGITGROUPSEPARATOR}
-                  onChange={(event, value) => {
-                    this.setState({
-                      price: value,
-                      errors: this.state.errors.filter((value) => {
-                        return value !== "price";
-                      }),
-                    });
-                  }}
-                  error={errors.includes("price")}
-                  helperText={errors.includes("price") && errorMessage}
+                  onChange={this.onChangeForField}
+                  errors={errors}
                 />
               </Grid>
               <Grid item xs={12} sm={12}>
                 <TextField
                   id="description"
-                  label={t("description")}
-                  variant="outlined"
+                  label="description"
                   value={description}
-                  fullWidth
                   required={true}
-                  size="small"
-                  onChange={(e) =>
-                    this.onChangeForField(e.target.id, e.target.value)
-                  }
-                  error={errors.includes("description")}
-                  helperText={errors.includes("description") && errorMessage}
+                  onChange={this.onChangeForField}
+                  errors={errors}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
-                <TextField
+                <DecimalField
                   id="productLength"
-                  label={t("productlength")}
-                  variant="outlined"
+                  label="productlength"
                   value={productLength}
-                  fullWidth
                   required={true}
-                  size="small"
-                  onChange={(e) =>
-                    this.onChangeForField(e.target.id, e.target.value, true)
-                  }
-                  error={errors.includes("productLength")}
-                  helperText={errors.includes("productLength") && errorMessage}
+                  onChange={this.onChangeForField}
+                  errors={errors}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
-                <TextField
+                <DecimalField
                   id="productWidth"
-                  label={t("productwidth")}
-                  variant="outlined"
+                  label="productwidth"
                   value={productWidth}
-                  fullWidth
                   required={true}
-                  size="small"
-                  onChange={(e) =>
-                    this.onChangeForField(e.target.id, e.target.value, true)
-                  }
-                  error={errors.includes("productWidth")}
-                  helperText={errors.includes("productWidth") && errorMessage}
+                  onChange={this.onChangeForField}
+                  errors={errors}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
-                <TextField
+                <DecimalField
                   id="productHeight"
-                  label={t("productheight")}
-                  variant="outlined"
+                  label="productheight"
                   value={productHeight}
-                  fullWidth
                   required={true}
-                  size="small"
-                  onChange={(e) =>
-                    this.onChangeForField(e.target.id, e.target.value, true)
-                  }
-                  error={errors.includes("productHeight")}
-                  helperText={errors.includes("productHeight") && errorMessage}
+                  onChange={this.onChangeForField}
+                  errors={errors}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
-                <TextField
+                <IntegerField
                   id="quantityInner"
-                  label={t("quantityinner")}
-                  variant="outlined"
+                  label="quantityinner"
                   value={quantityInner}
-                  fullWidth
                   required={true}
-                  size="small"
-                  onChange={(e) =>
-                    this.onChangeForField(e.target.id, e.target.value, true)
-                  }
-                  error={errors.includes("quantityInner")}
-                  helperText={errors.includes("quantityInner") && errorMessage}
+                  onChange={this.onChangeForField}
+                  error={errors}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
-                <TextField
+                <DecimalField
                   id="boxLength"
-                  label={t("boxlength")}
-                  variant="outlined"
+                  label="boxlength"
                   value={boxLength}
-                  fullWidth
                   required={true}
-                  size="small"
-                  onChange={(e) =>
-                    this.onChangeForField(
-                      e.target.id,
-                      e.target.value,
-                      true,
-                      this.onChangeBoxLength
-                    )
-                  }
-                  error={errors.includes("boxLength")}
-                  helperText={errors.includes("boxLength") && errorMessage}
+                  callBack={this.onChangeBoxLength}
+                  onChange={this.onChangeForField}
+                  errors={errors}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
-                <TextField
+                <DecimalField
                   id="boxWidth"
-                  label={t("boxwidth")}
-                  variant="outlined"
+                  label="boxwidth"
                   value={boxWidth}
-                  fullWidth
                   required={true}
-                  size="small"
-                  onChange={(e) =>
-                    this.onChangeForField(
-                      e.target.id,
-                      e.target.value,
-                      true,
-                      this.onChangeBoxWidth
-                    )
-                  }
-                  error={errors.includes("boxWidth")}
-                  helperText={errors.includes("boxWidth") && errorMessage}
+                  callBack={this.onChangeBoxWidth}
+                  onChange={this.onChangeForField}
+                  errors={errors}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
-                <TextField
+                <DecimalField
                   id="boxHeight"
-                  label={t("boxheight")}
-                  variant="outlined"
+                  label="boxheight"
                   value={boxHeight}
-                  fullWidth
                   required={true}
-                  size="small"
-                  onChange={(e) =>
-                    this.onChangeForField(
-                      e.target.id,
-                      e.target.value,
-                      true,
-                      this.onChangeBoxHeight
-                    )
-                  }
-                  error={errors.includes("boxHeight")}
-                  helperText={errors.includes("boxHeight") && errorMessage}
+                  callBack={this.onChangeBoxHeight}
+                  onChange={this.onChangeForField}
+                  errors={errors}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
-                <TextField
+                <DecimalField
                   id="boxCubage"
-                  label={t("boxcubage")}
-                  variant="outlined"
+                  label="boxcubage"
                   value={boxCubage}
-                  fullWidth
                   required={true}
-                  size="small"
-                  disabled
-                  error={errors.includes("boxCubage")}
-                  helperText={errors.includes("boxCubage") && errorMessage}
+                  disabled={true}
+                  errors={errors}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
-                <TextField
+                <DecimalField
                   id="packingLength"
-                  label={t("packinglength")}
-                  variant="outlined"
+                  label="packinglength"
                   value={packingLength}
-                  fullWidth
                   required={true}
-                  size="small"
-                  onChange={(e) =>
-                    this.onChangeForField(e.target.id, e.target.value, true)
-                  }
-                  error={errors.includes("packingLength")}
-                  helperText={errors.includes("packingLength") && errorMessage}
+                  onChange={this.onChangeForField}
+                  error={errors}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
-                <TextField
+                <DecimalField
                   id="packingWidth"
-                  label={t("packingwidth")}
-                  variant="outlined"
+                  label="packingwidth"
                   value={packingWidth}
-                  fullWidth
                   required={true}
-                  size="small"
-                  onChange={(e) =>
-                    this.onChangeForField(e.target.id, e.target.value, true)
-                  }
-                  error={errors.includes("packingWidth")}
-                  helperText={errors.includes("packingWidth") && errorMessage}
+                  onChange={this.onChangeForField}
+                  error={errors}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
-                <TextField
+                <DecimalField
                   id="packingHeight"
-                  label={t("packingheight")}
-                  variant="outlined"
+                  label="packingheight"
                   value={packingHeight}
-                  fullWidth
                   required={true}
-                  size="small"
-                  onChange={(e) =>
-                    this.onChangeForField(e.target.id, e.target.value, true)
-                  }
-                  error={errors.includes("packingHeight")}
-                  helperText={errors.includes("packingHeight") && errorMessage}
+                  onChange={this.onChangeForField}
+                  error={errors}
                 />
               </Grid>
               <Grid item xs={12} sm={3}></Grid>
               <Grid item xs={12} sm={3}>
-                <TextField
+                <IntegerField
                   id="quantityOfPieces"
-                  label={t("quantityofpieces")}
-                  variant="outlined"
+                  label="quantityofpieces"
                   value={quantityOfPieces}
-                  fullWidth
                   required={true}
-                  size="small"
-                  onChange={(e) =>
-                    this.onChangeForField(
-                      e.target.id,
-                      e.target.value,
-                      true,
-                      this.onChangeQuantityOfPieces
-                    )
-                  }
-                  error={errors.includes("quantityOfPieces")}
-                  helperText={
-                    errors.includes("quantityOfPieces") && errorMessage
-                  }
+                  callBack={this.onChangeQuantityOfPieces}
+                  onChange={this.onChangeForField}
+                  error={errors}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
-                <TextField
+                <IntegerField
                   id="quantityOfBoxesPerContainer"
-                  label={t("quantityofboxespercontainer")}
-                  variant="outlined"
+                  label="quantityofboxespercontainer"
                   value={quantityOfBoxesPerContainer}
-                  fullWidth
                   required={true}
-                  size="small"
-                  onChange={(e) =>
-                    this.onChangeForField(
-                      e.target.id,
-                      e.target.value,
-                      true,
-                      this.onChangeQuantityOfBoxesPerContainer
-                    )
-                  }
-                  error={errors.includes("quantityOfBoxesPerContainer")}
-                  helperText={
-                    errors.includes("quantityOfBoxesPerContainer") &&
-                    errorMessage
-                  }
+                  callBack={this.onChangeQuantityOfBoxesPerContainer}
+                  onChange={this.onChangeForField}
+                  error={errors}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
-                <TextField
+                <IntegerField
                   id="quantityOfPiecesPerContainer"
-                  label={t("quantityofpiecespercontainer")}
-                  variant="outlined"
+                  label="quantityofpiecespercontainer"
                   value={quantityOfPiecesPerContainer}
-                  fullWidth
                   required={true}
-                  disabled
-                  size="small"
-                  error={errors.includes("quantityOfPiecesPerContainer")}
-                  helperText={
-                    errors.includes("quantityOfPiecesPerContainer") &&
-                    errorMessage
-                  }
+                  disabled={true}
+                  error={errors}
                 />
               </Grid>
               <Grid item xs={12} sm={3}></Grid>
               <Grid item xs={12} sm={3}>
-                <TextField
+                <DecimalField
                   id="boxGrossWeight"
-                  label={t("boxgrossweight")}
-                  variant="outlined"
+                  label="boxgrossweight"
                   value={boxGrossWeight}
-                  fullWidth
                   required={true}
-                  size="small"
-                  onChange={(e) =>
-                    this.onChangeForField(e.target.id, e.target.value, true)
-                  }
-                  error={errors.includes("boxGrossWeight")}
-                  helperText={errors.includes("boxGrossWeight") && errorMessage}
+                  onChange={this.onChangeForField}
+                  error={errors}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
-                <TextField
+                <DecimalField
                   id="boxNetWeight"
-                  label={t("boxnetweight")}
-                  variant="outlined"
+                  label="boxnetweight"
                   value={boxNetWeight}
-                  fullWidth
                   required={true}
-                  size="small"
-                  onChange={(e) =>
-                    this.onChangeForField(e.target.id, e.target.value, true)
-                  }
-                  error={errors.includes("boxNetWeight")}
-                  helperText={errors.includes("boxNetWeight") && errorMessage}
+                  onChange={this.onChangeForField}
+                  error={errors}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
-                <TextField
+                <DecimalField
                   id="netWeightWithPacking"
-                  label={t("netweightwithpacking")}
-                  variant="outlined"
+                  label="netweightwithpacking"
                   value={netWeightWithPacking}
-                  fullWidth
                   required={true}
-                  size="small"
-                  onChange={(e) =>
-                    this.onChangeForField(e.target.id, e.target.value, true)
-                  }
-                  error={errors.includes("netWeightWithPacking")}
-                  helperText={
-                    errors.includes("netWeightWithPacking") && errorMessage
-                  }
+                  onChange={this.onChangeForField}
+                  error={errors}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
-                <TextField
+                <DecimalField
                   id="netWeightWithoutPacking"
-                  label={t("netweightwithoutpacking")}
-                  variant="outlined"
+                  label="netweightwithoutpacking"
                   value={netWeightWithoutPacking}
-                  fullWidth
                   required={true}
-                  size="small"
-                  onChange={(e) =>
-                    this.onChangeForField(e.target.id, e.target.value, true)
-                  }
-                  error={errors.includes("netWeightWithoutPacking")}
-                  helperText={
-                    errors.includes("netWeightWithoutPacking") && errorMessage
-                  }
+                  onChange={this.onChangeForField}
+                  error={errors}
                 />
               </Grid>
             </Grid>
@@ -1061,82 +887,57 @@ class ProductData extends React.Component {
       errors,
     } = this.state;
     const { t, classes } = this.props;
-    const errorMessage = t("requiredfield");
 
     return (
       <Grid container spacing={2}>
         <Grid item xs={12} sm={12}>
           <TextField
             id="englishDescription"
-            label={t("englishdescription")}
-            variant="outlined"
+            label="englishdescription"
             value={englishDescription}
-            fullWidth
             required={true}
-            size="small"
-            onChange={(e) => this.onChangeForField(e.target.id, e.target.value)}
-            error={errors.includes("englishDescription")}
-            helperText={errors.includes("englishDescription") && errorMessage}
+            onChange={this.onChangeForField}
+            errors={errors}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
-          <TextField
+          <IntegerField
             id="quantityOfParts"
-            label={t("quantityofparts")}
-            variant="outlined"
+            label="quantityofparts"
             value={quantityOfParts}
-            fullWidth
             required={true}
-            size="small"
-            onChange={(e) =>
-              this.onChangeForField(e.target.id, e.target.value, true)
-            }
-            error={errors.includes("quantityOfParts")}
-            helperText={errors.includes("quantityOfParts") && errorMessage}
+            onChange={this.onChangeForField}
+            error={errors}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
           <TextField
             id="composition"
-            label={t("composition")}
-            variant="outlined"
+            label="composition"
             value={composition}
-            fullWidth
             required={true}
-            size="small"
-            onChange={(e) => this.onChangeForField(e.target.id, e.target.value)}
-            error={errors.includes("composition")}
-            helperText={errors.includes("composition") && errorMessage}
+            onChange={this.onChangeForField}
+            errors={errors}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
-          <TextField
+          <IntegerField
             id="model"
-            label={t("model")}
-            variant="outlined"
+            label="model"
             value={model}
-            fullWidth
             required={true}
-            size="small"
-            onChange={(e) =>
-              this.onChangeForField(e.target.id, e.target.value, true)
-            }
-            error={errors.includes("model")}
-            helperText={errors.includes("model") && errorMessage}
+            onChange={this.onChangeForField}
+            error={errors}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
           <TextField
             id="color"
-            label={t("color")}
-            variant="outlined"
+            label="color"
             value={color}
-            fullWidth
             required={true}
-            size="small"
-            onChange={(e) => this.onChangeForField(e.target.id, e.target.value)}
-            error={errors.includes("color")}
-            helperText={errors.includes("color") && errorMessage}
+            onChange={this.onChangeForField}
+            errors={errors}
           />
         </Grid>
         <Grid item xs={12} sm={12}>
@@ -1240,7 +1041,7 @@ class ProductData extends React.Component {
               <Table size="small">
                 <TableHead>
                   <TableRow>
-                    <TableCell style={{ width: "15%" }}>
+                    <TableCell style={{ width: "20%" }}>
                       {t("quantity")}
                     </TableCell>
                     <TableCell>{t("type")}</TableCell>
@@ -1253,27 +1054,22 @@ class ProductData extends React.Component {
                   {batteries.map((row, index) => (
                     <TableRow key={index}>
                       <TableCell component="th" scope="row">
-                        <TextField
+                        <IntegerField
                           id={"quantity" + index}
                           value={row.quantity}
                           required={true}
                           size="small"
-                          type="number"
-                          inputProps={{ min: 1 }}
-                          onChange={(e) => {
+                          onChange={(id, value) => {
                             const batteries = this.state.batteries;
-                            batteries[index].quantity = e.target.value;
+                            batteries[index].quantity = value;
                             this.setState({
                               batteries: batteries,
                               errors: this.state.errors.filter((value) => {
-                                return "quantity" + index !== value;
+                                return id !== value;
                               }),
                             });
                           }}
-                          error={errors.includes("quantity" + index)}
-                          helperText={
-                            errors.includes("quantity" + index) && errorMessage
-                          }
+                          errors={errors}
                         />
                       </TableCell>
                       <TableCell>
@@ -1282,7 +1078,6 @@ class ProductData extends React.Component {
                           dataSource="batterytypes"
                           idField="id"
                           displayField="name"
-                          inputVariant="standard"
                           onChange={(event, value) => {
                             const batteries = this.state.batteries;
                             batteries[index].batteryType = value;
@@ -1303,7 +1098,6 @@ class ProductData extends React.Component {
                           dataSource="voltages"
                           idField="id"
                           displayField="name"
-                          inputVariant="standard"
                           onChange={(event, value) => {
                             const batteries = this.state.batteries;
                             batteries[index].voltage = value;
@@ -1353,17 +1147,13 @@ class ProductData extends React.Component {
         <Grid item xs={12} sm={12}>
           <TextField
             id="specialRequirements"
-            label={t("specialrequirements")}
-            variant="outlined"
+            label="specialrequirements"
             value={specialRequirements}
-            fullWidth
-            multiline
+            multiline={true}
             rows={2}
             required={true}
-            size="small"
-            onChange={(e) => this.onChangeForField(e.target.id, e.target.value)}
-            error={errors.includes("specialRequirements")}
-            helperText={errors.includes("specialRequirements") && errorMessage}
+            onChange={this.onChangeForField}
+            error={errors}
           />
         </Grid>
       </Grid>

@@ -1,10 +1,9 @@
 import React from "react";
-import TextField from "@material-ui/core/TextField";
 import callServer from "../../services/callServer";
-import { withTranslation } from "react-i18next";
 import Grid from "@material-ui/core/Grid";
 import ModalData from "../../components/modal/ModalData";
 import Loading from "../../components/Loading";
+import TextField from "../../components/FormFields/TextField";
 
 class CustomerData extends React.Component {
   state = {
@@ -14,8 +13,8 @@ class CustomerData extends React.Component {
   };
 
   onChangeForField = (id, newValue) => {
-    this.setState({ [id]: newValue });
     this.setState({
+      [id]: newValue,
       errors: this.state.errors.filter((value) => {
         return id !== value;
       }),
@@ -44,10 +43,13 @@ class CustomerData extends React.Component {
       name,
     });
 
-    this.setState({ isLoading: false });
-
     if (saveAndExit) {
       this.props.onClose();
+    } else {
+      const { idCustomer } = this.props;
+      if (idCustomer && idCustomer !== -1) {
+        this.fetchData(idCustomer);
+      }
     }
   };
 
@@ -70,9 +72,8 @@ class CustomerData extends React.Component {
   }
 
   render() {
-    const { t, onClose } = this.props;
+    const { onClose } = this.props;
     const { name, errors, isLoading } = this.state;
-    const errorMessage = t("requiredfield");
 
     return (
       <div>
@@ -87,17 +88,11 @@ class CustomerData extends React.Component {
             <Grid item xs={12} sm={12}>
               <TextField
                 id="name"
-                label={t("name")}
-                variant="outlined"
+                label="name"
                 value={name}
-                fullWidth
                 required={true}
-                size="small"
-                onChange={(e) =>
-                  this.onChangeForField(e.target.id, e.target.value)
-                }
-                error={errors.includes("name")}
-                helperText={errors.includes("name") && errorMessage}
+                onChange={this.onChangeForField}
+                errors={errors}
               />
             </Grid>
           </Grid>
@@ -107,4 +102,4 @@ class CustomerData extends React.Component {
   }
 }
 
-export default withTranslation()(CustomerData);
+export default CustomerData;

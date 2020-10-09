@@ -1,10 +1,9 @@
 import React from "react";
-import TextField from "@material-ui/core/TextField";
 import callServer from "../../services/callServer";
-import { withTranslation } from "react-i18next";
 import Grid from "@material-ui/core/Grid";
 import ModalData from "../../components/modal/ModalData";
 import Loading from "../../components/Loading";
+import TextField from "../../components/FormFields/TextField";
 
 class PackingData extends React.Component {
   state = {
@@ -15,8 +14,8 @@ class PackingData extends React.Component {
   };
 
   onChangeForField = (id, newValue) => {
-    this.setState({ [id]: newValue });
     this.setState({
+      [id]: newValue,
       errors: this.state.errors.filter((value) => {
         return id !== value;
       }),
@@ -54,6 +53,11 @@ class PackingData extends React.Component {
 
     if (saveAndExit) {
       this.props.onClose();
+    } else {
+      const { idPacking } = this.props;
+      if (idPacking && idPacking !== -1) {
+        this.fetchData(idPacking);
+      }
     }
   };
 
@@ -77,9 +81,8 @@ class PackingData extends React.Component {
   }
 
   render() {
-    const { t, onClose } = this.props;
+    const { onClose } = this.props;
     const { englishName, chineseName, errors, isLoading } = this.state;
-    const errorMessage = t("requiredfield");
 
     return (
       <div>
@@ -94,33 +97,21 @@ class PackingData extends React.Component {
             <Grid item xs={12} sm={12}>
               <TextField
                 id="englishName"
-                label={t("english")}
-                variant="outlined"
+                label="english"
                 value={englishName}
-                fullWidth
                 required={true}
-                size="small"
-                onChange={(e) =>
-                  this.onChangeForField(e.target.id, e.target.value)
-                }
-                error={errors.includes("englishName")}
-                helperText={errors.includes("englishName") && errorMessage}
+                onChange={this.onChangeForField}
+                errors={errors}
               />
             </Grid>
             <Grid item xs={12} sm={12}>
               <TextField
                 id="chineseName"
-                label={t("chinese")}
-                variant="outlined"
+                label="chinese"
                 value={chineseName}
-                fullWidth
                 required={true}
-                size="small"
-                onChange={(e) =>
-                  this.onChangeForField(e.target.id, e.target.value)
-                }
-                error={errors.includes("chineseName")}
-                helperText={errors.includes("chineseName") && errorMessage}
+                onChange={this.onChangeForField}
+                errors={errors}
               />
             </Grid>
           </Grid>
@@ -130,4 +121,4 @@ class PackingData extends React.Component {
   }
 }
 
-export default withTranslation()(PackingData);
+export default PackingData;
