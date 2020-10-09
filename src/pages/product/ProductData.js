@@ -688,7 +688,7 @@ class ProductData extends React.Component {
                   value={quantityInner}
                   required={true}
                   onChange={this.onChangeForField}
-                  error={errors}
+                  errors={errors}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -741,7 +741,7 @@ class ProductData extends React.Component {
                   value={packingLength}
                   required={true}
                   onChange={this.onChangeForField}
-                  error={errors}
+                  errors={errors}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -751,7 +751,7 @@ class ProductData extends React.Component {
                   value={packingWidth}
                   required={true}
                   onChange={this.onChangeForField}
-                  error={errors}
+                  errors={errors}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -761,7 +761,7 @@ class ProductData extends React.Component {
                   value={packingHeight}
                   required={true}
                   onChange={this.onChangeForField}
-                  error={errors}
+                  errors={errors}
                 />
               </Grid>
               <Grid item xs={12} sm={3}></Grid>
@@ -773,7 +773,7 @@ class ProductData extends React.Component {
                   required={true}
                   callBack={this.onChangeQuantityOfPieces}
                   onChange={this.onChangeForField}
-                  error={errors}
+                  errors={errors}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -784,7 +784,7 @@ class ProductData extends React.Component {
                   required={true}
                   callBack={this.onChangeQuantityOfBoxesPerContainer}
                   onChange={this.onChangeForField}
-                  error={errors}
+                  errors={errors}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -794,7 +794,7 @@ class ProductData extends React.Component {
                   value={quantityOfPiecesPerContainer}
                   required={true}
                   disabled={true}
-                  error={errors}
+                  errors={errors}
                 />
               </Grid>
               <Grid item xs={12} sm={3}></Grid>
@@ -805,7 +805,7 @@ class ProductData extends React.Component {
                   value={boxGrossWeight}
                   required={true}
                   onChange={this.onChangeForField}
-                  error={errors}
+                  errors={errors}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -815,7 +815,7 @@ class ProductData extends React.Component {
                   value={boxNetWeight}
                   required={true}
                   onChange={this.onChangeForField}
-                  error={errors}
+                  errors={errors}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -825,7 +825,7 @@ class ProductData extends React.Component {
                   value={netWeightWithPacking}
                   required={true}
                   onChange={this.onChangeForField}
-                  error={errors}
+                  errors={errors}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -835,7 +835,7 @@ class ProductData extends React.Component {
                   value={netWeightWithoutPacking}
                   required={true}
                   onChange={this.onChangeForField}
-                  error={errors}
+                  errors={errors}
                 />
               </Grid>
             </Grid>
@@ -907,7 +907,7 @@ class ProductData extends React.Component {
             value={quantityOfParts}
             required={true}
             onChange={this.onChangeForField}
-            error={errors}
+            errors={errors}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -927,7 +927,7 @@ class ProductData extends React.Component {
             value={model}
             required={true}
             onChange={this.onChangeForField}
-            error={errors}
+            errors={errors}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -1153,7 +1153,7 @@ class ProductData extends React.Component {
             rows={2}
             required={true}
             onChange={this.onChangeForField}
-            error={errors}
+            errors={errors}
           />
         </Grid>
       </Grid>
