@@ -137,7 +137,7 @@ class ProductData extends React.Component {
     const { boxWidth, boxHeight } = this.state;
     if (newValue !== "" && boxWidth !== "" && boxHeight !== "") {
       this.setState({
-        boxCubage: newValue * boxWidth * boxHeight,
+        boxCubage: (newValue * boxWidth * boxHeight) / 1000000,
         errors: this.state.errors.filter((value) => {
           return (
             value !== "boxCubage" &&
@@ -158,7 +158,7 @@ class ProductData extends React.Component {
     const { boxLength, boxHeight } = this.state;
     if (boxLength !== "" && newValue !== "" && boxHeight !== "") {
       this.setState({
-        boxCubage: boxLength * newValue * boxHeight,
+        boxCubage: (boxLength * newValue * boxHeight) / 1000000,
         errors: this.state.errors.filter((value) => {
           return (
             value !== "boxCubage" &&
@@ -179,7 +179,7 @@ class ProductData extends React.Component {
     const { boxLength, boxWidth } = this.state;
     if (boxLength !== "" && boxWidth !== "" && newValue !== "") {
       this.setState({
-        boxCubage: boxLength * boxWidth * newValue,
+        boxCubage: (boxLength * boxWidth * newValue) / 1000000,
         errors: this.state.errors.filter((value) => {
           return (
             value !== "boxCubage" &&
