@@ -10,6 +10,7 @@ import zhLocale from "date-fns/locale/zh-CN";
 import { getLanguage } from "../../services/StorageManager";
 import { LanguageEnum } from "../../enums/LanguageEnum";
 import { DateEnum } from "../../enums/DateEnum";
+import { formatDateToUTC } from "../../services/Utils";
 
 const DatePicker = ({ id, label, date, onChange }) => {
   const { t } = useTranslation();
@@ -28,11 +29,16 @@ const DatePicker = ({ id, label, date, onChange }) => {
         size="small"
         inputVariant="outlined"
         fullWidth={true}
-        onChange={onChange}
+        onChange={(value) => {
+          if (value !== null) {
+            onChange(formatDateToUTC(value));
+          }
+        }}
         KeyboardButtonProps={{
           "aria-label": "change date",
         }}
         invalidDateMessage={t("invaliddate")}
+        autoOk={true}
       />
     </MuiPickersUtilsProvider>
   );

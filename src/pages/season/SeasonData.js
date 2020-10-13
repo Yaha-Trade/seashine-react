@@ -7,7 +7,7 @@ import TextField from "../../components/formfields/TextField";
 import AutoComplete from "../../components/formfields/AutoComplete";
 import { withTranslation } from "react-i18next";
 import DatePicker from "../../components/formfields/DatePicker";
-import { formatDateToDisplay } from "../../services/Utils";
+import { formatDateToUTC } from "../../services/Utils";
 
 class SeasonData extends React.Component {
   state = {
@@ -69,7 +69,7 @@ class SeasonData extends React.Component {
     callServer.get(`seasons/${idSeason}`).then((response) => {
       this.setState({
         name: response.data.name,
-        scheduledDate: formatDateToDisplay(response.data.scheduledDate),
+        scheduledDate: formatDateToUTC(response.data.scheduledDate),
         customer: {
           id: response.data.customer.id,
           name: response.data.customer.name,
