@@ -3,7 +3,7 @@ import DataTable from "../../components/datatable/DataTable";
 import { useTranslation } from "react-i18next";
 import SeasonData from "./SeasonData";
 import callServer from "../../services/callServer";
-import { extractId, convertDate } from "../../services/Utils";
+import { extractId, formatDateToDisplay } from "../../services/Utils";
 
 const SeasonList = () => {
   const { t } = useTranslation();
@@ -20,7 +20,7 @@ const SeasonList = () => {
       options: {
         filter: false,
         customBodyRender: (value, tableMeta, updateValue) => {
-          return value !== undefined ? convertDate(value) : null;
+          return formatDateToDisplay(value);
         },
       },
     },
