@@ -5,7 +5,7 @@ import Grid from "@material-ui/core/Grid";
 import ModalData from "../../components/modal/ModalData";
 import { getLanguage } from "../../services/StorageManager";
 import { LanguageEnum } from "../../enums/LanguageEnum";
-import AutoComplete from "../../components/AutoComplete";
+import AutoComplete from "../../components/formfields/AutoComplete";
 import Switch from "@material-ui/core/Switch";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Tab from "@material-ui/core/Tab";
