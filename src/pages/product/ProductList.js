@@ -6,12 +6,14 @@ import callServer from "../../services/callServer";
 import { extractId } from "../../services/Utils";
 import DisplayCurrency from "../../components/display/DisplayCurrency";
 import ProductToolbar from "./ProductToolbar";
+import ImportProduct from "./ImportProduct";
 
 const ProductList = () => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [id, setId] = useState();
   const [hasToReloadData, setHasToReloadData] = useState(false);
+  const [isImportOpen, setIsImportOpen] = useState(false);
 
   const columns = [
     { name: "reference", label: t("reference") },
@@ -62,9 +64,19 @@ const ProductList = () => {
     setHasToReloadData(true);
   };
 
+  const importFile = async () => {
+    console.log("Importando");
+  };
+
   return (
     <div>
       {open && <ProductData idProduct={id} onSave={onSave} onClose={onClose} />}
+      {isImportOpen && (
+        <ImportProduct
+          onSave={importFile}
+          onClose={() => setIsImportOpen(false)}
+        />
+      )}
       <DataTable
         title={t("product")}
         columns={columns}
@@ -76,7 +88,7 @@ const ProductList = () => {
         setHasToReloadData={setHasToReloadData}
         getHasToReloadData={getHasToReloadData}
         customToolbar={
-          <ProductToolbar onImport={() => console.log("IMPORTING...")} />
+          <ProductToolbar onImport={() => setIsImportOpen(true)} />
         }
       />
     </div>

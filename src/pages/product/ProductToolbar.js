@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
-import ImportExportIcon from "@material-ui/icons/ImportExport";
+import BackupIcon from "@material-ui/icons/Backup";
 import { useTranslation } from "react-i18next";
 
 const ProductToolbar = ({ onImport }) => {
@@ -11,7 +11,7 @@ const ProductToolbar = ({ onImport }) => {
     <Fragment>
       <Tooltip title={t("importlist")}>
         <IconButton onClick={onImport}>
-          <ImportExportIcon />
+          <BackupIcon />
         </IconButton>
       </Tooltip>
     </Fragment>
