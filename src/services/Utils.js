@@ -23,3 +23,7 @@ export const formatDateToUTC = (inputDate) => {
 export const formatDateToDisplay = (inputDate) => {
   return moment.utc(inputDate).format(DateEnum.MOMENTFORMAT);
 };
+
+export const isValidDate = (inputDate) => {
+  return inputDate instanceof Date && !isNaN(inputDate);
+};

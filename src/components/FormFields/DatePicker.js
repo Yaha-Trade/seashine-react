@@ -10,7 +10,7 @@ import zhLocale from "date-fns/locale/zh-CN";
 import { getLanguage } from "../../services/StorageManager";
 import { LanguageEnum } from "../../enums/LanguageEnum";
 import { DateEnum } from "../../enums/DateEnum";
-import { formatDateToUTC } from "../../services/Utils";
+import { formatDateToUTC, isValidDate } from "../../services/Utils";
 
 const DatePicker = ({ id, label, date, onChange }) => {
   const { t } = useTranslation();
@@ -30,7 +30,7 @@ const DatePicker = ({ id, label, date, onChange }) => {
         inputVariant="outlined"
         fullWidth={true}
         onChange={(value) => {
-          if (value instanceof Date && !isNaN(value)) {
+          if (isValidDate(value)) {
             onChange(formatDateToUTC(value));
           } else {
             onChange("");
