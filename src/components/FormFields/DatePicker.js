@@ -30,8 +30,10 @@ const DatePicker = ({ id, label, date, onChange }) => {
         inputVariant="outlined"
         fullWidth={true}
         onChange={(value) => {
-          if (value !== null) {
+          if (value instanceof Date && !isNaN(value)) {
             onChange(formatDateToUTC(value));
+          } else {
+            onChange("");
           }
         }}
         KeyboardButtonProps={{

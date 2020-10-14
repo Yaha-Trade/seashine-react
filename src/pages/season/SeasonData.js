@@ -39,6 +39,10 @@ class SeasonData extends React.Component {
       errors.push("customer");
     }
 
+    if (scheduledDate === "") {
+      return;
+    }
+
     this.setState({
       errors: errors,
     });
