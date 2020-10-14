@@ -2,9 +2,9 @@ import React from "react";
 import MUIDataTable from "mui-datatables";
 import Button from "@material-ui/core/Button";
 import callServer from "../../services/callServer";
-import CustomToolbar from "./CustomToolbar";
-import CustomToolbarSelect from "./CustomToolbarSelect";
-import CustomFooter from "./CustomFooter";
+import DataToolbar from "./DataToolbar";
+import DataToolbarSelect from "./DataToolbarSelect";
+import DataFooter from "./DataFooter";
 import { withTranslation } from "react-i18next";
 
 class DataTable extends React.Component {
@@ -209,10 +209,10 @@ class DataTable extends React.Component {
         this.handleFilterList(filterList);
       },
       customToolbar: () => {
-        return <CustomToolbar onAdd={this.props.onAdd} />;
+        return <DataToolbar onAdd={this.props.onAdd} />;
       },
       customToolbarSelect: (selectedRows, displayData, setSelectedRows) => (
-        <CustomToolbarSelect
+        <DataToolbarSelect
           selectedRows={selectedRows}
           displayData={displayData}
           setSelectedRows={setSelectedRows}
@@ -255,7 +255,7 @@ class DataTable extends React.Component {
         textLabels
       ) => {
         return (
-          <CustomFooter
+          <DataFooter
             count={count}
             page={page}
             rowsPerPage={rowsPerPage}

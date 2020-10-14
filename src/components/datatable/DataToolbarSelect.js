@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CustomToolbarSelect = (props) => {
+const DataToolbarSelect = (props) => {
   const classes = useStyles();
   const { t } = useTranslation();
 
@@ -32,4 +32,4 @@ const CustomToolbarSelect = (props) => {
   );
 };
 
-export default CustomToolbarSelect;
+export default DataToolbarSelect;

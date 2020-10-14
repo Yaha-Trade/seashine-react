@@ -8,7 +8,7 @@ import { withTranslation } from "react-i18next";
 
 const defaultFooterStyles = {};
 
-class CustomFooter extends React.Component {
+class DataFooter extends React.Component {
   handleRowChange = (event) => {
     this.props.changeRowsPerPage(event.target.value);
   };
@@ -69,6 +69,6 @@ class CustomFooter extends React.Component {
   }
 }
 
-export default withStyles(defaultFooterStyles, { name: "CustomFooter" })(
-  withTranslation()(CustomFooter)
+export default withStyles(defaultFooterStyles, { name: "DataFooter" })(
+  withTranslation()(DataFooter)
 );

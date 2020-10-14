@@ -4,7 +4,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Add from "@material-ui/icons/Add";
 import { useTranslation } from "react-i18next";
 
-const CustomToolbar = (props) => {
+const DataToolbar = (props) => {
   const { t } = useTranslation();
 
   return (
@@ -18,4 +18,4 @@ const CustomToolbar = (props) => {
   );
 };
 
-export default CustomToolbar;
+export default DataToolbar;
