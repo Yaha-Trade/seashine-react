@@ -209,7 +209,12 @@ class DataTable extends React.Component {
         this.handleFilterList(filterList);
       },
       customToolbar: () => {
-        return <DataToolbar onAdd={this.props.onAdd} />;
+        return (
+          <DataToolbar
+            onAdd={this.props.onAdd}
+            customToolbar={this.props.customToolbar}
+          />
+        );
       },
       customToolbarSelect: (selectedRows, displayData, setSelectedRows) => (
         <DataToolbarSelect
@@ -244,6 +249,7 @@ class DataTable extends React.Component {
 
             this.props.onEdit(selectedId);
           }}
+          customToolbarSelect={this.props.customToolbarSelect}
         />
       ),
       customFooter: (

@@ -12,22 +12,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DataToolbarSelect = (props) => {
+const DataToolbarSelect = ({
+  onEdit,
+  onDelete,
+  customToolbarSelect = null,
+}) => {
   const classes = useStyles();
   const { t } = useTranslation();
 
   return (
     <div className={classes.iconContainer}>
       <Tooltip title={t("edit")}>
-        <IconButton onClick={props.onEdit}>
+        <IconButton onClick={onEdit}>
           <Edit />
         </IconButton>
       </Tooltip>
       <Tooltip title={t("delete")}>
-        <IconButton onClick={props.onDelete}>
+        <IconButton onClick={onDelete}>
           <Delete />
         </IconButton>
       </Tooltip>
+      {customToolbarSelect}
     </div>
   );
 };

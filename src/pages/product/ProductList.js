@@ -5,6 +5,7 @@ import ProductData from "./ProductData";
 import callServer from "../../services/callServer";
 import { extractId } from "../../services/Utils";
 import DisplayCurrency from "../../components/display/DisplayCurrency";
+import ProductToolbar from "./ProductToolbar";
 
 const ProductList = () => {
   const { t } = useTranslation();
@@ -74,6 +75,9 @@ const ProductList = () => {
         onEdit={onEdit}
         setHasToReloadData={setHasToReloadData}
         getHasToReloadData={getHasToReloadData}
+        customToolbar={
+          <ProductToolbar onImport={() => console.log("IMPORTING...")} />
+        }
       />
     </div>
   );
