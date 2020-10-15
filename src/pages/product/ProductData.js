@@ -585,7 +585,7 @@ class ProductData extends React.Component {
       quantityOfPiecesPerContainer,
       errors,
     } = this.state;
-    const { t, classes } = this.props;
+    const { classes } = this.props;
 
     const isEnglishLanguage = getLanguage() === LanguageEnum.ENGLISH;
 
@@ -614,7 +614,7 @@ class ProductData extends React.Component {
                   onChange={this.onChangeFactorySelect}
                   selectedValue={factory}
                   hasErrors={errors.includes("factory")}
-                  label={t("factory")}
+                  label="factory"
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -628,7 +628,7 @@ class ProductData extends React.Component {
                   onChange={this.onChangePackingSelect}
                   selectedValue={packing}
                   hasErrors={errors.includes("packing")}
-                  label={t("packing")}
+                  label="packing"
                 />
               </Grid>
               <Grid item xs={12} sm={3}>

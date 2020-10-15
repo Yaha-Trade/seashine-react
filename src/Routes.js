@@ -1,8 +1,8 @@
 import React from "react";
 import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
 import { isAuthenticated } from "./services/Auth";
-import Login from "./pages/Login";
-import ForgotPassword from "./pages/ForgotPassword";
+import Login from "./pages/login/Login";
+import ForgotPassword from "./pages/login/ForgotPassword";
 import MenuApp from "./components/MenuApp";
 import { MenuPages } from "./config/MenuPages";
 

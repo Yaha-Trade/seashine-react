@@ -1,16 +1,16 @@
-import Home from "../pages/Home";
 import FactoryList from "../pages/factory/FactoryList";
 import CustomerList from "../pages/customer/CustomerList";
 import PackingList from "../pages/packing/PackingList";
 import ProductList from "../pages/product/ProductList";
 import SeasonList from "../pages/season/SeasonList";
+import OrderList from "../pages/order/OrderList";
 
 export const MenuPages = [
   {
-    key: "home",
-    text: "home",
-    path: "/home",
-    component: Home,
+    key: "order",
+    text: "order",
+    path: "/order",
+    component: OrderList,
   },
   {
     key: "register",

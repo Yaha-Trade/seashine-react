@@ -8,11 +8,12 @@ import AutoComplete from "../../components/formfields/AutoComplete";
 import DatePicker from "../../components/formfields/DatePicker";
 import { formatDateToUTC } from "../../services/Utils";
 
-class SeasonData extends React.Component {
+class OrderData extends React.Component {
   state = {
     name: "",
-    customer: null,
-    scheduledDate: new Date(),
+    season: null,
+    customerName: "",
+    purchaseDate: null,
     errors: [],
     isLoading: false,
   };
@@ -26,19 +27,33 @@ class SeasonData extends React.Component {
     });
   };
 
+  onChangeSeasonSelect = (event, value) => {
+    this.setState({ season: value });
+    if (value !== null) {
+      this.setState({
+        customerName: value.customerName,
+        errors: this.state.errors.filter((value) => {
+          return value !== "season";
+        }),
+      });
+    } else {
+      this.setState({ customerName: "" });
+    }
+  };
+
   saveData = async (saveAndExit) => {
     const errors = [];
-    const { name, customer, scheduledDate } = this.state;
+    const { name, season, purchaseDate } = this.state;
 
     if (name === "") {
       errors.push("name");
     }
 
-    if (customer == null) {
-      errors.push("customer");
+    if (season === null) {
+      errors.push("season");
     }
 
-    if (scheduledDate === "") {
+    if (purchaseDate === "") {
       return;
     }
 
@@ -54,57 +69,51 @@ class SeasonData extends React.Component {
 
     await this.props.onSave({
       name,
-      customer: { id: customer.id },
-      scheduledDate,
+      season: { id: season.id },
+      purchaseDate,
     });
 
     if (saveAndExit) {
       this.props.onClose();
     } else {
-      const { idSeason } = this.props;
-      if (idSeason && idSeason !== -1) {
-        this.fetchData(idSeason);
+      const { idOrder } = this.props;
+      if (idOrder && idOrder !== -1) {
+        this.fetchData(idOrder);
       }
     }
   };
 
-  fetchData = (idSeason) => {
-    callServer.get(`seasons/${idSeason}`).then((response) => {
+  fetchData = (idOrder) => {
+    callServer.get(`orderlists/${idOrder}`).then((response) => {
       this.setState({
         name: response.data.name,
-        scheduledDate: formatDateToUTC(response.data.scheduledDate),
-        customer: {
-          id: response.data.customer.id,
-          name: response.data.customer.name,
-        },
+        season: response.data.season,
+        customerName: response.data.season.customer.name,
+        purchaseDate: formatDateToUTC(response.data.purchaseDate),
         isLoading: false,
       });
     });
   };
 
   componentDidMount() {
-    const { idSeason } = this.props;
+    const { idOrder } = this.props;
 
-    if (idSeason && idSeason !== -1) {
+    if (idOrder && idOrder !== -1) {
       this.setState({ isLoading: true });
-      this.fetchData(idSeason);
+      this.fetchData(idOrder);
     }
   }
 
-  onChangeCustomerSelect = (event, value) => {
-    this.setState({ customer: value });
-    if (value !== null) {
-      this.setState({
-        errors: this.state.errors.filter((value) => {
-          return value !== "customer";
-        }),
-      });
-    }
-  };
-
   render() {
     const { onClose } = this.props;
-    const { name, customer, scheduledDate, errors, isLoading } = this.state;
+    const {
+      name,
+      season,
+      customerName,
+      purchaseDate,
+      errors,
+      isLoading,
+    } = this.state;
 
     return (
       <div>
@@ -112,11 +121,12 @@ class SeasonData extends React.Component {
           onSave={this.saveData}
           isOpen={true}
           onClose={onClose}
-          title="seasondata"
+          title="orderdata"
+          fullScreen={true}
         >
           <Loading isOpen={isLoading} />
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={12}>
+            <Grid item xs={12} sm={3}>
               <TextField
                 id="name"
                 label="name"
@@ -126,25 +136,33 @@ class SeasonData extends React.Component {
                 errors={errors}
               />
             </Grid>
-            <Grid item xs={12} sm={12}>
+            <Grid item xs={12} sm={3}>
               <AutoComplete
-                id="customer"
-                dataSource="customers"
+                id="season"
+                dataSource="seasons"
                 idField="id"
                 displayField="name"
-                onChange={this.onChangeCustomerSelect}
-                selectedValue={customer}
-                hasErrors={errors.includes("customer")}
-                label="customer"
+                onChange={this.onChangeSeasonSelect}
+                selectedValue={season}
+                hasErrors={errors.includes("season")}
+                label="season"
               />
             </Grid>
-            <Grid item xs={12} sm={12}>
+            <Grid item xs={12} sm={3}>
+              <TextField
+                id="customer"
+                label="customer"
+                value={customerName}
+                disabled={true}
+              />
+            </Grid>
+            <Grid item xs={12} sm={3}>
               <DatePicker
-                id="scheduledDate"
-                label="scheduleddate"
-                date={scheduledDate}
+                id="purchaseDate"
+                label="purchasedate"
+                date={purchaseDate}
                 onChange={(value) => {
-                  this.setState({ scheduledDate: value });
+                  this.setState({ purchaseDate: value });
                 }}
               />
             </Grid>
@@ -155,4 +173,4 @@ class SeasonData extends React.Component {
   }
 }
 
-export default SeasonData;
+export default OrderData;

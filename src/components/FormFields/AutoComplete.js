@@ -74,7 +74,7 @@ const AutoComplete = ({
         renderInput={(params) => (
           <TextField
             {...params}
-            label={label}
+            label={t(label)}
             variant={inputVariant}
             error={hasErrors}
             helperText={hasErrors && t("requiredfield")}

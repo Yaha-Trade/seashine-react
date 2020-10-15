@@ -4,13 +4,11 @@ import ModalData from "../../components/modal/ModalData";
 import Loading from "../../components/Loading";
 import AutoComplete from "../../components/formfields/AutoComplete";
 import FileField from "../../components/formfields/FileField";
-import { useTranslation } from "react-i18next";
 import TextField from "../../components/formfields/TextField";
 import callServer from "../../services/callServer";
 import { extractId } from "../../services/Utils";
 
 const ImportProduct = ({ callBack, onClose }) => {
-  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [name, setName] = useState("");
   const [season, setSeason] = useState(null);
@@ -130,7 +128,7 @@ const ImportProduct = ({ callBack, onClose }) => {
               onChange={onChangeSeasonSelect}
               selectedValue={season}
               hasErrors={errors.includes("season")}
-              label={t("season")}
+              label="season"
             />
           </Grid>
           <Grid item xs={12} sm={12}>
@@ -142,7 +140,7 @@ const ImportProduct = ({ callBack, onClose }) => {
               onChange={onChangeShowRoomSelect}
               selectedValue={showRoom}
               hasErrors={errors.includes("showRoom")}
-              label={t("showroom")}
+              label="showroom"
             />
           </Grid>
           <Grid item xs={12} sm={12}>

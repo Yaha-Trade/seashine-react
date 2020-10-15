@@ -36,15 +36,14 @@ export const logout = () => {
   setUser(null);
 };
 
-export const refreshToken = () => {
-  callServer.post("/auth/refresh_token").then((response) => {
-    const token = response.headers.authorization.substring(7);
-    const login = jwt_decode(token).sub;
+export const refreshToken = async () => {
+  const response = await callServer.post("/auth/refresh_token");
+  const token = response.headers.authorization.substring(7);
+  const login = jwt_decode(token).sub;
 
-    setUser({
-      login: login,
-      token: token,
-    });
+  setUser({
+    login: login,
+    token: token,
   });
 };
 
