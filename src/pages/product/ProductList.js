@@ -64,16 +64,12 @@ const ProductList = () => {
     setHasToReloadData(true);
   };
 
-  const importFile = async () => {
-    console.log("Importando");
-  };
-
   return (
     <div>
       {open && <ProductData idProduct={id} onSave={onSave} onClose={onClose} />}
       {isImportOpen && (
         <ImportProduct
-          onSave={importFile}
+          callBack={() => setHasToReloadData(true)}
           onClose={() => setIsImportOpen(false)}
         />
       )}

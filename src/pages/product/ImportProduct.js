@@ -5,14 +5,22 @@ import Loading from "../../components/Loading";
 import AutoComplete from "../../components/formfields/AutoComplete";
 import FileField from "../../components/formfields/FileField";
 import { useTranslation } from "react-i18next";
+import TextField from "../../components/formfields/TextField";
+import callServer from "../../services/callServer";
+import { extractId } from "../../services/Utils";
 
-const ImportProduct = ({ onSave, onClose }) => {
+const ImportProduct = ({ callBack, onClose }) => {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
+  const [name, setName] = useState("");
   const [season, setSeason] = useState(null);
   const [showRoom, setShowRoom] = useState(null);
   const [errors, setErrors] = useState([]);
   const [importFile, setImportFile] = useState(null);
+
+  const updateName = (seasonName, showRoomName) => {
+    setName(`${seasonName} | ${showRoomName}`);
+  };
 
   const onChangeSeasonSelect = (event, value) => {
     setSeason(value);
@@ -23,6 +31,7 @@ const ImportProduct = ({ onSave, onClose }) => {
         })
       );
     }
+    updateName(value ? value.name : "", showRoom ? showRoom.name : "");
   };
 
   const onChangeShowRoomSelect = (event, value) => {
@@ -34,6 +43,7 @@ const ImportProduct = ({ onSave, onClose }) => {
         })
       );
     }
+    updateName(season ? season.name : "", value ? value.name : "");
   };
 
   const onChangeFile = (file) => {
@@ -69,7 +79,25 @@ const ImportProduct = ({ onSave, onClose }) => {
     }
 
     setIsLoading(true);
-    await onSave();
+
+    const response = await callServer.post(`productlists`, {
+      name,
+      season: { id: season.id },
+      showRoom: { id: showRoom.id },
+    });
+    const newId = extractId(response.headers.location);
+
+    const data = new FormData();
+    data.append("importFile", importFile);
+
+    const config = {
+      headers: { "Content-Type": "multipart/form-data" },
+    };
+
+    await callServer.post(`productlists/import/${newId}`, data, config);
+
+    callBack();
+
     setIsLoading(false);
     onClose();
   };
@@ -84,6 +112,15 @@ const ImportProduct = ({ onSave, onClose }) => {
       >
         <Loading isOpen={isLoading} />
         <Grid container spacing={2}>
+          <Grid item xs={12} sm={12}>
+            <TextField
+              id="name"
+              label="name"
+              value={name}
+              required={true}
+              disabled={true}
+            />
+          </Grid>
           <Grid item xs={12} sm={12}>
             <AutoComplete
               id="season"
