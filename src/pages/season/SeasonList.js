@@ -63,7 +63,6 @@ const SeasonList = () => {
         title={t("season")}
         columns={columns}
         dataSource="seasons"
-        serverSide={true}
         initialSort={{ name: "scheduledDate", direction: "asc" }}
         onAdd={onAdd}
         onEdit={onEdit}

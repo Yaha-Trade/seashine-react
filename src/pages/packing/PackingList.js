@@ -53,7 +53,6 @@ const PackingList = () => {
         title={t("packing")}
         columns={columns}
         dataSource="packings"
-        serverSide={true}
         initialSort={{ name: "englishName", direction: "asc" }}
         onAdd={onAdd}
         onEdit={onEdit}

@@ -53,7 +53,6 @@ const CustomerList = () => {
         title={t("customer")}
         columns={columns}
         dataSource="customers"
-        serverSide={true}
         initialSort={{ name: "name", direction: "asc" }}
         onAdd={onAdd}
         onEdit={onEdit}

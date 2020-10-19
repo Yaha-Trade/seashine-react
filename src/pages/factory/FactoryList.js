@@ -56,7 +56,6 @@ const FactoryList = () => {
         title={t("factory")}
         columns={columns}
         dataSource="factories"
-        serverSide={true}
         initialSort={{ name: "name", direction: "asc" }}
         onAdd={onAdd}
         onEdit={onEdit}

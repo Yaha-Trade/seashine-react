@@ -77,7 +77,6 @@ const ProductList = () => {
         title={t("product")}
         columns={columns}
         dataSource="products"
-        serverSide={true}
         initialSort={{ name: "reference", direction: "asc" }}
         onAdd={onAdd}
         onEdit={onEdit}

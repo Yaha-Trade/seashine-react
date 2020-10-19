@@ -1,30 +1,21 @@
 import React, { useState } from "react";
 import DataTable from "../../components/datatable/DataTable";
+import OrderItemData from "./OrderItemData";
 import { useTranslation } from "react-i18next";
-import OrderData from "./OrderData";
 import callServer from "../../services/callServer";
-import { extractId, formatDateToDisplay } from "../../services/Utils";
+import { extractId } from "../../services/Utils";
 
-const OrderList = () => {
+const OrderList = ({ idOrder }) => {
   const { t } = useTranslation();
-  const [open, setOpen] = useState(false);
+  const [isOrderItemOpen, setIsOrderItemOpen] = useState(false);
   const [id, setId] = useState();
   const [hasToReloadData, setHasToReloadData] = useState(false);
 
   const columns = [
-    { name: "name", label: t("name") },
-    { name: "customerName", label: t("customer") },
-    { name: "seasonName", label: t("season") },
-    {
-      name: "purchaseDate",
-      label: t("purchasedate"),
-      options: {
-        filter: false,
-        customBodyRender: (value, tableMeta, updateValue) => {
-          return formatDateToDisplay(value);
-        },
-      },
-    },
+    { name: "factoryName", label: t("factory") },
+    { name: "productReference", label: t("reference") },
+    { name: "productDescription", label: t("description") },
+    { name: "quantity", label: t("quantity") },
   ];
 
   const getHasToReloadData = () => {
@@ -33,17 +24,14 @@ const OrderList = () => {
 
   const onAdd = () => {
     setId(-1);
-    setOpen(true);
   };
 
   const onEdit = (id) => {
     setId(id);
-    setOpen(true);
   };
 
   const onClose = () => {
     setId(-1);
-    setOpen(false);
   };
 
   const onSave = async (order) => {
@@ -60,16 +48,20 @@ const OrderList = () => {
 
   return (
     <div>
-      {open && <OrderData idOrder={id} onSave={onSave} onClose={onClose} />}
+      {isOrderItemOpen && (
+        <OrderItemData onClose={() => setIsOrderItemOpen(false)} />
+      )}
       <DataTable
-        title={t("order")}
+        title={t("orderlist")}
         columns={columns}
-        dataSource="orderlists"
-        initialSort={{ name: "name", direction: "asc" }}
-        onAdd={onAdd}
-        onEdit={onEdit}
-        setHasToReloadData={setHasToReloadData}
-        getHasToReloadData={getHasToReloadData}
+        dataSource={`orderlistitems/${idOrder}`}
+        initialSort={{ name: "quantity", direction: "asc" }}
+        setHasToReloadData={() => {
+          return false;
+        }}
+        getHasToReloadData={() => {}}
+        tableHeight={window.innerHeight - 90}
+        onAdd={() => setIsOrderItemOpen(true)}
       />
     </div>
   );

@@ -37,7 +37,6 @@ function getStepContent(step) {
           title="Teste@@@"
           columns={[{ name: "name", label: "Name@@@" }]}
           dataSource="orderlists"
-          serverSide={true}
           initialSort={{ name: "name", direction: "asc" }}
           setHasToReloadData={() => {
             return false;
