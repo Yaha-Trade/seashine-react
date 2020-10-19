@@ -8,7 +8,7 @@ import DisplayCurrency from "../../components/display/DisplayCurrency";
 import ProductToolbar from "./ProductToolbar";
 import ImportProduct from "./ImportProduct";
 
-const ProductList = () => {
+const ProductList = ({ tableHeight, onRowSelectionChange = () => {} }) => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [id, setId] = useState();
@@ -74,7 +74,7 @@ const ProductList = () => {
         />
       )}
       <DataTable
-        title={t("product")}
+        title="product"
         columns={columns}
         dataSource="products"
         initialSort={{ name: "reference", direction: "asc" }}
@@ -85,6 +85,8 @@ const ProductList = () => {
         customToolbar={
           <ProductToolbar onImport={() => setIsImportOpen(true)} />
         }
+        tableHeight={tableHeight ? tableHeight : window.innerHeight}
+        onRowSelectionChange={onRowSelectionChange}
       />
     </div>
   );

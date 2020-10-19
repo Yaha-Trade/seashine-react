@@ -276,12 +276,23 @@ class DataTable extends React.Component {
           />
         );
       },
+      onRowSelectionChange: (
+        currentRowsSelected,
+        allRowsSelected,
+        rowsSelected
+      ) => {
+        if (this.props.onRowSelectionChange) {
+          const selectedId =
+            rowsSelected.length > 0 ? data[rowsSelected[0]].id : -1;
+          this.props.onRowSelectionChange(selectedId);
+        }
+      },
     };
 
     return (
       <div>
         <MUIDataTable
-          title={this.props.title}
+          title={t(this.props.title)}
           data={data}
           columns={this.props.columns}
           options={options}

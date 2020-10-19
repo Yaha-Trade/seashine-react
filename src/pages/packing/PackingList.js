@@ -50,7 +50,7 @@ const PackingList = () => {
     <div>
       {open && <PackingData idPacking={id} onSave={onSave} onClose={onClose} />}
       <DataTable
-        title={t("packing")}
+        title="packing"
         columns={columns}
         dataSource="packings"
         initialSort={{ name: "englishName", direction: "asc" }}

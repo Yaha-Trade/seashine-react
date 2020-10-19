@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
@@ -7,7 +7,8 @@ import StepContent from "@material-ui/core/StepContent";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import DataTable from "../../components/datatable/DataTable";
+import ProductList from "../../pages/product/ProductList";
+import { useTranslation } from "react-i18next";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,39 +26,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function getSteps() {
-  return ["Select products", "Edit product informations", "Add remarks"];
-}
-
-function getStepContent(step) {
-  switch (step) {
-    case 0:
-      return (
-        <DataTable
-          title="Teste@@@"
-          columns={[{ name: "name", label: "Name@@@" }]}
-          dataSource="orderlists"
-          initialSort={{ name: "name", direction: "asc" }}
-          setHasToReloadData={() => {
-            return false;
-          }}
-          getHasToReloadData={() => {}}
-          tableHeight={window.innerHeight / 2}
-        />
-      );
-    case 1:
-      return "Edit product informations";
-    case 2:
-      return `Add remarks`;
-    default:
-      return "Unknown step";
-  }
-}
-
-export default function OrderStepper() {
+const OrderStepper = () => {
+  const { t } = useTranslation();
   const classes = useStyles();
-  const [activeStep, setActiveStep] = React.useState(0);
-  const steps = getSteps();
+  const [activeStep, setActiveStep] = useState(0);
+  const steps = ["Select product", "Edit product informations", "Add remarks"];
+  const [selectedProduct, setSelectedProduct] = useState(-1);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -69,6 +43,24 @@ export default function OrderStepper() {
 
   const handleReset = () => {
     setActiveStep(0);
+  };
+
+  const getStepContent = (step) => {
+    switch (step) {
+      case 0:
+        return (
+          <ProductList
+            tableHeight={window.innerHeight / 2}
+            onRowSelectionChange={setSelectedProduct}
+          />
+        );
+      case 1:
+        return "Edit product informations";
+      case 2:
+        return `Add remarks`;
+      default:
+        return "Unknown step";
+    }
   };
 
   return (
@@ -86,7 +78,7 @@ export default function OrderStepper() {
                     onClick={handleBack}
                     className={classes.button}
                   >
-                    Back
+                    {t("back")}
                   </Button>
                   <Button
                     variant="contained"
@@ -94,7 +86,7 @@ export default function OrderStepper() {
                     onClick={handleNext}
                     className={classes.button}
                   >
-                    {activeStep === steps.length - 1 ? "Finish" : "Next"}
+                    {activeStep === steps.length - 1 ? "Finish" : t("next")}
                   </Button>
                 </div>
               </div>
@@ -112,4 +104,6 @@ export default function OrderStepper() {
       )}
     </div>
   );
-}
+};
+
+export default OrderStepper;

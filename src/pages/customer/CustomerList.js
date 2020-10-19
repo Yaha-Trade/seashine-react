@@ -50,7 +50,7 @@ const CustomerList = () => {
         <CustomerData idCustomer={id} onSave={onSave} onClose={onClose} />
       )}
       <DataTable
-        title={t("customer")}
+        title="customer"
         columns={columns}
         dataSource="customers"
         initialSort={{ name: "name", direction: "asc" }}

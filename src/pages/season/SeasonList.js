@@ -60,7 +60,7 @@ const SeasonList = () => {
     <div>
       {open && <SeasonData idSeason={id} onSave={onSave} onClose={onClose} />}
       <DataTable
-        title={t("season")}
+        title="season"
         columns={columns}
         dataSource="seasons"
         initialSort={{ name: "scheduledDate", direction: "asc" }}

@@ -53,7 +53,7 @@ const FactoryList = () => {
     <div>
       {open && <FactoryData idFactory={id} onSave={onSave} onClose={onClose} />}
       <DataTable
-        title={t("factory")}
+        title="factory"
         columns={columns}
         dataSource="factories"
         initialSort={{ name: "name", direction: "asc" }}

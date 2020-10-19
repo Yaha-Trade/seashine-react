@@ -53,7 +53,7 @@ const OrderList = ({ idOrder }) => {
     <div>
       {open && <OrderItemData onSave={onSave} onClose={onClose} />}
       <DataTable
-        title={t("orderlist")}
+        title="orderlist"
         columns={columns}
         dataSource={`orderlistitems/${idOrder}`}
         initialSort={{ name: "quantity", direction: "asc" }}
