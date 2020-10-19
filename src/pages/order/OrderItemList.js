@@ -7,7 +7,7 @@ import { extractId } from "../../services/Utils";
 
 const OrderList = ({ idOrder }) => {
   const { t } = useTranslation();
-  const [isOrderItemOpen, setIsOrderItemOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const [id, setId] = useState();
   const [hasToReloadData, setHasToReloadData] = useState(false);
 
@@ -24,44 +24,44 @@ const OrderList = ({ idOrder }) => {
 
   const onAdd = () => {
     setId(-1);
+    setOpen(true);
   };
 
   const onEdit = (id) => {
     setId(id);
+    setOpen(true);
   };
 
   const onClose = () => {
     setId(-1);
+    setOpen(false);
   };
 
   const onSave = async (order) => {
     if (id === -1) {
-      const response = await callServer.post(`orderlists`, order);
+      const response = await callServer.post(`orderlistitems`, order);
       const newId = extractId(response.headers.location);
       setId(newId);
       setHasToReloadData(true);
     } else {
-      await callServer.put(`orderlists/${id}`, order);
+      await callServer.put(`orderlistitems/${id}`, order);
     }
     setHasToReloadData(true);
   };
 
   return (
     <div>
-      {isOrderItemOpen && (
-        <OrderItemData onClose={() => setIsOrderItemOpen(false)} />
-      )}
+      {open && <OrderItemData onSave={onSave} onClose={onClose} />}
       <DataTable
         title={t("orderlist")}
         columns={columns}
         dataSource={`orderlistitems/${idOrder}`}
         initialSort={{ name: "quantity", direction: "asc" }}
-        setHasToReloadData={() => {
-          return false;
-        }}
-        getHasToReloadData={() => {}}
         tableHeight={window.innerHeight - 90}
-        onAdd={() => setIsOrderItemOpen(true)}
+        onAdd={onAdd}
+        onEdit={onEdit}
+        setHasToReloadData={setHasToReloadData}
+        getHasToReloadData={getHasToReloadData}
       />
     </div>
   );
