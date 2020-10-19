@@ -7,15 +7,19 @@ import TextField from "../../components/formfields/TextField";
 import AutoComplete from "../../components/formfields/AutoComplete";
 import DatePicker from "../../components/formfields/DatePicker";
 import { formatDateToUTC } from "../../services/Utils";
+import DataTable from "../../components/datatable/DataTable";
+import OrderItemData from "./OrderItemData";
+import { withTranslation } from "react-i18next";
 
 class OrderData extends React.Component {
   state = {
     name: "",
     season: null,
     customerName: "",
-    purchaseDate: null,
+    purchaseDate: new Date(),
     errors: [],
     isLoading: false,
+    isOrderItemOpen: false,
   };
 
   onChangeForField = (id, newValue) => {
@@ -105,7 +109,7 @@ class OrderData extends React.Component {
   }
 
   render() {
-    const { onClose } = this.props;
+    const { idOrder, t, onClose } = this.props;
     const {
       name,
       season,
@@ -113,10 +117,16 @@ class OrderData extends React.Component {
       purchaseDate,
       errors,
       isLoading,
+      isOrderItemOpen,
     } = this.state;
 
     return (
       <div>
+        {isOrderItemOpen && (
+          <OrderItemData
+            onClose={() => this.setState({ isOrderItemOpen: false })}
+          />
+        )}
         <ModalData
           onSave={this.saveData}
           isOpen={true}
@@ -166,6 +176,28 @@ class OrderData extends React.Component {
                 }}
               />
             </Grid>
+            <Grid item xs={12} sm={12}>
+              {idOrder && idOrder !== -1 && (
+                <DataTable
+                  title={t("orderlist")}
+                  columns={[
+                    { name: "factoryName", label: t("factory") },
+                    { name: "productReference", label: t("reference") },
+                    { name: "productDescription", label: t("description") },
+                    { name: "quantity", label: t("quantity") },
+                  ]}
+                  dataSource={`orderlists/${idOrder}/productorder`}
+                  serverSide={true}
+                  initialSort={{ name: "quantity", direction: "asc" }}
+                  setHasToReloadData={() => {
+                    return false;
+                  }}
+                  getHasToReloadData={() => {}}
+                  tableHeight={window.innerHeight - 90}
+                  onAdd={() => this.setState({ isOrderItemOpen: true })}
+                />
+              )}
+            </Grid>
           </Grid>
         </ModalData>
       </div>
@@ -173,4 +205,4 @@ class OrderData extends React.Component {
   }
 }
 
-export default OrderData;
+export default withTranslation()(OrderData);

@@ -1,6 +1,6 @@
 export const CurrencyEnum = {
   DECIMALCHARACTER: ",",
   DIGITGROUPSEPARATOR: ".",
-  CURRENCYSYMBOL: "¥ ",
+  CURRENCYSYMBOL: "CN¥ ",
   DECIMALSCALE: 2,
 };

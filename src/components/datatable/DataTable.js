@@ -17,7 +17,9 @@ class DataTable extends React.Component {
     filters: [],
     totalPages: 1,
     rowsPerPageOptions: [50],
-    tableHeight: window.innerHeight - 215,
+    tableHeight: this.props.tableHeight
+      ? this.props.tableHeight
+      : window.innerHeight - 215,
   };
 
   componentDidUpdate() {
@@ -67,6 +69,9 @@ class DataTable extends React.Component {
         `${this.props.dataSource}/page?page=${page}&rowsPerPage=${rowsPerPage}${orderBy}${orderByDirection}${filtersString}`
       )
       .then((response) => {
+        const tableHeight = this.props.tableHeight
+          ? this.props.tableHeight
+          : window.innerHeight;
         this.setState({
           data: response.data.content,
           count: response.data.totalElements,
@@ -76,9 +81,7 @@ class DataTable extends React.Component {
           filters: filters,
           totalPages: response.data.totalPages,
           tableHeight:
-            filtersString !== ""
-              ? window.innerHeight - 255
-              : window.innerHeight - 215,
+            filtersString !== "" ? tableHeight - 255 : tableHeight - 215,
         });
       });
   };
