@@ -186,7 +186,7 @@ class OrderData extends React.Component {
                     { name: "productDescription", label: t("description") },
                     { name: "quantity", label: t("quantity") },
                   ]}
-                  dataSource={`orderlists/${idOrder}/productorder`}
+                  dataSource={`orderlistitems/${idOrder}`}
                   serverSide={true}
                   initialSort={{ name: "quantity", direction: "asc" }}
                   setHasToReloadData={() => {
