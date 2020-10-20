@@ -21,6 +21,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+import Button from "@material-ui/core/Button";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
@@ -49,6 +50,13 @@ const useStyles = (theme) => ({
   },
   dataDiv: {
     flexGrow: 1,
+  },
+  button: {
+    marginTop: theme.spacing(1),
+    marginRight: theme.spacing(1),
+  },
+  actionsContainer: {
+    marginBottom: theme.spacing(2),
   },
 });
 
@@ -237,6 +245,27 @@ class ProductData extends React.Component {
   };
 
   saveData = async (saveExit) => {
+    if (!this.checkRequiredFields()) {
+      return;
+    }
+
+    this.setState({ isLoading: true });
+
+    await this.props.onSave(this.createProductObject());
+
+    this.setState({ isLoading: false });
+
+    if (saveExit) {
+      this.props.onClose();
+    } else {
+      const { idProduct } = this.props;
+      if (idProduct && idProduct !== -1) {
+        this.fetchData(idProduct);
+      }
+    }
+  };
+
+  checkRequiredFields = () => {
     const errors = [];
     const {
       reference,
@@ -268,13 +297,6 @@ class ProductData extends React.Component {
       model,
       color,
       specialRequirements,
-      certificationId,
-      sound,
-      light,
-      motor,
-      metalPart,
-      clip,
-      line,
       batteries,
     } = this.state;
 
@@ -413,12 +435,54 @@ class ProductData extends React.Component {
     });
 
     if (errors.length > 0) {
-      return;
+      return false;
     }
 
-    this.setState({ isLoading: true });
+    return true;
+  };
 
-    await this.props.onSave({
+  createProductObject = () => {
+    const {
+      reference,
+      description,
+      factory,
+      packing,
+      price,
+      quantityInner,
+      quantityOfPieces,
+      boxLength,
+      boxWidth,
+      boxHeight,
+      packingLength,
+      packingWidth,
+      packingHeight,
+      productLength,
+      productWidth,
+      productHeight,
+      boxCubage,
+      boxGrossWeight,
+      boxNetWeight,
+      netWeightWithPacking,
+      netWeightWithoutPacking,
+      quantityOfBoxesPerContainer,
+      quantityOfPiecesPerContainer,
+      englishDescription,
+      quantityOfParts,
+      composition,
+      model,
+      color,
+      specialRequirements,
+      certificationId,
+      sound,
+      light,
+      motor,
+      metalPart,
+      clip,
+      line,
+      batteries,
+    } = this.state;
+
+    return {
       reference,
       description,
       factory: { id: factory.id },
@@ -458,18 +522,7 @@ class ProductData extends React.Component {
         line,
         batteries,
       },
-    });
-
-    this.setState({ isLoading: false });
-
-    if (saveExit) {
-      this.props.onClose();
-    } else {
-      const { idProduct } = this.props;
-      if (idProduct && idProduct !== -1) {
-        this.fetchData(idProduct);
-      }
-    }
+    };
   };
 
   fetchData = (idProduct) => {
@@ -542,12 +595,6 @@ class ProductData extends React.Component {
     if (idProduct && idProduct !== -1) {
       this.setState({ isLoading: true });
       this.fetchData(idProduct);
-    }
-  }
-
-  componentWillUnmount() {
-    if (this.props.isOnOrder) {
-      this.saveData(true);
     }
   }
 
@@ -1288,6 +1335,14 @@ class ProductData extends React.Component {
     );
   };
 
+  handleNext = () => {
+    if (!this.checkRequiredFields()) {
+      return;
+    }
+
+    this.props.onSave(this.createProductObject());
+  };
+
   getContent = () => {
     const { t, classes, isOnOrder } = this.props;
     const { selectedTab, isLoading } = this.state;
@@ -1320,10 +1375,33 @@ class ProductData extends React.Component {
   };
 
   render() {
-    const { onClose, isOnOrder } = this.props;
+    const { t, onClose, isOnOrder, classes, handleBack } = this.props;
 
     if (isOnOrder) {
-      return <div>{this.getContent()}</div>;
+      return (
+        <div>
+          <div>{this.getContent()}</div>
+
+          <div className={classes.actionsContainer}>
+            <div>
+              <Button onClick={onClose} className={classes.button}>
+                {t("cancel")}
+              </Button>
+              <Button onClick={handleBack} className={classes.button}>
+                {t("back")}
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                className={classes.button}
+                onClick={this.handleNext}
+              >
+                {t("next")}
+              </Button>
+            </div>
+          </div>
+        </div>
+      );
     } else {
       return (
         <div>

@@ -63,36 +63,12 @@ const OrderStepper = ({ saveData, onClose }) => {
       }
     }
     setProductData(product);
+    handleNext();
   };
 
   const createProduct = () => {
     saveData(productData);
     handleNext();
-  };
-
-  const getStepContent = (step) => {
-    switch (step) {
-      case 0:
-        return (
-          <ProductList
-            tableHeight={window.innerHeight - 166}
-            onRowSelectionChange={setSelectedProduct}
-          />
-        );
-      case 1:
-        return (
-          <ProductData
-            idProduct={selectedProduct}
-            onSave={setProduct}
-            onClose={() => {}}
-            isOnOrder={true}
-          />
-        );
-      case 2:
-        return `Add remarks`;
-      default:
-        return "Unknown step";
-    }
   };
 
   return (
@@ -104,9 +80,12 @@ const OrderStepper = ({ saveData, onClose }) => {
           </Step>
         ))}
       </Stepper>
-      {activeStep < steps.length && (
+      {activeStep === 0 && (
         <div>
-          {getStepContent(activeStep)}
+          <ProductList
+            tableHeight={window.innerHeight - 166}
+            onRowSelectionChange={setSelectedProduct}
+          />
           <div className={classes.actionsContainer}>
             <div>
               <Button onClick={onClose} className={classes.button}>
@@ -124,11 +103,45 @@ const OrderStepper = ({ saveData, onClose }) => {
                 color="primary"
                 className={classes.button}
                 disabled={selectedProduct === -1}
-                onClick={
-                  activeStep === steps.length - 1 ? createProduct : handleNext
-                }
+                onClick={handleNext}
               >
-                {activeStep === steps.length - 1 ? "Finish" : t("next")}
+                {t("next")}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+      {activeStep === 1 && (
+        <ProductData
+          idProduct={selectedProduct}
+          onSave={setProduct}
+          onClose={onClose}
+          isOnOrder={true}
+          handleBack={handleBack}
+        />
+      )}
+      {activeStep === 2 && (
+        <div>
+          REMARKS WILL GO HERE!
+          <div className={classes.actionsContainer}>
+            <div>
+              <Button onClick={onClose} className={classes.button}>
+                {t("cancel")}
+              </Button>
+              <Button
+                disabled={activeStep === 0}
+                onClick={handleBack}
+                className={classes.button}
+              >
+                {t("back")}
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                className={classes.button}
+                onClick={createProduct}
+              >
+                {t("finish")}
               </Button>
             </div>
           </div>
