@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import callServer from "../../services/callServer";
 import { withTranslation } from "react-i18next";
 import Grid from "@material-ui/core/Grid";
@@ -542,6 +542,12 @@ class ProductData extends React.Component {
     if (idProduct && idProduct !== -1) {
       this.setState({ isLoading: true });
       this.fetchData(idProduct);
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.props.noModal) {
+      this.saveData(true);
     }
   }
 
@@ -1265,44 +1271,58 @@ class ProductData extends React.Component {
     );
   };
 
-  render() {
-    const { t, onClose, classes } = this.props;
+  getContent = () => {
+    const { t, classes } = this.props;
     const { selectedTab, isLoading } = this.state;
 
     return (
-      <div>
-        <ModalData
-          onSave={this.saveData}
-          isOpen={true}
-          onClose={onClose}
-          title="productdata"
-          fullWidth
-          minHeight="620px"
-        >
-          <Loading isOpen={isLoading} />
-          <TabContext value={selectedTab}>
-            <TabList onChange={this.handleTabChange}>
-              <Tab label={t("factory")} value="1" />
-              <Tab label={t("certification")} value="2" />
-              <Tab
-                label={t("picture")}
-                disabled={this.props.idProduct === -1}
-                value="3"
-              />
-            </TabList>
-            <TabPanel className={classes.tabPanel} value="1">
-              {this.ProductDataFactory()}
-            </TabPanel>
-            <TabPanel className={classes.tabPanel} value="2">
-              {this.CertificationData()}
-            </TabPanel>
-            <TabPanel className={classes.tabPanel} value="3">
-              {this.ImageData()}
-            </TabPanel>
-          </TabContext>
-        </ModalData>
-      </div>
+      <Fragment>
+        <Loading isOpen={isLoading} />
+        <TabContext value={selectedTab}>
+          <TabList onChange={this.handleTabChange}>
+            <Tab label={t("factory")} value="1" />
+            <Tab label={t("certification")} value="2" />
+            <Tab
+              label={t("picture")}
+              disabled={this.props.idProduct === -1}
+              value="3"
+            />
+          </TabList>
+          <TabPanel className={classes.tabPanel} value="1">
+            {this.ProductDataFactory()}
+          </TabPanel>
+          <TabPanel className={classes.tabPanel} value="2">
+            {this.CertificationData()}
+          </TabPanel>
+          <TabPanel className={classes.tabPanel} value="3">
+            {this.ImageData()}
+          </TabPanel>
+        </TabContext>
+      </Fragment>
     );
+  };
+
+  render() {
+    const { onClose, noModal } = this.props;
+
+    if (noModal) {
+      return <div>{this.getContent()}</div>;
+    } else {
+      return (
+        <div>
+          <ModalData
+            onSave={this.saveData}
+            isOpen={true}
+            onClose={onClose}
+            title="productdata"
+            fullWidth
+            minHeight="620px"
+          >
+            {this.getContent()}
+          </ModalData>
+        </div>
+      );
+    }
   }
 }
 

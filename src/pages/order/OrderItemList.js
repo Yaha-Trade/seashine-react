@@ -51,7 +51,9 @@ const OrderList = ({ idOrder }) => {
 
   return (
     <div>
-      {open && <OrderItemData onSave={onSave} onClose={onClose} />}
+      {open && (
+        <OrderItemData idOrder={idOrder} onSave={onSave} onClose={onClose} />
+      )}
       <DataTable
         title="orderlist"
         columns={columns}
