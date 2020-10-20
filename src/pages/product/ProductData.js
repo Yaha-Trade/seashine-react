@@ -546,7 +546,7 @@ class ProductData extends React.Component {
   }
 
   componentWillUnmount() {
-    if (this.props.noModal) {
+    if (this.props.isOnOrder) {
       this.saveData(true);
     }
   }
@@ -591,7 +591,7 @@ class ProductData extends React.Component {
       quantityOfPiecesPerContainer,
       errors,
     } = this.state;
-    const { classes } = this.props;
+    const { classes, isOnOrder } = this.props;
 
     const isEnglishLanguage = getLanguage() === LanguageEnum.ENGLISH;
 
@@ -609,6 +609,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
+                  disabled={isOnOrder}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -621,6 +622,7 @@ class ProductData extends React.Component {
                   selectedValue={factory}
                   hasErrors={errors.includes("factory")}
                   label="factory"
+                  disabled={isOnOrder}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -635,6 +637,7 @@ class ProductData extends React.Component {
                   selectedValue={packing}
                   hasErrors={errors.includes("packing")}
                   label="packing"
+                  disabled={isOnOrder}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -655,6 +658,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
+                  disabled={isOnOrder}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -665,6 +669,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
+                  disabled={isOnOrder}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -675,6 +680,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
+                  disabled={isOnOrder}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -685,6 +691,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
+                  disabled={isOnOrder}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -706,6 +713,7 @@ class ProductData extends React.Component {
                   callBack={this.onChangeBoxLength}
                   onChange={this.onChangeForField}
                   errors={errors}
+                  disabled={isOnOrder}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -717,6 +725,7 @@ class ProductData extends React.Component {
                   callBack={this.onChangeBoxWidth}
                   onChange={this.onChangeForField}
                   errors={errors}
+                  disabled={isOnOrder}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -728,6 +737,7 @@ class ProductData extends React.Component {
                   callBack={this.onChangeBoxHeight}
                   onChange={this.onChangeForField}
                   errors={errors}
+                  disabled={isOnOrder}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -748,6 +758,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
+                  disabled={isOnOrder}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -758,6 +769,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
+                  disabled={isOnOrder}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -768,6 +780,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
+                  disabled={isOnOrder}
                 />
               </Grid>
               <Grid item xs={12} sm={3}></Grid>
@@ -812,6 +825,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
+                  disabled={isOnOrder}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -822,6 +836,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
+                  disabled={isOnOrder}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -832,6 +847,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
+                  disabled={isOnOrder}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -842,6 +858,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
+                  disabled={isOnOrder}
                 />
               </Grid>
             </Grid>
@@ -1272,7 +1289,7 @@ class ProductData extends React.Component {
   };
 
   getContent = () => {
-    const { t, classes } = this.props;
+    const { t, classes, isOnOrder } = this.props;
     const { selectedTab, isLoading } = this.state;
 
     return (
@@ -1281,10 +1298,10 @@ class ProductData extends React.Component {
         <TabContext value={selectedTab}>
           <TabList onChange={this.handleTabChange}>
             <Tab label={t("factory")} value="1" />
-            <Tab label={t("certification")} value="2" />
+            <Tab label={t("certification")} value="2" disabled={isOnOrder} />
             <Tab
               label={t("picture")}
-              disabled={this.props.idProduct === -1}
+              disabled={this.props.idProduct === -1 || isOnOrder}
               value="3"
             />
           </TabList>
@@ -1303,9 +1320,9 @@ class ProductData extends React.Component {
   };
 
   render() {
-    const { onClose, noModal } = this.props;
+    const { onClose, isOnOrder } = this.props;
 
-    if (noModal) {
+    if (isOnOrder) {
       return <div>{this.getContent()}</div>;
     } else {
       return (

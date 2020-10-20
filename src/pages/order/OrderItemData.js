@@ -26,12 +26,13 @@ const OrderItemData = ({ idOrder, onClose }) => {
   return (
     <div>
       <ModalData
-        isOpen={true}
         onClose={onClose}
-        title="orderdata"
+        isOpen={true}
+        title="orderitemdata"
         fullScreen={true}
+        hasActions={false}
       >
-        <OrderStepper saveData={saveData} />
+        <OrderStepper saveData={saveData} onClose={onClose} />
       </ModalData>
     </div>
   );

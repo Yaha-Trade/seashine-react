@@ -18,6 +18,7 @@ const ModalData = ({
   fullWidth = false,
   fullScreen = false,
   minHeight = "auto",
+  hasActions = true,
 }) => {
   const useStyles = makeStyles((theme) => ({
     dialogPaper: {
@@ -51,17 +52,19 @@ const ModalData = ({
             </main>
           </Fade>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={onClose} color="primary">
-            {t("cancel")}
-          </Button>
-          <Button onClick={() => onSave(false)} color="primary">
-            {t("save")}
-          </Button>
-          <Button onClick={() => onSave(true)} color="primary">
-            {t("saveandexit")}
-          </Button>
-        </DialogActions>
+        {hasActions && (
+          <DialogActions>
+            <Button onClick={onClose} color="primary">
+              {t("cancel")}
+            </Button>
+            <Button onClick={() => onSave(false)} color="primary">
+              {t("save")}
+            </Button>
+            <Button onClick={() => onSave(true)} color="primary">
+              {t("saveandexit")}
+            </Button>
+          </DialogActions>
+        )}
       </Dialog>
     </div>
   );

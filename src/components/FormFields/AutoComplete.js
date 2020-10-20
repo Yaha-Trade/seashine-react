@@ -14,6 +14,7 @@ const AutoComplete = ({
   hasErrors,
   label,
   inputVariant = "outlined",
+  disabled = false,
 }) => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
@@ -71,6 +72,7 @@ const AutoComplete = ({
         getOptionLabel={(option) => option[displayField]}
         options={options}
         loading={loading}
+        disabled={disabled}
         renderInput={(params) => (
           <TextField
             {...params}

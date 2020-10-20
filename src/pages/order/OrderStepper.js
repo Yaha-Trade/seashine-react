@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const OrderStepper = ({ saveData }) => {
+const OrderStepper = ({ saveData, onClose }) => {
   const { t } = useTranslation();
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
@@ -85,7 +85,7 @@ const OrderStepper = ({ saveData }) => {
             idProduct={selectedProduct}
             onSave={setProduct}
             onClose={() => {}}
-            noModal={true}
+            isOnOrder={true}
           />
         );
       case 2:
@@ -109,6 +109,9 @@ const OrderStepper = ({ saveData }) => {
           {getStepContent(activeStep)}
           <div className={classes.actionsContainer}>
             <div>
+              <Button onClick={onClose} className={classes.button}>
+                {t("cancel")}
+              </Button>
               <Button
                 disabled={activeStep === 0}
                 onClick={handleBack}
