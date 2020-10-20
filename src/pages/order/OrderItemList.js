@@ -8,7 +8,6 @@ import { extractId } from "../../services/Utils";
 const OrderList = ({ idOrder }) => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
-  const [id, setId] = useState();
   const [hasToReloadData, setHasToReloadData] = useState(false);
 
   const columns = [
@@ -23,37 +22,38 @@ const OrderList = ({ idOrder }) => {
   };
 
   const onAdd = () => {
-    setId(-1);
     setOpen(true);
   };
 
   const onEdit = (id) => {
-    setId(id);
     setOpen(true);
   };
 
   const onClose = () => {
-    setId(-1);
     setOpen(false);
   };
 
-  const onSave = async (order) => {
-    if (id === -1) {
-      const response = await callServer.post(`orderlistitems`, order);
-      const newId = extractId(response.headers.location);
-      setId(newId);
-      setHasToReloadData(true);
-    } else {
-      await callServer.put(`orderlistitems/${id}`, order);
-    }
+  const onSave = async (product) => {
+    const productResponse = await callServer.post(`products`, product);
+    const newIdProduct = extractId(productResponse.headers.location);
+
+    const orderItemResponse = await callServer.post("orderlistitems", {
+      id: null,
+      quantity: 15,
+      product: {
+        id: newIdProduct,
+      },
+      orderList: {
+        id: idOrder,
+      },
+    });
+
     setHasToReloadData(true);
   };
 
   return (
     <div>
-      {open && (
-        <OrderItemData idOrder={idOrder} onSave={onSave} onClose={onClose} />
-      )}
+      {open && <OrderItemData onSave={onSave} onClose={onClose} />}
       <DataTable
         title="orderlist"
         columns={columns}

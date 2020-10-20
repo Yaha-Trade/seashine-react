@@ -13,7 +13,7 @@ class OrderData extends React.Component {
   state = {
     name: "",
     season: null,
-    customerName: "",
+    customer: null,
     purchaseDate: new Date(),
     errors: [],
     isLoading: false,
@@ -32,19 +32,19 @@ class OrderData extends React.Component {
     this.setState({ season: value });
     if (value !== null) {
       this.setState({
-        customerName: value.customerName,
+        customer: value.customer,
         errors: this.state.errors.filter((value) => {
           return value !== "season";
         }),
       });
     } else {
-      this.setState({ customerName: "" });
+      this.setState({ customer: null });
     }
   };
 
   saveData = async (saveAndExit) => {
     const errors = [];
-    const { name, season, purchaseDate } = this.state;
+    const { name, season, customer, purchaseDate } = this.state;
 
     if (name === "") {
       errors.push("name");
@@ -72,6 +72,7 @@ class OrderData extends React.Component {
       name,
       season: { id: season.id },
       purchaseDate,
+      customer: { id: customer.id },
     });
 
     if (saveAndExit) {
@@ -89,7 +90,7 @@ class OrderData extends React.Component {
       this.setState({
         name: response.data.name,
         season: response.data.season,
-        customerName: response.data.season.customer.name,
+        customer: response.data.season.customer,
         purchaseDate: formatDateToUTC(response.data.purchaseDate),
         isLoading: false,
       });
@@ -110,7 +111,7 @@ class OrderData extends React.Component {
     const {
       name,
       season,
-      customerName,
+      customer,
       purchaseDate,
       errors,
       isLoading,
@@ -153,7 +154,7 @@ class OrderData extends React.Component {
               <TextField
                 id="customer"
                 label="customer"
-                value={customerName}
+                value={customer ? customer.name : ""}
                 disabled={true}
               />
             </Grid>

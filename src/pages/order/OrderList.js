@@ -13,8 +13,8 @@ const OrderList = () => {
 
   const columns = [
     { name: "name", label: t("name") },
-    { name: "customerName", label: t("customer") },
-    { name: "seasonName", label: t("season") },
+    { name: "customer", label: t("customer") },
+    { name: "season", label: t("season") },
     {
       name: "purchaseDate",
       label: t("purchasedate"),
