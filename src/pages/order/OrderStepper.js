@@ -83,7 +83,7 @@ const OrderStepper = ({ saveData, onClose }) => {
       {activeStep === 0 && (
         <div>
           <ProductList
-            tableHeight={window.innerHeight - 166}
+            tableHeight={window.innerHeight - 114}
             onRowSelectionChange={setSelectedProduct}
           />
           <div className={classes.actionsContainer}>
