@@ -116,7 +116,7 @@ const OrderStepper = ({ saveData, onClose }) => {
           idProduct={selectedProduct}
           onSave={setProduct}
           onClose={onClose}
-          isOnOrder={true}
+          isOrder={true}
           handleBack={handleBack}
         />
       )}

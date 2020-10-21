@@ -14,7 +14,7 @@ const OrderList = ({ idOrder }) => {
     { name: "factoryName", label: t("factory") },
     { name: "productReference", label: t("reference") },
     { name: "productDescription", label: t("description") },
-    { name: "quantity", label: t("quantity") },
+    { name: "quantityOfBoxesOrder", label: t("ordermasterqty") },
   ];
 
   const getHasToReloadData = () => {
@@ -39,7 +39,6 @@ const OrderList = ({ idOrder }) => {
 
     const orderItemResponse = await callServer.post("orderlistitems", {
       id: null,
-      quantity: 15,
       product: {
         id: newIdProduct,
       },
@@ -58,7 +57,7 @@ const OrderList = ({ idOrder }) => {
         title="orderlist"
         columns={columns}
         dataSource={`orderlistitems/${idOrder}`}
-        initialSort={{ name: "quantity", direction: "asc" }}
+        initialSort={{ name: "productReference", direction: "asc" }}
         tableHeight={window.innerHeight - 90}
         onAdd={onAdd}
         onEdit={onEdit}

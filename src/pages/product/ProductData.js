@@ -34,6 +34,7 @@ import TextField from "../../components/formfields/TextField";
 import CurrencyField from "../../components/formfields/CurrencyField";
 import DecimalField from "../../components/formfields/DecimalField";
 import IntegerField from "../../components/formfields/IntegerField";
+import { ContainerEnum } from "../../enums/ContainerEnum";
 
 const useStyles = (theme) => ({
   tabPanel: {
@@ -102,6 +103,7 @@ class ProductData extends React.Component {
     selectedTab: "1",
     errors: [],
     images: [],
+    quantityOfBoxesOrder: "",
     isLoading: false,
   };
 
@@ -141,67 +143,61 @@ class ProductData extends React.Component {
     this.setState({ selectedTab: newValue });
   };
 
-  onChangeBoxLength = (newValue) => {
-    const { boxWidth, boxHeight } = this.state;
-    if (newValue !== "" && boxWidth !== "" && boxHeight !== "") {
+  calculateBoxCubage = (width, height, length) => {
+    if (width !== "" && height !== "" && length !== "") {
+      const newBoxCubage = (width * height * length) / 1000000;
+      const newQuantityOfBoxPerContainer = Math.floor(
+        ContainerEnum.CUBAGECONTAINER / newBoxCubage
+      );
+      const newQuantityOfPiecesPerContainer =
+        this.state.quantityOfPieces !== ""
+          ? Math.floor(
+              this.state.quantityOfPieces * newQuantityOfBoxPerContainer
+            )
+          : "";
+
+      const errosFields = [
+        "boxCubage",
+        "boxLength",
+        "boxWidth",
+        "boxHeight",
+        "quantityOfBoxesPerContainer",
+      ];
+
+      if (newQuantityOfPiecesPerContainer !== "") {
+        errosFields.push("quantityOfPiecesPerContainer");
+      }
+
       this.setState({
-        boxCubage: (newValue * boxWidth * boxHeight) / 1000000,
+        boxCubage: newBoxCubage,
+        quantityOfBoxesPerContainer: newQuantityOfBoxPerContainer,
+        quantityOfPiecesPerContainer: newQuantityOfPiecesPerContainer,
         errors: this.state.errors.filter((value) => {
-          return (
-            value !== "boxCubage" &&
-            value !== "boxLength" &&
-            value !== "boxWidth" &&
-            value !== "boxHeight"
-          );
+          return !errosFields.includes(value);
         }),
       });
     } else {
       this.setState({
         boxCubage: "",
+        quantityOfBoxesPerContainer: "",
+        quantityOfPiecesPerContainer: "",
       });
     }
+  };
+
+  onChangeBoxLength = (newValue) => {
+    const { boxWidth, boxHeight } = this.state;
+    this.calculateBoxCubage(boxWidth, boxHeight, newValue);
   };
 
   onChangeBoxWidth = (newValue) => {
     const { boxLength, boxHeight } = this.state;
-    if (boxLength !== "" && newValue !== "" && boxHeight !== "") {
-      this.setState({
-        boxCubage: (boxLength * newValue * boxHeight) / 1000000,
-        errors: this.state.errors.filter((value) => {
-          return (
-            value !== "boxCubage" &&
-            value !== "boxLength" &&
-            value !== "boxWidth" &&
-            value !== "boxHeight"
-          );
-        }),
-      });
-    } else {
-      this.setState({
-        boxCubage: "",
-      });
-    }
+    this.calculateBoxCubage(newValue, boxHeight, boxLength);
   };
 
   onChangeBoxHeight = (newValue) => {
     const { boxLength, boxWidth } = this.state;
-    if (boxLength !== "" && boxWidth !== "" && newValue !== "") {
-      this.setState({
-        boxCubage: (boxLength * boxWidth * newValue) / 1000000,
-        errors: this.state.errors.filter((value) => {
-          return (
-            value !== "boxCubage" &&
-            value !== "boxLength" &&
-            value !== "boxWidth" &&
-            value !== "boxHeight"
-          );
-        }),
-      });
-    } else {
-      this.setState({
-        boxCubage: "",
-      });
-    }
+    this.calculateBoxCubage(boxWidth, newValue, boxLength);
   };
 
   onChangeQuantityOfPieces = (newValue) => {
@@ -212,28 +208,7 @@ class ProductData extends React.Component {
         errors: this.state.errors.filter((value) => {
           return (
             value !== "quantityOfPiecesPerContainer" &&
-            value !== "quantityOfPieces" &&
-            value !== "quantityOfBoxesPerContainer"
-          );
-        }),
-      });
-    } else {
-      this.setState({
-        quantityOfPiecesPerContainer: "",
-      });
-    }
-  };
-
-  onChangeQuantityOfBoxesPerContainer = (newValue) => {
-    const { quantityOfPieces } = this.state;
-    if (quantityOfPieces !== "" && newValue !== "") {
-      this.setState({
-        quantityOfPiecesPerContainer: quantityOfPieces * newValue,
-        errors: this.state.errors.filter((value) => {
-          return (
-            value !== "quantityOfPiecesPerContainer" &&
-            value !== "quantityOfPieces" &&
-            value !== "quantityOfBoxesPerContainer"
+            value !== "quantityOfPieces"
           );
         }),
       });
@@ -298,6 +273,7 @@ class ProductData extends React.Component {
       color,
       specialRequirements,
       batteries,
+      quantityOfBoxesOrder,
     } = this.state;
 
     if (reference === "") {
@@ -430,6 +406,13 @@ class ProductData extends React.Component {
       }
     });
 
+    if (
+      this.props.isOrder &&
+      (quantityOfBoxesOrder === "" || quantityOfBoxesOrder === null)
+    ) {
+      errors.push("quantityOfBoxesOrder");
+    }
+
     this.setState({
       errors: errors,
     });
@@ -480,6 +463,7 @@ class ProductData extends React.Component {
       clip,
       line,
       batteries,
+      quantityOfBoxesOrder,
     } = this.state;
 
     return {
@@ -522,6 +506,7 @@ class ProductData extends React.Component {
         line,
         batteries,
       },
+      quantityOfBoxesOrder,
     };
   };
 
@@ -575,6 +560,7 @@ class ProductData extends React.Component {
         line: response.data.certification.line,
         batteries: response.data.certification.batteries,
         images: response.data.images,
+        quantityOfBoxesOrder: response.data.quantityOfBoxesOrder,
       });
 
       this.fetchImages();
@@ -636,9 +622,10 @@ class ProductData extends React.Component {
       netWeightWithoutPacking,
       quantityOfBoxesPerContainer,
       quantityOfPiecesPerContainer,
+      quantityOfBoxesOrder,
       errors,
     } = this.state;
-    const { classes, isOnOrder } = this.props;
+    const { classes, isOrder } = this.props;
 
     const isEnglishLanguage = getLanguage() === LanguageEnum.ENGLISH;
 
@@ -656,7 +643,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
-                  disabled={isOnOrder}
+                  disabled={isOrder}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -669,10 +656,10 @@ class ProductData extends React.Component {
                   selectedValue={factory}
                   hasErrors={errors.includes("factory")}
                   label="factory"
-                  disabled={isOnOrder}
+                  disabled={isOrder}
                 />
               </Grid>
-              <Grid item xs={12} sm={3}>
+              <Grid item xs={12} sm={isOrder ? 2 : 3}>
                 <AutoComplete
                   id="packing"
                   dataSource="packings"
@@ -684,10 +671,10 @@ class ProductData extends React.Component {
                   selectedValue={packing}
                   hasErrors={errors.includes("packing")}
                   label="packing"
-                  disabled={isOnOrder}
+                  disabled={isOrder}
                 />
               </Grid>
-              <Grid item xs={12} sm={3}>
+              <Grid item xs={12} sm={isOrder ? 2 : 3}>
                 <CurrencyField
                   id="price"
                   label="price"
@@ -697,6 +684,18 @@ class ProductData extends React.Component {
                   errors={errors}
                 />
               </Grid>
+              {isOrder && (
+                <Grid item xs={12} sm={2}>
+                  <IntegerField
+                    id="quantityOfBoxesOrder"
+                    label="ordermasterqty"
+                    value={quantityOfBoxesOrder}
+                    required={true}
+                    onChange={this.onChangeForField}
+                    errors={errors}
+                  />
+                </Grid>
+              )}
               <Grid item xs={12} sm={12}>
                 <TextField
                   id="description"
@@ -705,7 +704,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
-                  disabled={isOnOrder}
+                  disabled={isOrder}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -716,7 +715,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
-                  disabled={isOnOrder}
+                  disabled={isOrder}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -727,7 +726,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
-                  disabled={isOnOrder}
+                  disabled={isOrder}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -738,7 +737,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
-                  disabled={isOnOrder}
+                  disabled={isOrder}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -753,6 +752,39 @@ class ProductData extends React.Component {
               </Grid>
               <Grid item xs={12} sm={3}>
                 <DecimalField
+                  id="packingLength"
+                  label="packinglength"
+                  value={packingLength}
+                  required={true}
+                  onChange={this.onChangeForField}
+                  errors={errors}
+                  disabled={isOrder}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <DecimalField
+                  id="packingWidth"
+                  label="packingwidth"
+                  value={packingWidth}
+                  required={true}
+                  onChange={this.onChangeForField}
+                  errors={errors}
+                  disabled={isOrder}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <DecimalField
+                  id="packingHeight"
+                  label="packingheight"
+                  value={packingHeight}
+                  required={true}
+                  onChange={this.onChangeForField}
+                  errors={errors}
+                  disabled={isOrder}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <DecimalField
                   id="boxLength"
                   label="boxlength"
                   value={boxLength}
@@ -760,7 +792,7 @@ class ProductData extends React.Component {
                   callBack={this.onChangeBoxLength}
                   onChange={this.onChangeForField}
                   errors={errors}
-                  disabled={isOnOrder}
+                  disabled={isOrder}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -772,7 +804,7 @@ class ProductData extends React.Component {
                   callBack={this.onChangeBoxWidth}
                   onChange={this.onChangeForField}
                   errors={errors}
-                  disabled={isOnOrder}
+                  disabled={isOrder}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -784,7 +816,7 @@ class ProductData extends React.Component {
                   callBack={this.onChangeBoxHeight}
                   onChange={this.onChangeForField}
                   errors={errors}
-                  disabled={isOnOrder}
+                  disabled={isOrder}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -797,40 +829,6 @@ class ProductData extends React.Component {
                   errors={errors}
                 />
               </Grid>
-              <Grid item xs={12} sm={3}>
-                <DecimalField
-                  id="packingLength"
-                  label="packinglength"
-                  value={packingLength}
-                  required={true}
-                  onChange={this.onChangeForField}
-                  errors={errors}
-                  disabled={isOnOrder}
-                />
-              </Grid>
-              <Grid item xs={12} sm={3}>
-                <DecimalField
-                  id="packingWidth"
-                  label="packingwidth"
-                  value={packingWidth}
-                  required={true}
-                  onChange={this.onChangeForField}
-                  errors={errors}
-                  disabled={isOnOrder}
-                />
-              </Grid>
-              <Grid item xs={12} sm={3}>
-                <DecimalField
-                  id="packingHeight"
-                  label="packingheight"
-                  value={packingHeight}
-                  required={true}
-                  onChange={this.onChangeForField}
-                  errors={errors}
-                  disabled={isOnOrder}
-                />
-              </Grid>
-              <Grid item xs={12} sm={3}></Grid>
               <Grid item xs={12} sm={3}>
                 <IntegerField
                   id="quantityOfPieces"
@@ -848,9 +846,8 @@ class ProductData extends React.Component {
                   label="quantityofboxespercontainer"
                   value={quantityOfBoxesPerContainer}
                   required={true}
-                  callBack={this.onChangeQuantityOfBoxesPerContainer}
-                  onChange={this.onChangeForField}
                   errors={errors}
+                  disabled={true}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -863,7 +860,6 @@ class ProductData extends React.Component {
                   errors={errors}
                 />
               </Grid>
-              <Grid item xs={12} sm={3}></Grid>
               <Grid item xs={12} sm={3}>
                 <DecimalField
                   id="boxGrossWeight"
@@ -872,7 +868,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
-                  disabled={isOnOrder}
+                  disabled={isOrder}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -883,7 +879,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
-                  disabled={isOnOrder}
+                  disabled={isOrder}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -894,7 +890,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
-                  disabled={isOnOrder}
+                  disabled={isOrder}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -905,7 +901,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
-                  disabled={isOnOrder}
+                  disabled={isOrder}
                 />
               </Grid>
             </Grid>
@@ -1344,7 +1340,7 @@ class ProductData extends React.Component {
   };
 
   getContent = () => {
-    const { t, classes, isOnOrder } = this.props;
+    const { t, classes, isOrder } = this.props;
     const { selectedTab, isLoading } = this.state;
 
     return (
@@ -1353,10 +1349,10 @@ class ProductData extends React.Component {
         <TabContext value={selectedTab}>
           <TabList onChange={this.handleTabChange}>
             <Tab label={t("factory")} value="1" />
-            <Tab label={t("certification")} value="2" disabled={isOnOrder} />
+            <Tab label={t("certification")} value="2" disabled={isOrder} />
             <Tab
               label={t("picture")}
-              disabled={this.props.idProduct === -1 || isOnOrder}
+              disabled={this.props.idProduct === -1 || isOrder}
               value="3"
             />
           </TabList>
@@ -1375,9 +1371,9 @@ class ProductData extends React.Component {
   };
 
   render() {
-    const { t, onClose, isOnOrder, classes, handleBack } = this.props;
+    const { t, onClose, isOrder, classes, handleBack } = this.props;
 
-    if (isOnOrder) {
+    if (isOrder) {
       return (
         <div>
           <div>{this.getContent()}</div>
