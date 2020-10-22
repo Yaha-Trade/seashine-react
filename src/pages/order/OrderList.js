@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 import OrderData from "./OrderData";
 import callServer from "../../services/callServer";
 import { extractId, formatDateToDisplay } from "../../services/Utils";
+import DisplayCurrency from "../../components/display/DisplayCurrency";
+import CubageDisplay from "../../components/display/CubaDisplay";
 
 const OrderList = () => {
   const { t } = useTranslation();
@@ -22,6 +24,29 @@ const OrderList = () => {
         filter: false,
         customBodyRender: (value, tableMeta, updateValue) => {
           return formatDateToDisplay(value);
+        },
+      },
+    },
+    { name: "quantityOfProducts", label: t("totalpieces") },
+    { name: "totalOfBoxes", label: t("totalboxes") },
+    {
+      name: "totalCubage",
+      label: t("totalcubage"),
+      options: {
+        filter: false,
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return <CubageDisplay value={value} />;
+        },
+      },
+    },
+    { name: "totalOfReferences", label: t("totalofreferences") },
+    {
+      name: "totalPrice",
+      label: t("totalprice"),
+      options: {
+        filter: false,
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return <DisplayCurrency value={value} />;
         },
       },
     },
