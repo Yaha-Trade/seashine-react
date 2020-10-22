@@ -33,6 +33,7 @@ const OrderStepper = ({ saveData, onClose }) => {
   const steps = ["Select product", "Edit product informations", "Add remarks"];
   const [selectedProduct, setSelectedProduct] = useState(-1);
   const [productData, setProductData] = useState(null);
+  const [orderItem, setOrderItem] = useState(null);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -48,7 +49,7 @@ const OrderStepper = ({ saveData, onClose }) => {
     setProductData(null);
   };
 
-  const setProduct = (product) => {
+  const createProductAndOrder = (product, orderItem) => {
     product.id = null;
     product.parentProduct = {
       id: selectedProduct,
@@ -63,11 +64,12 @@ const OrderStepper = ({ saveData, onClose }) => {
       }
     }
     setProductData(product);
+    setOrderItem(orderItem);
     handleNext();
   };
 
   const createProduct = () => {
-    saveData(productData);
+    saveData(productData, orderItem);
     handleNext();
   };
 
@@ -114,7 +116,7 @@ const OrderStepper = ({ saveData, onClose }) => {
       {activeStep === 1 && (
         <ProductData
           idProduct={selectedProduct}
-          onSave={setProduct}
+          onSave={createProductAndOrder}
           onClose={onClose}
           isOrder={true}
           handleBack={handleBack}

@@ -103,7 +103,7 @@ class ProductData extends React.Component {
     selectedTab: "1",
     errors: [],
     images: [],
-    quantityOfBoxesOrder: "",
+    orderQuantityOfBoxes: "",
     isLoading: false,
   };
 
@@ -273,7 +273,7 @@ class ProductData extends React.Component {
       color,
       specialRequirements,
       batteries,
-      quantityOfBoxesOrder,
+      orderQuantityOfBoxes,
     } = this.state;
 
     if (reference === "") {
@@ -406,11 +406,8 @@ class ProductData extends React.Component {
       }
     });
 
-    if (
-      this.props.isOrder &&
-      (quantityOfBoxesOrder === "" || quantityOfBoxesOrder === null)
-    ) {
-      errors.push("quantityOfBoxesOrder");
+    if (this.props.isOrder && orderQuantityOfBoxes === "") {
+      errors.push("orderQuantityOfBoxes");
     }
 
     this.setState({
@@ -463,7 +460,6 @@ class ProductData extends React.Component {
       clip,
       line,
       batteries,
-      quantityOfBoxesOrder,
     } = this.state;
 
     return {
@@ -506,7 +502,26 @@ class ProductData extends React.Component {
         line,
         batteries,
       },
-      quantityOfBoxesOrder,
+    };
+  };
+
+  createOrderItemObject = () => {
+    const {
+      orderQuantityOfBoxes,
+      quantityOfPieces,
+      price,
+      boxCubage,
+    } = this.state;
+
+    const orderTotalPieces = orderQuantityOfBoxes * quantityOfPieces;
+
+    return {
+      quantityOfBoxes: orderQuantityOfBoxes,
+      quantityOfPiecesPerBox: quantityOfPieces,
+      totalQuantityOfPieces: orderTotalPieces,
+      totalPrice: orderTotalPieces * price,
+      totalCubage: boxCubage * orderQuantityOfBoxes,
+      unitPrice: price,
     };
   };
 
@@ -560,7 +575,6 @@ class ProductData extends React.Component {
         line: response.data.certification.line,
         batteries: response.data.certification.batteries,
         images: response.data.images,
-        quantityOfBoxesOrder: response.data.quantityOfBoxesOrder,
       });
 
       this.fetchImages();
@@ -622,7 +636,7 @@ class ProductData extends React.Component {
       netWeightWithoutPacking,
       quantityOfBoxesPerContainer,
       quantityOfPiecesPerContainer,
-      quantityOfBoxesOrder,
+      orderQuantityOfBoxes,
       errors,
     } = this.state;
     const { classes, isOrder } = this.props;
@@ -687,9 +701,9 @@ class ProductData extends React.Component {
               {isOrder && (
                 <Grid item xs={12} sm={2}>
                   <IntegerField
-                    id="quantityOfBoxesOrder"
+                    id="orderQuantityOfBoxes"
                     label="ordermasterqty"
-                    value={quantityOfBoxesOrder}
+                    value={orderQuantityOfBoxes}
                     required={true}
                     onChange={this.onChangeForField}
                     errors={errors}
@@ -1336,7 +1350,7 @@ class ProductData extends React.Component {
       return;
     }
 
-    this.props.onSave(this.createProductObject());
+    this.props.onSave(this.createProductObject(), this.createOrderItemObject());
   };
 
   getContent = () => {
