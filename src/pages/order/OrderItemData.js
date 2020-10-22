@@ -1,8 +1,9 @@
 import React from "react";
 import OrderStepper from "./OrderStepper";
 import ModalData from "../../components/modal/ModalData";
+import ProductData from "../../pages/product/ProductData";
 
-const OrderItemData = ({ onSave, onClose }) => {
+const OrderItemData = ({ onSave, onClose, idOrdemItem }) => {
   return (
     <div>
       <ModalData
@@ -12,7 +13,18 @@ const OrderItemData = ({ onSave, onClose }) => {
         fullScreen={true}
         hasActions={false}
       >
-        <OrderStepper saveData={onSave} onClose={onClose} />
+        {idOrdemItem === -1 && (
+          <OrderStepper saveData={onSave} onClose={onClose} />
+        )}
+        {idOrdemItem !== -1 && (
+          <ProductData
+            idProduct={-1}
+            idOrdemItem={idOrdemItem}
+            onSave={onSave}
+            onClose={onClose}
+            isOrder={true}
+          />
+        )}
       </ModalData>
     </div>
   );

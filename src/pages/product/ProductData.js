@@ -63,6 +63,7 @@ const useStyles = (theme) => ({
 
 class ProductData extends React.Component {
   state = {
+    idProduct: this.props.idProduct,
     reference: "",
     price: "",
     description: "",
@@ -233,9 +234,9 @@ class ProductData extends React.Component {
     if (saveExit) {
       this.props.onClose();
     } else {
-      const { idProduct } = this.props;
+      const { idProduct } = this.state;
       if (idProduct && idProduct !== -1) {
-        this.fetchData(idProduct);
+        this.fetchData(idProduct, -1);
       }
     }
   };
@@ -460,9 +461,11 @@ class ProductData extends React.Component {
       clip,
       line,
       batteries,
+      idProduct,
     } = this.state;
 
     return {
+      id: idProduct,
       reference,
       description,
       factory: { id: factory.id },
@@ -513,9 +516,12 @@ class ProductData extends React.Component {
       boxCubage,
     } = this.state;
 
+    const { idOrdemItem } = this.props;
+
     const orderTotalPieces = orderQuantityOfBoxes * quantityOfPieces;
 
     return {
+      id: idOrdemItem && idOrdemItem !== -1 ? idOrdemItem : null,
       quantityOfBoxes: orderQuantityOfBoxes,
       quantityOfPiecesPerBox: quantityOfPieces,
       totalQuantityOfPieces: orderTotalPieces,
@@ -525,62 +531,70 @@ class ProductData extends React.Component {
     };
   };
 
-  fetchData = (idProduct) => {
-    callServer.get(`products/${idProduct}`).then((response) => {
+  fetchData = async (idProduct, idOrdemItem) => {
+    if (idOrdemItem && idOrdemItem !== -1) {
+      const response = await callServer.get(`orderlistitems/${idOrdemItem}`);
+      idProduct = response.data.productId;
       this.setState({
-        reference: response.data.reference,
-        description: response.data.description,
-        price: response.data.price,
-        quantityInner: response.data.quantityInner,
-        quantityOfPieces: response.data.quantityOfPieces,
-        boxLength: response.data.boxLength,
-        boxWidth: response.data.boxWidth,
-        boxHeight: response.data.boxHeight,
-        packingLength: response.data.packingLength,
-        packingWidth: response.data.packingWidth,
-        packingHeight: response.data.packingHeight,
-        productLength: response.data.productLength,
-        productWidth: response.data.productWidth,
-        productHeight: response.data.productHeight,
-        boxCubage: response.data.boxCubage,
-        boxGrossWeight: response.data.boxGrossWeight,
-        boxNetWeight: response.data.boxNetWeight,
-        netWeightWithPacking: response.data.netWeightWithPacking,
-        netWeightWithoutPacking: response.data.netWeightWithoutPacking,
-        quantityOfBoxesPerContainer: response.data.quantityOfBoxesPerContainer,
-        quantityOfPiecesPerContainer:
-          response.data.quantityOfPiecesPerContainer,
-        factory: {
-          id: response.data.factory.id,
-          name: response.data.factory.name,
-        },
-        packing: {
-          id: response.data.packing.id,
-          englishName: response.data.packing.englishName,
-          chineseName: response.data.packing.chineseName,
-        },
-
-        certificationId: response.data.certification.id,
-        englishDescription: response.data.certification.englishDescription,
-        quantityOfParts: response.data.certification.quantityOfParts,
-        composition: response.data.certification.composition,
-        model: response.data.certification.model,
-        color: response.data.certification.color,
-        specialRequirements: response.data.certification.specialRequirements,
-        sound: response.data.certification.sound,
-        light: response.data.certification.light,
-        motor: response.data.certification.motor,
-        metalPart: response.data.certification.metalPart,
-        clip: response.data.certification.clip,
-        line: response.data.certification.line,
-        batteries: response.data.certification.batteries,
-        images: response.data.images,
+        orderQuantityOfBoxes: response.data.quantityOfBoxes,
+        idProduct,
       });
+    }
 
-      this.fetchImages();
+    const response = await callServer.get(`products/${idProduct}`);
 
-      this.setState({ isLoading: false });
+    this.setState({
+      reference: response.data.reference,
+      description: response.data.description,
+      price: response.data.price,
+      quantityInner: response.data.quantityInner,
+      quantityOfPieces: response.data.quantityOfPieces,
+      boxLength: response.data.boxLength,
+      boxWidth: response.data.boxWidth,
+      boxHeight: response.data.boxHeight,
+      packingLength: response.data.packingLength,
+      packingWidth: response.data.packingWidth,
+      packingHeight: response.data.packingHeight,
+      productLength: response.data.productLength,
+      productWidth: response.data.productWidth,
+      productHeight: response.data.productHeight,
+      boxCubage: response.data.boxCubage,
+      boxGrossWeight: response.data.boxGrossWeight,
+      boxNetWeight: response.data.boxNetWeight,
+      netWeightWithPacking: response.data.netWeightWithPacking,
+      netWeightWithoutPacking: response.data.netWeightWithoutPacking,
+      quantityOfBoxesPerContainer: response.data.quantityOfBoxesPerContainer,
+      quantityOfPiecesPerContainer: response.data.quantityOfPiecesPerContainer,
+      factory: {
+        id: response.data.factory.id,
+        name: response.data.factory.name,
+      },
+      packing: {
+        id: response.data.packing.id,
+        englishName: response.data.packing.englishName,
+        chineseName: response.data.packing.chineseName,
+      },
+
+      certificationId: response.data.certification.id,
+      englishDescription: response.data.certification.englishDescription,
+      quantityOfParts: response.data.certification.quantityOfParts,
+      composition: response.data.certification.composition,
+      model: response.data.certification.model,
+      color: response.data.certification.color,
+      specialRequirements: response.data.certification.specialRequirements,
+      sound: response.data.certification.sound,
+      light: response.data.certification.light,
+      motor: response.data.certification.motor,
+      metalPart: response.data.certification.metalPart,
+      clip: response.data.certification.clip,
+      line: response.data.certification.line,
+      batteries: response.data.certification.batteries,
+      images: response.data.images,
     });
+
+    this.fetchImages();
+
+    this.setState({ isLoading: false });
   };
 
   fetchImages = () => {
@@ -590,11 +604,15 @@ class ProductData extends React.Component {
   };
 
   componentDidMount() {
-    const { idProduct } = this.props;
+    const { idOrdemItem } = this.props;
+    const { idProduct } = this.state;
 
-    if (idProduct && idProduct !== -1) {
+    if (
+      (idProduct && idProduct !== -1) ||
+      (idOrdemItem && idOrdemItem !== -1)
+    ) {
       this.setState({ isLoading: true });
-      this.fetchData(idProduct);
+      this.fetchData(idProduct, idOrdemItem);
     }
   }
 
@@ -1277,7 +1295,7 @@ class ProductData extends React.Component {
     };
 
     callServer
-      .post(`/products/image/${this.props.idProduct}`, data, config)
+      .post(`/products/image/${this.state.idProduct}`, data, config)
       .then((response) => {
         const imageIds = response.data;
         imageIds.forEach((id) => {
@@ -1319,7 +1337,7 @@ class ProductData extends React.Component {
 
   removeImage = (index) => {
     const imageId = this.state.images[index].id;
-    const { idProduct } = this.props;
+    const { idProduct } = this.state;
     callServer
       .delete(`products/image/${idProduct}/${imageId}`)
       .then((response) => {
@@ -1345,17 +1363,28 @@ class ProductData extends React.Component {
     );
   };
 
-  handleNext = () => {
+  handleNext = async (saveExit) => {
     if (!this.checkRequiredFields()) {
       return;
     }
 
-    this.props.onSave(this.createProductObject(), this.createOrderItemObject());
+    this.setState({ isLoading: true });
+
+    await this.props.onSave(
+      this.createProductObject(),
+      this.createOrderItemObject()
+    );
+
+    this.setState({ isLoading: false });
+
+    if (saveExit) {
+      this.props.onClose();
+    }
   };
 
   getContent = () => {
     const { t, classes, isOrder } = this.props;
-    const { selectedTab, isLoading } = this.state;
+    const { idProduct, selectedTab, isLoading } = this.state;
 
     return (
       <Fragment>
@@ -1366,7 +1395,7 @@ class ProductData extends React.Component {
             <Tab label={t("certification")} value="2" disabled={isOrder} />
             <Tab
               label={t("picture")}
-              disabled={this.props.idProduct === -1 || isOrder}
+              disabled={idProduct === -1 || isOrder}
               value="3"
             />
           </TabList>
@@ -1385,9 +1414,16 @@ class ProductData extends React.Component {
   };
 
   render() {
-    const { t, onClose, isOrder, classes, handleBack } = this.props;
+    const {
+      t,
+      onClose,
+      isOrder,
+      classes,
+      handleBack,
+      idOrdemItem,
+    } = this.props;
 
-    if (isOrder) {
+    if (isOrder && (idOrdemItem === undefined || idOrdemItem === -1)) {
       return (
         <div>
           <div>{this.getContent()}</div>
@@ -1416,11 +1452,16 @@ class ProductData extends React.Component {
       return (
         <div>
           <ModalData
-            onSave={this.saveData}
+            onSave={
+              idOrdemItem && idOrdemItem !== -1
+                ? this.handleNext
+                : this.saveData
+            }
             isOpen={true}
             onClose={onClose}
             title="productdata"
             fullWidth
+            fullScreen={idOrdemItem && idOrdemItem !== -1}
             minHeight="620px"
           >
             {this.getContent()}

@@ -50,16 +50,18 @@ const OrderStepper = ({ saveData, onClose }) => {
   };
 
   const createProductAndOrder = (product, orderItem) => {
-    product.id = null;
-    product.parentProduct = {
-      id: selectedProduct,
-    };
-    if (product.certification) {
-      product.certification.id = null;
-      if (product.certification.batteries) {
-        const batteriesQtd = product.certification.batteries.length;
-        for (let index = 0; index < batteriesQtd; index++) {
-          product.certification.batteries[index].id = null;
+    if (orderItem.id === null) {
+      product.id = null;
+      product.parentProduct = {
+        id: selectedProduct,
+      };
+      if (product.certification) {
+        product.certification.id = null;
+        if (product.certification.batteries) {
+          const batteriesQtd = product.certification.batteries.length;
+          for (let index = 0; index < batteriesQtd; index++) {
+            product.certification.batteries[index].id = null;
+          }
         }
       }
     }

@@ -10,6 +10,7 @@ import CubageDisplay from "../../components/display/CubaDisplay";
 const OrderList = ({ idOrder }) => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
+  const [id, setId] = useState(-1);
   const [hasToReloadData, setHasToReloadData] = useState(false);
 
   const columns = [
@@ -56,43 +57,68 @@ const OrderList = ({ idOrder }) => {
   };
 
   const onAdd = () => {
+    setId(-1);
     setOpen(true);
   };
 
   const onEdit = (id) => {
+    setId(id);
     setOpen(true);
   };
 
   const onClose = () => {
+    setId(-1);
     setOpen(false);
   };
 
   const onSave = async (product, orderItem) => {
-    const productResponse = await callServer.post(`products`, product);
-    const newIdProduct = extractId(productResponse.headers.location);
+    if (orderItem.id === null) {
+      const productResponse = await callServer.post(`products`, product);
+      const newIdProduct = extractId(productResponse.headers.location);
 
-    const orderItemResponse = await callServer.post("orderlistitems", {
-      id: null,
-      quantityOfBoxes: orderItem.quantityOfBoxes,
-      quantityOfPiecesPerBox: orderItem.quantityOfPiecesPerBox,
-      totalQuantityOfPieces: orderItem.totalQuantityOfPieces,
-      totalPrice: orderItem.totalPrice,
-      totalCubage: orderItem.totalCubage,
-      unitPrice: orderItem.unitPrice,
-      product: {
-        id: newIdProduct,
-      },
-      orderList: {
-        id: idOrder,
-      },
-    });
+      await callServer.post("orderlistitems", {
+        id: orderItem.id,
+        quantityOfBoxes: orderItem.quantityOfBoxes,
+        quantityOfPiecesPerBox: orderItem.quantityOfPiecesPerBox,
+        totalQuantityOfPieces: orderItem.totalQuantityOfPieces,
+        totalPrice: orderItem.totalPrice,
+        totalCubage: orderItem.totalCubage,
+        unitPrice: orderItem.unitPrice,
+        product: {
+          id: newIdProduct,
+        },
+        orderList: {
+          id: idOrder,
+        },
+      });
+    } else {
+      await callServer.put(`products/${product.id}`, product);
+
+      await callServer.put(`orderlistitems/${idOrder}/${id}`, {
+        id: orderItem.id,
+        quantityOfBoxes: orderItem.quantityOfBoxes,
+        quantityOfPiecesPerBox: orderItem.quantityOfPiecesPerBox,
+        totalQuantityOfPieces: orderItem.totalQuantityOfPieces,
+        totalPrice: orderItem.totalPrice,
+        totalCubage: orderItem.totalCubage,
+        unitPrice: orderItem.unitPrice,
+        product: {
+          id: product.id,
+        },
+        orderList: {
+          id: idOrder,
+        },
+      });
+    }
 
     setHasToReloadData(true);
   };
 
   return (
     <div>
-      {open && <OrderItemData onSave={onSave} onClose={onClose} />}
+      {open && (
+        <OrderItemData idOrdemItem={id} onSave={onSave} onClose={onClose} />
+      )}
       <DataTable
         title="orderlist"
         columns={columns}
