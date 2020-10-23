@@ -1440,7 +1440,7 @@ class ProductData extends React.Component {
                 variant="contained"
                 color="primary"
                 className={classes.button}
-                onClick={this.handleNext}
+                onClick={() => this.handleNext(false)}
               >
                 {t("next")}
               </Button>

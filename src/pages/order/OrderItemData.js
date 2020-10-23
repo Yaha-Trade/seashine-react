@@ -3,7 +3,13 @@ import OrderStepper from "./OrderStepper";
 import ModalData from "../../components/modal/ModalData";
 import ProductData from "../../pages/product/ProductData";
 
-const OrderItemData = ({ onSave, onClose, idOrdemItem }) => {
+const OrderItemData = ({
+  onSave,
+  onClose,
+  idOrdemItem,
+  onAlreadyExists,
+  idOrderList,
+}) => {
   return (
     <div>
       <ModalData
@@ -14,7 +20,12 @@ const OrderItemData = ({ onSave, onClose, idOrdemItem }) => {
         hasActions={false}
       >
         {idOrdemItem === -1 && (
-          <OrderStepper saveData={onSave} onClose={onClose} />
+          <OrderStepper
+            saveData={onSave}
+            onClose={onClose}
+            onAlreadyExists={onAlreadyExists}
+            idOrderList={idOrderList}
+          />
         )}
         {idOrdemItem !== -1 && (
           <ProductData

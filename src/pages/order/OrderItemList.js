@@ -117,7 +117,13 @@ const OrderList = ({ idOrder }) => {
   return (
     <div>
       {open && (
-        <OrderItemData idOrdemItem={id} onSave={onSave} onClose={onClose} />
+        <OrderItemData
+          idOrdemItem={id}
+          idOrderList={idOrder}
+          onSave={onSave}
+          onClose={onClose}
+          onAlreadyExists={setId}
+        />
       )}
       <DataTable
         title="orderlist"

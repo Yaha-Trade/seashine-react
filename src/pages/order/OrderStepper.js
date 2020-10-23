@@ -9,6 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import ProductList from "../../pages/product/ProductList";
 import ProductData from "../../pages/product/ProductData";
 import { useTranslation } from "react-i18next";
+import callServer from "../../services/callServer";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const OrderStepper = ({ saveData, onClose }) => {
+const OrderStepper = ({ saveData, onClose, onAlreadyExists, idOrderList }) => {
   const { t } = useTranslation();
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
@@ -75,10 +76,24 @@ const OrderStepper = ({ saveData, onClose }) => {
     handleNext();
   };
 
+  const checkIfProductAlreadyExists = () => {
+    callServer
+      .get(`orderlistitems/check/${idOrderList}/${selectedProduct}`)
+      .then((response) => {
+        if (response.data === -1) {
+          handleNext();
+        } else {
+          if (window.confirm(t("productalreadyexits"))) {
+            onAlreadyExists(response.data);
+          }
+        }
+      });
+  };
+
   return (
     <div className={classes.root}>
       <Stepper activeStep={activeStep}>
-        {steps.map((label, index) => (
+        {steps.map((label) => (
           <Step key={label}>
             <StepLabel>{label}</StepLabel>
           </Step>
@@ -107,7 +122,7 @@ const OrderStepper = ({ saveData, onClose }) => {
                 color="primary"
                 className={classes.button}
                 disabled={selectedProduct === -1}
-                onClick={handleNext}
+                onClick={checkIfProductAlreadyExists}
               >
                 {t("next")}
               </Button>
