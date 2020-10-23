@@ -28,6 +28,8 @@ const DatePicker = ({ id, label, date, onChange }) => {
         value={date}
         size="small"
         inputVariant="outlined"
+        cancelLabel={t("cancel")}
+        okLabel={t("ok")}
         fullWidth={true}
         onChange={(value) => {
           if (isValidDate(value)) {
