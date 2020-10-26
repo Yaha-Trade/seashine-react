@@ -8,6 +8,7 @@ const ProductHistory = ({ idProduct }) => {
   const { t } = useTranslation();
 
   const columns = [
+    { name: "customerName", label: t("customer") },
     { name: "quantityOfPiecesPerBox", label: t("piecesperboxes") },
     { name: "quantityOfBoxes", label: t("totalboxes") },
     { name: "totalQuantityOfPieces", label: t("totalpieces") },
@@ -48,7 +49,7 @@ const ProductHistory = ({ idProduct }) => {
       title="orderlist"
       columns={columns}
       dataSource={`orderlistitems/purchasehistory/${idProduct}`}
-      initialSort={{ name: "product", direction: "asc" }}
+      initialSort={{ name: "customerName", direction: "asc" }}
       onAdd={() => {}}
       onEdit={() => {}}
       setHasToReloadData={() => {}}
