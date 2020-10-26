@@ -35,6 +35,7 @@ import CurrencyField from "../../components/formfields/CurrencyField";
 import DecimalField from "../../components/formfields/DecimalField";
 import IntegerField from "../../components/formfields/IntegerField";
 import { ContainerEnum } from "../../enums/ContainerEnum";
+import ProductHistory from "../../pages/product/ProductHistory";
 
 const useStyles = (theme) => ({
   tabPanel: {
@@ -106,6 +107,7 @@ class ProductData extends React.Component {
     images: [],
     orderQuantityOfBoxes: "",
     isLoading: false,
+    idParentProduct: -1,
   };
 
   onChangeForField = (id, newValue, onChange = () => {}) => {
@@ -140,7 +142,7 @@ class ProductData extends React.Component {
     }
   };
 
-  handleTabChange = (event, newValue) => {
+  handleTabChange = async (event, newValue) => {
     this.setState({ selectedTab: newValue });
   };
 
@@ -590,6 +592,10 @@ class ProductData extends React.Component {
       line: response.data.certification.line,
       batteries: response.data.certification.batteries,
       images: response.data.images,
+      idParentProduct:
+        response.data.parentProduct !== null
+          ? response.data.parentProduct.id
+          : -1,
     });
 
     this.fetchImages();
@@ -1384,7 +1390,7 @@ class ProductData extends React.Component {
 
   getContent = () => {
     const { t, classes, isOrder } = this.props;
-    const { idProduct, selectedTab, isLoading } = this.state;
+    const { idProduct, idParentProduct, selectedTab, isLoading } = this.state;
 
     return (
       <Fragment>
@@ -1398,6 +1404,7 @@ class ProductData extends React.Component {
               disabled={idProduct === -1 || isOrder}
               value="3"
             />
+            <Tab label={t("purchasehistory")} value="4" />
           </TabList>
           <TabPanel className={classes.tabPanel} value="1">
             {this.ProductDataFactory()}
@@ -1407,6 +1414,11 @@ class ProductData extends React.Component {
           </TabPanel>
           <TabPanel className={classes.tabPanel} value="3">
             {this.ImageData()}
+          </TabPanel>
+          <TabPanel className={classes.tabPanel} value="4">
+            <ProductHistory
+              idProduct={idParentProduct !== -1 ? idParentProduct : idProduct}
+            />
           </TabPanel>
         </TabContext>
       </Fragment>
