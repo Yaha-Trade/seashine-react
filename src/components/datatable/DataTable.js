@@ -116,7 +116,7 @@ class DataTable extends React.Component {
       page,
       rowsPerPageOptions,
     } = this.state;
-    const { t } = this.props;
+    const { t, isView } = this.props;
 
     const options = {
       filter: true,
@@ -129,7 +129,7 @@ class DataTable extends React.Component {
       rowsPerPage: rowsPerPage,
       sortOrder: sortOrder,
       selectableRowsOnClick: true,
-      selectableRows: "single",
+      selectableRows: isView ? "none" : "single",
       rowsPerPageOptions: rowsPerPageOptions,
       tableBodyHeight: tableHeight,
       tableBodyMaxHeight: tableHeight,
@@ -213,10 +213,12 @@ class DataTable extends React.Component {
       },
       customToolbar: () => {
         return (
-          <DataToolbar
-            onAdd={this.props.onAdd}
-            customToolbar={this.props.customToolbar}
-          />
+          !isView && (
+            <DataToolbar
+              onAdd={this.props.onAdd}
+              customToolbar={this.props.customToolbar}
+            />
+          )
         );
       },
       customToolbarSelect: (selectedRows, displayData, setSelectedRows) => (

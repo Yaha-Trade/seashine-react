@@ -55,6 +55,7 @@ const ProductHistory = ({ idProduct }) => {
       setHasToReloadData={() => {}}
       getHasToReloadData={() => {}}
       tableHeight={550}
+      isView={true}
     />
   );
 };
