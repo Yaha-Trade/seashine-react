@@ -12,7 +12,7 @@ const SeasonList = () => {
   const [hasToReloadData, setHasToReloadData] = useState(false);
 
   const columns = [
-    { name: "customerName", label: t("customer") },
+    { name: "customer", label: t("customer") },
     { name: "name", label: t("season") },
     {
       name: "scheduledDate",

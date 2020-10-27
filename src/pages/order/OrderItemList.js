@@ -14,7 +14,7 @@ const OrderList = ({ idOrder }) => {
   const [hasToReloadData, setHasToReloadData] = useState(false);
 
   const columns = [
-    { name: "factoryName", label: t("factory") },
+    { name: "factory", label: t("factory") },
     { name: "productReference", label: t("reference") },
     { name: "productDescription", label: t("description") },
     { name: "quantityOfPiecesPerBox", label: t("piecesperboxes") },

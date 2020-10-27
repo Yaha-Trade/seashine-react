@@ -19,7 +19,7 @@ const ProductList = ({ tableHeight, onRowSelectionChange = () => {} }) => {
     { name: "reference", label: t("reference") },
     { name: "description", label: t("description") },
     {
-      name: "factoryName",
+      name: "factory",
       label: t("factory"),
     },
     {
