@@ -39,6 +39,7 @@ const OrderList = () => {
         },
       },
     },
+    { name: "quantityOfContainers", label: t("quantityofcontainers") },
     { name: "totalOfReferences", label: t("totalofreferences") },
     {
       name: "totalPrice",
