@@ -37,7 +37,6 @@ const CustomerList = () => {
       const response = await callServer.post(`customers`, customer);
       const newId = extractId(response.headers.location);
       setId(newId);
-      setHasToReloadData(true);
     } else {
       await callServer.put(`customers/${id}`, customer);
     }

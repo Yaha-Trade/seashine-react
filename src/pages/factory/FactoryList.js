@@ -42,7 +42,6 @@ const FactoryList = () => {
       const response = await callServer.post(`factories`, factory);
       const newId = extractId(response.headers.location);
       setId(newId);
-      setHasToReloadData(true);
     } else {
       await callServer.put(`factories/${id}`, factory);
     }

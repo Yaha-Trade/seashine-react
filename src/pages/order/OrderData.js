@@ -68,16 +68,17 @@ class OrderData extends React.Component {
 
     this.setState({ isLoading: true });
 
-    await this.props.onSave({
-      name,
-      season: { id: season.id },
-      purchaseDate,
-      customer: { id: customer.id },
-    });
+    await this.props.onSave(
+      {
+        name,
+        season: { id: season.id },
+        purchaseDate,
+        customer: { id: customer.id },
+      },
+      saveAndExit
+    );
 
-    if (saveAndExit) {
-      this.props.onClose();
-    } else {
+    if (!saveAndExit) {
       const { idOrder } = this.props;
       if (idOrder && idOrder !== -1) {
         this.fetchData(idOrder);

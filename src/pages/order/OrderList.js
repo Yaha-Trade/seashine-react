@@ -72,14 +72,20 @@ const OrderList = () => {
     setId(-1);
   };
 
-  const onSave = async (order) => {
+  const onSave = async (order, saveAndExit) => {
     if (id === -1) {
       const response = await callServer.post(`orderlists`, order);
       const newId = extractId(response.headers.location);
-      setId(newId);
-      setHasToReloadData(true);
+      if (saveAndExit) {
+        onClose();
+      } else {
+        setId(newId);
+      }
     } else {
       await callServer.put(`orderlists/${id}`, order);
+      if (saveAndExit) {
+        onClose();
+      }
     }
     setHasToReloadData(true);
   };
