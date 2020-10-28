@@ -63,6 +63,8 @@ const useStyles = (theme) => ({
 });
 
 class ProductData extends React.Component {
+  _isMounted = false;
+
   state = {
     idProduct: this.props.idProduct,
     reference: "",
@@ -111,7 +113,7 @@ class ProductData extends React.Component {
   };
 
   onChangeForField = (id, newValue, onChange = () => {}) => {
-    this.setState({
+    this.updateState({
       [id]: newValue,
       errors: this.state.errors.filter((value) => {
         return id !== value;
@@ -121,9 +123,9 @@ class ProductData extends React.Component {
   };
 
   onChangeFactorySelect = (event, value) => {
-    this.setState({ factory: value });
+    this.updateState({ factory: value });
     if (value !== null) {
-      this.setState({
+      this.updateState({
         errors: this.state.errors.filter((value) => {
           return value !== "factory";
         }),
@@ -132,9 +134,9 @@ class ProductData extends React.Component {
   };
 
   onChangePackingSelect = (event, value) => {
-    this.setState({ packing: value });
+    this.updateState({ packing: value });
     if (value !== null) {
-      this.setState({
+      this.updateState({
         errors: this.state.errors.filter((value) => {
           return value !== "packing";
         }),
@@ -143,7 +145,7 @@ class ProductData extends React.Component {
   };
 
   handleTabChange = async (event, newValue) => {
-    this.setState({ selectedTab: newValue });
+    this.updateState({ selectedTab: newValue });
   };
 
   calculateBoxCubage = (width, height, length) => {
@@ -171,7 +173,7 @@ class ProductData extends React.Component {
         errosFields.push("quantityOfPiecesPerContainer");
       }
 
-      this.setState({
+      this.updateState({
         boxCubage: newBoxCubage,
         quantityOfBoxesPerContainer: newQuantityOfBoxPerContainer,
         quantityOfPiecesPerContainer: newQuantityOfPiecesPerContainer,
@@ -180,7 +182,7 @@ class ProductData extends React.Component {
         }),
       });
     } else {
-      this.setState({
+      this.updateState({
         boxCubage: "",
         quantityOfBoxesPerContainer: "",
         quantityOfPiecesPerContainer: "",
@@ -206,7 +208,7 @@ class ProductData extends React.Component {
   onChangeQuantityOfPieces = (newValue) => {
     const { quantityOfBoxesPerContainer } = this.state;
     if (newValue !== "" && quantityOfBoxesPerContainer !== "") {
-      this.setState({
+      this.updateState({
         quantityOfPiecesPerContainer: newValue * quantityOfBoxesPerContainer,
         errors: this.state.errors.filter((value) => {
           return (
@@ -216,7 +218,7 @@ class ProductData extends React.Component {
         }),
       });
     } else {
-      this.setState({
+      this.updateState({
         quantityOfPiecesPerContainer: "",
       });
     }
@@ -227,11 +229,11 @@ class ProductData extends React.Component {
       return;
     }
 
-    this.setState({ isLoading: true });
+    this.updateState({ isLoading: true });
 
     await this.props.onSave(this.createProductObject());
 
-    this.setState({ isLoading: false });
+    this.updateState({ isLoading: false });
 
     if (saveExit) {
       this.props.onClose();
@@ -413,7 +415,7 @@ class ProductData extends React.Component {
       errors.push("orderQuantityOfBoxes");
     }
 
-    this.setState({
+    this.updateState({
       errors: errors,
     });
 
@@ -537,7 +539,7 @@ class ProductData extends React.Component {
     if (idOrdemItem && idOrdemItem !== -1) {
       const response = await callServer.get(`orderlistitems/${idOrdemItem}`);
       idProduct = response.data.productId;
-      this.setState({
+      this.updateState({
         orderQuantityOfBoxes: response.data.quantityOfBoxes,
         idProduct,
       });
@@ -545,7 +547,7 @@ class ProductData extends React.Component {
 
     const response = await callServer.get(`products/${idProduct}`);
 
-    this.setState({
+    this.updateState({
       reference: response.data.reference,
       description: response.data.description,
       price: response.data.price,
@@ -600,7 +602,7 @@ class ProductData extends React.Component {
 
     this.fetchImages();
 
-    this.setState({ isLoading: false });
+    this.updateState({ isLoading: false });
   };
 
   fetchImages = () => {
@@ -608,6 +610,16 @@ class ProductData extends React.Component {
       await this.getImageFromServer(image.id, index);
     });
   };
+
+  updateState = (newStateObject) => {
+    if (this._isMounted) {
+      this.setState(newStateObject);
+    }
+  };
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
 
   componentDidMount() {
     const { idOrdemItem } = this.props;
@@ -617,9 +629,10 @@ class ProductData extends React.Component {
       (idProduct && idProduct !== -1) ||
       (idOrdemItem && idOrdemItem !== -1)
     ) {
-      this.setState({ isLoading: true });
+      this.updateState({ isLoading: true });
       this.fetchData(idProduct, idOrdemItem);
     }
+    this._isMounted = true;
   }
 
   getImageCarousel = () => {
@@ -950,7 +963,7 @@ class ProductData extends React.Component {
   };
 
   addNewLineBattery = () => {
-    this.setState({
+    this.updateState({
       batteries: [
         ...this.state.batteries,
         {
@@ -966,7 +979,7 @@ class ProductData extends React.Component {
   };
 
   removeLineBattery = (index) => {
-    this.setState({
+    this.updateState({
       batteries: this.state.batteries.filter((value, i) => {
         return index !== i;
       }),
@@ -1050,7 +1063,7 @@ class ProductData extends React.Component {
               <Switch
                 checked={sound === 1}
                 onChange={(e) =>
-                  this.setState({ sound: e.target.checked ? 1 : 2 })
+                  this.updateState({ sound: e.target.checked ? 1 : 2 })
                 }
                 color="primary"
                 name="sound"
@@ -1063,7 +1076,7 @@ class ProductData extends React.Component {
               <Switch
                 checked={light === 1}
                 onChange={(e) =>
-                  this.setState({ light: e.target.checked ? 1 : 2 })
+                  this.updateState({ light: e.target.checked ? 1 : 2 })
                 }
                 color="primary"
                 name="light"
@@ -1076,7 +1089,7 @@ class ProductData extends React.Component {
               <Switch
                 checked={motor === 1}
                 onChange={(e) =>
-                  this.setState({ motor: e.target.checked ? 1 : 2 })
+                  this.updateState({ motor: e.target.checked ? 1 : 2 })
                 }
                 color="primary"
                 name="motor"
@@ -1089,7 +1102,7 @@ class ProductData extends React.Component {
               <Switch
                 checked={metalPart === 1}
                 onChange={(e) =>
-                  this.setState({ metalPart: e.target.checked ? 1 : 2 })
+                  this.updateState({ metalPart: e.target.checked ? 1 : 2 })
                 }
                 color="primary"
                 name="metalPart"
@@ -1102,7 +1115,7 @@ class ProductData extends React.Component {
               <Switch
                 checked={clip === 1}
                 onChange={(e) =>
-                  this.setState({ clip: e.target.checked ? 1 : 2 })
+                  this.updateState({ clip: e.target.checked ? 1 : 2 })
                 }
                 color="primary"
                 name="clip"
@@ -1115,7 +1128,7 @@ class ProductData extends React.Component {
               <Switch
                 checked={line === 1}
                 onChange={(e) =>
-                  this.setState({ line: e.target.checked ? 1 : 2 })
+                  this.updateState({ line: e.target.checked ? 1 : 2 })
                 }
                 color="primary"
                 name="line"
@@ -1166,7 +1179,7 @@ class ProductData extends React.Component {
                           onChange={(id, value) => {
                             const batteries = this.state.batteries;
                             batteries[index].quantity = value;
-                            this.setState({
+                            this.updateState({
                               batteries: batteries,
                               errors: this.state.errors.filter((value) => {
                                 return id !== value;
@@ -1185,7 +1198,7 @@ class ProductData extends React.Component {
                           onChange={(event, value) => {
                             const batteries = this.state.batteries;
                             batteries[index].batteryType = value;
-                            this.setState({
+                            this.updateState({
                               batteries: batteries,
                               errors: this.state.errors.filter((value) => {
                                 return "batteryType" + index !== value;
@@ -1205,7 +1218,7 @@ class ProductData extends React.Component {
                           onChange={(event, value) => {
                             const batteries = this.state.batteries;
                             batteries[index].voltage = value;
-                            this.setState({
+                            this.updateState({
                               batteries: batteries,
                               errors: this.state.errors.filter((value) => {
                                 return "voltage" + index !== value;
@@ -1228,7 +1241,7 @@ class ProductData extends React.Component {
                               ? 1
                               : 2;
 
-                            this.setState({ batteries: batteries });
+                            this.updateState({ batteries: batteries });
                           }}
                         />
                       </TableCell>
@@ -1290,7 +1303,7 @@ class ProductData extends React.Component {
   };
 
   saveImage = async (images) => {
-    this.setState({ isLoading: true });
+    this.updateState({ isLoading: true });
     const data = new FormData();
     for (let index = 0; index < images.length; index++) {
       data.append("images", await this.getImageFromFile(images[index]));
@@ -1307,7 +1320,7 @@ class ProductData extends React.Component {
         imageIds.forEach((id) => {
           this.getImageFromServer(id);
         });
-        this.setState({ isLoading: false });
+        this.updateState({ isLoading: false });
       })
       .catch((error) => {});
   };
@@ -1322,11 +1335,11 @@ class ProductData extends React.Component {
       if (index !== undefined) {
         const images = this.state.images;
         images[index].image = reader.result;
-        this.setState({
+        this.updateState({
           images: images,
         });
       } else {
-        this.setState({
+        this.updateState({
           images: [
             ...this.state.images,
             {
@@ -1347,7 +1360,7 @@ class ProductData extends React.Component {
     callServer
       .delete(`products/image/${idProduct}/${imageId}`)
       .then((response) => {
-        this.setState({
+        this.updateState({
           images: this.state.images.filter((value, i) => {
             return index !== i;
           }),
@@ -1374,14 +1387,14 @@ class ProductData extends React.Component {
       return;
     }
 
-    this.setState({ isLoading: true });
+    this.updateState({ isLoading: true });
 
     await this.props.onSave(
       this.createProductObject(),
       this.createOrderItemObject()
     );
 
-    this.setState({ isLoading: false });
+    this.updateState({ isLoading: false });
 
     if (saveExit) {
       this.props.onClose();
