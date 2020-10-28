@@ -39,18 +39,18 @@ const ProductList = ({ tableHeight, onRowSelectionChange = () => {} }) => {
   };
 
   const onAdd = () => {
-    setId(-1);
     setOpen(true);
+    setId(-1);
   };
 
   const onEdit = (id) => {
-    setId(id);
     setOpen(true);
+    setId(id);
   };
 
   const onClose = () => {
-    setId(-1);
     setOpen(false);
+    setId(-1);
   };
 
   const onSave = async (product) => {
