@@ -6,9 +6,11 @@ import callServer from "../../services/callServer";
 import { extractId, formatDateToDisplay } from "../../services/Utils";
 import DisplayCurrency from "../../components/display/DisplayCurrency";
 import CubageDisplay from "../../components/display/CubaDisplay";
+import { useSnackbar } from "notistack";
 
 const OrderList = () => {
   const { t } = useTranslation();
+  const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = useState(false);
   const [id, setId] = useState();
   const [hasToReloadData, setHasToReloadData] = useState(false);
@@ -88,6 +90,10 @@ const OrderList = () => {
       }
     }
     setHasToReloadData(true);
+
+    enqueueSnackbar(t("savedwithsuccess"), {
+      variant: "success",
+    });
   };
 
   return (

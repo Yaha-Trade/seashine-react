@@ -6,6 +6,7 @@ import DataToolbar from "./DataToolbar";
 import DataToolbarSelect from "./DataToolbarSelect";
 import DataFooter from "./DataFooter";
 import { withTranslation } from "react-i18next";
+import { withSnackbar } from "notistack";
 
 class DataTable extends React.Component {
   state = {
@@ -79,7 +80,8 @@ class DataTable extends React.Component {
           rowsPerPage: response.data.pageable.pageSize,
           sortOrder: sortOrder,
           filters: filters,
-          totalPages: response.data.totalPages,
+          totalPages:
+            response.data.totalPages === 0 ? 1 : response.data.totalPages,
           tableHeight:
             filtersString !== "" ? tableHeight - 255 : tableHeight - 215,
         });
@@ -246,6 +248,11 @@ class DataTable extends React.Component {
                     this.state.rowsPerPage,
                     this.state.filters
                   );
+                })
+                .catch((error) => {
+                  this.props.enqueueSnackbar(t("couldnotdelete"), {
+                    variant: "error",
+                  });
                 });
             }
           }}
@@ -304,4 +311,4 @@ class DataTable extends React.Component {
   }
 }
 
-export default withTranslation()(DataTable);
+export default withTranslation()(withSnackbar(DataTable));

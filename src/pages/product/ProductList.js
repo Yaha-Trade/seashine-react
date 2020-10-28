@@ -7,9 +7,11 @@ import { extractId } from "../../services/Utils";
 import DisplayCurrency from "../../components/display/DisplayCurrency";
 import ProductToolbar from "./ProductToolbar";
 import ImportProduct from "./ImportProduct";
+import { useSnackbar } from "notistack";
 
 const ProductList = ({ tableHeight, onRowSelectionChange = () => {} }) => {
   const { t } = useTranslation();
+  const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = useState(false);
   const [id, setId] = useState();
   const [hasToReloadData, setHasToReloadData] = useState(false);
@@ -62,6 +64,10 @@ const ProductList = ({ tableHeight, onRowSelectionChange = () => {} }) => {
       await callServer.put(`products/${id}`, product);
     }
     setHasToReloadData(true);
+
+    enqueueSnackbar(t("savedwithsuccess"), {
+      variant: "success",
+    });
   };
 
   return (

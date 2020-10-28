@@ -19,6 +19,7 @@
     "jwt-decode": "^3.0.0",
     "moment-timezone": "^0.5.31",
     "mui-datatables": "^3.6.0",
+    "notistack": "^1.0.1",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-i18next": "^11.7.3",

@@ -4,9 +4,11 @@ import { useTranslation } from "react-i18next";
 import FactoryData from "./FactoryData";
 import callServer from "../../services/callServer";
 import { extractId } from "../../services/Utils";
+import { useSnackbar } from "notistack";
 
 const FactoryList = () => {
   const { t } = useTranslation();
+  const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = useState(false);
   const [id, setId] = useState();
   const [hasToReloadData, setHasToReloadData] = useState(false);
@@ -46,6 +48,10 @@ const FactoryList = () => {
       await callServer.put(`factories/${id}`, factory);
     }
     setHasToReloadData(true);
+
+    enqueueSnackbar(t("savedwithsuccess"), {
+      variant: "success",
+    });
   };
 
   return (

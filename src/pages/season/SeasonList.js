@@ -4,9 +4,11 @@ import { useTranslation } from "react-i18next";
 import SeasonData from "./SeasonData";
 import callServer from "../../services/callServer";
 import { extractId, formatDateToDisplay } from "../../services/Utils";
+import { useSnackbar } from "notistack";
 
 const SeasonList = () => {
   const { t } = useTranslation();
+  const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = useState(false);
   const [id, setId] = useState();
   const [hasToReloadData, setHasToReloadData] = useState(false);
@@ -54,6 +56,10 @@ const SeasonList = () => {
       await callServer.put(`seasons/${id}`, season);
     }
     setHasToReloadData(true);
+
+    enqueueSnackbar(t("savedwithsuccess"), {
+      variant: "success",
+    });
   };
 
   return (

@@ -4,9 +4,11 @@ import { useTranslation } from "react-i18next";
 import PackingData from "./PackingData";
 import callServer from "../../services/callServer";
 import { extractId } from "../../services/Utils";
+import { useSnackbar } from "notistack";
 
 const PackingList = () => {
   const { t } = useTranslation();
+  const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = useState(false);
   const [id, setId] = useState();
   const [hasToReloadData, setHasToReloadData] = useState(false);
@@ -44,6 +46,10 @@ const PackingList = () => {
       await callServer.put(`packings/${id}`, packing);
     }
     setHasToReloadData(true);
+
+    enqueueSnackbar(t("savedwithsuccess"), {
+      variant: "success",
+    });
   };
 
   return (
