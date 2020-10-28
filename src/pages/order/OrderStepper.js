@@ -4,8 +4,7 @@ import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import Button from "@material-ui/core/Button";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
+import { Alert, AlertTitle } from "@material-ui/lab";
 import ProductList from "../../pages/product/ProductList";
 import ProductData from "../../pages/product/ProductData";
 import { useTranslation } from "react-i18next";
@@ -22,19 +21,14 @@ const useStyles = makeStyles((theme) => ({
   actionsContainer: {
     marginBottom: theme.spacing(2),
   },
-  resetContainer: {
-    padding: theme.spacing(3),
-  },
 }));
 
 const OrderStepper = ({ saveData, onClose, onAlreadyExists, idOrderList }) => {
   const { t } = useTranslation();
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
-  const steps = ["Select product", "Edit product informations", "Add remarks"];
+  const steps = [t("selectproduct"), t("editproductdata")];
   const [selectedProduct, setSelectedProduct] = useState(-1);
-  const [productData, setProductData] = useState(null);
-  const [orderItem, setOrderItem] = useState(null);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -47,7 +41,6 @@ const OrderStepper = ({ saveData, onClose, onAlreadyExists, idOrderList }) => {
   const handleReset = () => {
     setActiveStep(0);
     setSelectedProduct(-1);
-    setProductData(null);
   };
 
   const createProductAndOrder = (product, orderItem) => {
@@ -66,13 +59,7 @@ const OrderStepper = ({ saveData, onClose, onAlreadyExists, idOrderList }) => {
         }
       }
     }
-    setProductData(product);
-    setOrderItem(orderItem);
-    handleNext();
-  };
-
-  const createProduct = () => {
-    saveData(productData, orderItem);
+    saveData(product, orderItem);
     handleNext();
   };
 
@@ -130,6 +117,7 @@ const OrderStepper = ({ saveData, onClose, onAlreadyExists, idOrderList }) => {
           </div>
         </div>
       )}
+
       {activeStep === 1 && (
         <ProductData
           idProduct={selectedProduct}
@@ -139,40 +127,30 @@ const OrderStepper = ({ saveData, onClose, onAlreadyExists, idOrderList }) => {
           handleBack={handleBack}
         />
       )}
-      {activeStep === 2 && (
-        <div>
-          REMARKS WILL GO HERE!
-          <div className={classes.actionsContainer}>
-            <div>
-              <Button onClick={onClose} className={classes.button}>
-                {t("cancel")}
-              </Button>
-              <Button
-                disabled={activeStep === 0}
-                onClick={handleBack}
-                className={classes.button}
-              >
-                {t("back")}
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                className={classes.button}
-                onClick={createProduct}
-              >
-                {t("finish")}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+
       {activeStep === steps.length && (
-        <Paper square elevation={0} className={classes.resetContainer}>
-          <Typography>Product added with success</Typography>
-          <Button onClick={handleReset} className={classes.button}>
-            Add new product
+        <div>
+          <Alert severity="success">
+            <AlertTitle>{t("success")}</AlertTitle>
+            {t("productaddedorder")}
+          </Alert>
+          <Button
+            onClick={onClose}
+            className={classes.button}
+            color="primary"
+            variant="outlined"
+          >
+            {t("cancel")}
           </Button>
-        </Paper>
+          <Button
+            onClick={handleReset}
+            variant="contained"
+            className={classes.button}
+            color="primary"
+          >
+            {t("addnewproduct")}
+          </Button>
+        </div>
       )}
     </div>
   );

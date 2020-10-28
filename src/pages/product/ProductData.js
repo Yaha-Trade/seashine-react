@@ -1454,7 +1454,7 @@ class ProductData extends React.Component {
                 className={classes.button}
                 onClick={() => this.handleNext(false)}
               >
-                {t("next")}
+                {t("finish")}
               </Button>
             </div>
           </div>
