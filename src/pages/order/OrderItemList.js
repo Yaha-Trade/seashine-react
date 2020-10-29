@@ -19,9 +19,27 @@ const OrderList = ({ idOrder }) => {
     { name: "factory", label: t("factory") },
     { name: "productReference", label: t("reference") },
     { name: "productDescription", label: t("description") },
-    { name: "quantityOfPiecesPerBox", label: t("piecesperboxes") },
-    { name: "quantityOfBoxes", label: t("totalboxes") },
-    { name: "totalQuantityOfPieces", label: t("totalpieces") },
+    {
+      name: "quantityOfPiecesPerBox",
+      label: t("piecesperboxes"),
+      options: {
+        filter: false,
+      },
+    },
+    {
+      name: "quantityOfBoxes",
+      label: t("totalboxes"),
+      options: {
+        filter: false,
+      },
+    },
+    {
+      name: "totalQuantityOfPieces",
+      label: t("totalpieces"),
+      options: {
+        filter: false,
+      },
+    },
     {
       name: "totalCubage",
       label: t("totalcubage"),

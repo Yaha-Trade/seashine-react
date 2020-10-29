@@ -9,9 +9,27 @@ const ProductHistory = ({ idProduct }) => {
 
   const columns = [
     { name: "customer", label: t("customer") },
-    { name: "quantityOfPiecesPerBox", label: t("piecesperboxes") },
-    { name: "quantityOfBoxes", label: t("totalboxes") },
-    { name: "totalQuantityOfPieces", label: t("totalpieces") },
+    {
+      name: "quantityOfPiecesPerBox",
+      label: t("piecesperboxes"),
+      options: {
+        filter: false,
+      },
+    },
+    {
+      name: "quantityOfBoxes",
+      label: t("totalboxes"),
+      options: {
+        filter: false,
+      },
+    },
+    {
+      name: "totalQuantityOfPieces",
+      label: t("totalpieces"),
+      options: {
+        filter: false,
+      },
+    },
     {
       name: "totalCubage",
       label: t("totalcubage"),

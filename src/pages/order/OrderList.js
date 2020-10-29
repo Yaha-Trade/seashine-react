@@ -29,8 +29,20 @@ const OrderList = () => {
         },
       },
     },
-    { name: "quantityOfProducts", label: t("totalpieces") },
-    { name: "totalOfBoxes", label: t("totalboxes") },
+    {
+      name: "quantityOfProducts",
+      label: t("totalpieces"),
+      options: {
+        filter: false,
+      },
+    },
+    {
+      name: "totalOfBoxes",
+      label: t("totalboxes"),
+      options: {
+        filter: false,
+      },
+    },
     {
       name: "totalCubage",
       label: t("totalcubage"),
@@ -41,8 +53,20 @@ const OrderList = () => {
         },
       },
     },
-    { name: "quantityOfContainers", label: t("quantityofcontainers") },
-    { name: "totalOfReferences", label: t("totalofreferences") },
+    {
+      name: "quantityOfContainers",
+      label: t("quantityofcontainers"),
+      options: {
+        filter: false,
+      },
+    },
+    {
+      name: "totalOfReferences",
+      label: t("totalofreferences"),
+      options: {
+        filter: false,
+      },
+    },
     {
       name: "totalPrice",
       label: t("totalprice"),
