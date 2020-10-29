@@ -1314,7 +1314,7 @@ class ProductData extends React.Component {
     };
 
     callServer
-      .post(`/products/image/${this.state.idProduct}`, data, config)
+      .post(`/products/uploadimages/${this.state.idProduct}`, data, config)
       .then((response) => {
         const imageIds = response.data;
         imageIds.forEach((id) => {
@@ -1326,7 +1326,7 @@ class ProductData extends React.Component {
   };
 
   getImageFromServer = async (imageId, index = undefined) => {
-    const response = await callServer.get(`/products/image/${imageId}`, {
+    const response = await callServer.get(`/products/getimage/${imageId}`, {
       responseType: "blob",
     });
 
@@ -1358,7 +1358,7 @@ class ProductData extends React.Component {
     const imageId = this.state.images[index].id;
     const { idProduct } = this.state;
     callServer
-      .delete(`products/image/${idProduct}/${imageId}`)
+      .delete(`products/deleteimage/${idProduct}/${imageId}`)
       .then((response) => {
         this.updateState({
           images: this.state.images.filter((value, i) => {
@@ -1411,24 +1411,34 @@ class ProductData extends React.Component {
         <TabContext value={selectedTab}>
           <TabList onChange={this.handleTabChange}>
             <Tab label={t("factory")} value="1" />
-            <Tab label={t("certification")} value="2" disabled={isOrder} />
+            <Tab label={t("remarks")} value="2" />
+            <Tab
+              label={t("certification")}
+              value="3"
+              style={{ display: isOrder ? "none" : "block" }}
+            />
             <Tab
               label={t("picture")}
-              disabled={idProduct === -1 || isOrder}
-              value="3"
+              style={{
+                display: idProduct === -1 || isOrder ? "none" : "block",
+              }}
+              value="4"
             />
-            <Tab label={t("purchasehistory")} value="4" />
+            <Tab label={t("purchasehistory")} value="5" />
           </TabList>
           <TabPanel className={classes.tabPanel} value="1">
             {this.ProductDataFactory()}
           </TabPanel>
           <TabPanel className={classes.tabPanel} value="2">
-            {this.CertificationData()}
+            Remarks
           </TabPanel>
           <TabPanel className={classes.tabPanel} value="3">
-            {this.ImageData()}
+            {this.CertificationData()}
           </TabPanel>
           <TabPanel className={classes.tabPanel} value="4">
+            {this.ImageData()}
+          </TabPanel>
+          <TabPanel className={classes.tabPanel} value="5">
             <ProductHistory
               idProduct={idParentProduct !== -1 ? idParentProduct : idProduct}
             />

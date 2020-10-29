@@ -65,7 +65,9 @@ const OrderStepper = ({ saveData, onClose, onAlreadyExists, idOrderList }) => {
 
   const checkIfProductAlreadyExists = () => {
     callServer
-      .get(`orderlistitems/check/${idOrderList}/${selectedProduct}`)
+      .get(
+        `orderlistitems/checkproductinorder/${idOrderList}/${selectedProduct}`
+      )
       .then((response) => {
         if (response.data === -1) {
           handleNext();
