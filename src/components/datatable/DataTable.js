@@ -1,6 +1,8 @@
 import React from "react";
 import MUIDataTable from "mui-datatables";
 import Button from "@material-ui/core/Button";
+import Radio from "@material-ui/core/Radio";
+import Checkbox from "@material-ui/core/Checkbox";
 import callServer from "../../services/callServer";
 import DataToolbar from "./DataToolbar";
 import DataToolbarSelect from "./DataToolbarSelect";
@@ -106,6 +108,17 @@ class DataTable extends React.Component {
 
   onEdit = (id) => {
     this.props.onEdit(id);
+  };
+
+  CustomCheckbox = (props) => {
+    let newProps = Object.assign({}, props);
+    newProps.color = "primary";
+
+    if (props["data-description"] === "row-select") {
+      return <Radio {...newProps} />;
+    } else {
+      return <Checkbox {...newProps} />;
+    }
   };
 
   render() {
@@ -248,6 +261,10 @@ class DataTable extends React.Component {
                     this.state.rowsPerPage,
                     this.state.filters
                   );
+
+                  this.props.enqueueSnackbar(t("deletesuccess"), {
+                    variant: "success",
+                  });
                 })
                 .catch((error) => {
                   this.props.enqueueSnackbar(t("couldnotdelete"), {
@@ -305,6 +322,9 @@ class DataTable extends React.Component {
           data={data}
           columns={this.props.columns}
           options={options}
+          components={{
+            Checkbox: this.CustomCheckbox,
+          }}
         />
       </div>
     );
