@@ -4,7 +4,7 @@ import CubageDisplay from "../../components/display/CubaDisplay";
 import DataTable from "../../components/datatable/DataTable";
 import { useTranslation } from "react-i18next";
 
-const ProductHistory = ({ idProduct }) => {
+const ProductHistory = ({ idProduct, isOrder = false }) => {
   const { t } = useTranslation();
 
   const columns = [
@@ -72,7 +72,7 @@ const ProductHistory = ({ idProduct }) => {
       onEdit={() => {}}
       setHasToReloadData={() => {}}
       getHasToReloadData={() => {}}
-      tableHeight={550}
+      tableHeight={isOrder ? 853 : 550}
       isView={true}
     />
   );

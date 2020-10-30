@@ -110,6 +110,7 @@ class ProductData extends React.Component {
     orderQuantityOfBoxes: "",
     isLoading: false,
     idParentProduct: -1,
+    remarks: [],
   };
 
   onChangeForField = (id, newValue, onChange = () => {}) => {
@@ -278,6 +279,7 @@ class ProductData extends React.Component {
       color,
       specialRequirements,
       batteries,
+      remarks,
       orderQuantityOfBoxes,
     } = this.state;
 
@@ -411,6 +413,12 @@ class ProductData extends React.Component {
       }
     });
 
+    remarks.forEach((remark, index) => {
+      if (remark.name === "") {
+        errors.push("remark" + index);
+      }
+    });
+
     if (this.props.isOrder && orderQuantityOfBoxes === "") {
       errors.push("orderQuantityOfBoxes");
     }
@@ -466,6 +474,7 @@ class ProductData extends React.Component {
       line,
       batteries,
       idProduct,
+      remarks,
     } = this.state;
 
     return {
@@ -509,6 +518,7 @@ class ProductData extends React.Component {
         line,
         batteries,
       },
+      remarks,
     };
   };
 
@@ -593,6 +603,7 @@ class ProductData extends React.Component {
       clip: response.data.certification.clip,
       line: response.data.certification.line,
       batteries: response.data.certification.batteries,
+      remarks: response.data.remarks,
       images: response.data.images,
       idParentProduct:
         response.data.parentProduct !== null
@@ -1401,6 +1412,99 @@ class ProductData extends React.Component {
     }
   };
 
+  addNewLineRemark = () => {
+    this.updateState({
+      remarks: [
+        ...this.state.remarks,
+        {
+          id: null,
+          name: "",
+        },
+      ],
+    });
+  };
+
+  removeLineRemark = (index) => {
+    this.updateState({
+      remarks: this.state.remarks.filter((value, i) => {
+        return index !== i;
+      }),
+    });
+  };
+
+  RemarksData = () => {
+    const { remarks, errors, isOrder } = this.state;
+    const { t, classes } = this.props;
+
+    return (
+      <Grid item xs={12} sm={12}>
+        <Paper>
+          <Toolbar className={classes.root}>
+            <Typography
+              className={classes.title}
+              variant="h6"
+              id="tableTitle"
+              component="div"
+            >
+              {t("remarks")}
+            </Typography>
+            <Tooltip title={t("add")}>
+              <IconButton onClick={this.addNewLineRemark}>
+                <Add />
+              </IconButton>
+            </Tooltip>
+          </Toolbar>
+          <TableContainer>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell style={{ width: "95%" }}>{t("name")}</TableCell>
+                  <TableCell>{t("actions")}</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {remarks.map((row, index) => (
+                  <TableRow key={index}>
+                    <TableCell component="th" scope="row">
+                      <TextField
+                        disabled={isOrder}
+                        id={"remark" + index}
+                        value={row.name}
+                        required={true}
+                        size="small"
+                        onChange={(id, value) => {
+                          const remarks = this.state.remarks;
+                          remarks[index].name = value;
+                          this.updateState({
+                            remarks: remarks,
+                            errors: this.state.errors.filter((value) => {
+                              return id !== value;
+                            }),
+                          });
+                        }}
+                        errors={errors}
+                      />
+                    </TableCell>
+
+                    <TableCell>
+                      <Tooltip title={t("delete")}>
+                        <IconButton
+                          onClick={() => this.removeLineRemark(index)}
+                        >
+                          <Delete />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+      </Grid>
+    );
+  };
+
   getContent = () => {
     const { t, classes, isOrder } = this.props;
     const { idProduct, idParentProduct, selectedTab, isLoading } = this.state;
@@ -1411,7 +1515,11 @@ class ProductData extends React.Component {
         <TabContext value={selectedTab}>
           <TabList onChange={this.handleTabChange}>
             <Tab label={t("factory")} value="1" />
-            <Tab label={t("remarks")} value="2" />
+            <Tab
+              label={t("remarks")}
+              value="2"
+              style={{ display: isOrder ? "block" : "none" }}
+            />
             <Tab
               label={t("certification")}
               value="3"
@@ -1430,7 +1538,7 @@ class ProductData extends React.Component {
             {this.ProductDataFactory()}
           </TabPanel>
           <TabPanel className={classes.tabPanel} value="2">
-            Remarks
+            {this.RemarksData()}
           </TabPanel>
           <TabPanel className={classes.tabPanel} value="3">
             {this.CertificationData()}
@@ -1441,6 +1549,7 @@ class ProductData extends React.Component {
           <TabPanel className={classes.tabPanel} value="5">
             <ProductHistory
               idProduct={idParentProduct !== -1 ? idParentProduct : idProduct}
+              isOrder={isOrder}
             />
           </TabPanel>
         </TabContext>
