@@ -1,6 +1,6 @@
 import React from "react";
 import DisplayCurrency from "../../components/display/DisplayCurrency";
-import CubageDisplay from "../../components/display/CubaDisplay";
+import CubageDisplay from "../../components/display/CubageDisplay";
 import DataTable from "../../components/datatable/DataTable";
 import { useTranslation } from "react-i18next";
 

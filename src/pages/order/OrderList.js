@@ -5,7 +5,7 @@ import OrderData from "./OrderData";
 import callServer from "../../services/callServer";
 import { extractId, formatDateToDisplay } from "../../services/Utils";
 import DisplayCurrency from "../../components/display/DisplayCurrency";
-import CubageDisplay from "../../components/display/CubaDisplay";
+import CubageDisplay from "../../components/display/CubageDisplay";
 import { useSnackbar } from "notistack";
 
 const OrderList = () => {
