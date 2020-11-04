@@ -16,22 +16,28 @@ const DataToolbarSelect = ({
   onEdit,
   onDelete,
   customToolbarSelect = null,
+  useEdit,
+  useDelete,
 }) => {
   const classes = useStyles();
   const { t } = useTranslation();
 
   return (
     <div className={classes.iconContainer}>
-      <Tooltip title={t("edit")}>
-        <IconButton onClick={onEdit}>
-          <Edit />
-        </IconButton>
-      </Tooltip>
-      <Tooltip title={t("delete")}>
-        <IconButton onClick={onDelete}>
-          <Delete />
-        </IconButton>
-      </Tooltip>
+      {useEdit && (
+        <Tooltip title={t("edit")}>
+          <IconButton onClick={onEdit}>
+            <Edit />
+          </IconButton>
+        </Tooltip>
+      )}
+      {useDelete && (
+        <Tooltip title={t("delete")}>
+          <IconButton onClick={onDelete}>
+            <Delete />
+          </IconButton>
+        </Tooltip>
+      )}
       {customToolbarSelect}
     </div>
   );

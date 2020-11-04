@@ -4,16 +4,18 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Add from "@material-ui/icons/Add";
 import { useTranslation } from "react-i18next";
 
-const DataToolbar = ({ onAdd, customToolbar = null }) => {
+const DataToolbar = ({ onAdd, customToolbar = null, useAdd }) => {
   const { t } = useTranslation();
 
   return (
     <React.Fragment>
-      <Tooltip title={t("add")}>
-        <IconButton onClick={onAdd}>
-          <Add />
-        </IconButton>
-      </Tooltip>
+      {useAdd && (
+        <Tooltip title={t("add")}>
+          <IconButton onClick={onAdd}>
+            <Add />
+          </IconButton>
+        </Tooltip>
+      )}
       {customToolbar}
     </React.Fragment>
   );

@@ -232,6 +232,9 @@ class DataTable extends React.Component {
             <DataToolbar
               onAdd={this.props.onAdd}
               customToolbar={this.props.customToolbar}
+              useAdd={
+                this.props.useAdd !== undefined ? this.props.useAdd : true
+              }
             />
           )
         );
@@ -276,9 +279,13 @@ class DataTable extends React.Component {
           onEdit={() => {
             const selectedId = data[selectedRows.data[0].dataIndex].id;
 
-            this.props.onEdit(selectedId);
+            this.props.onEdit(selectedId, data[selectedRows.data[0].dataIndex]);
           }}
           customToolbarSelect={this.props.customToolbarSelect}
+          useEdit={this.props.useEdit !== undefined ? this.props.useEdit : true}
+          useDelete={
+            this.props.useDelete !== undefined ? this.props.useDelete : true
+          }
         />
       ),
       customFooter: (

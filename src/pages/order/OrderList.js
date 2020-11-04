@@ -16,6 +16,7 @@ const OrderList = () => {
   const [hasToReloadData, setHasToReloadData] = useState(false);
 
   const columns = [
+    { name: "status", label: t("status") },
     { name: "name", label: t("name") },
     { name: "customer", label: t("customer") },
     { name: "season", label: t("season") },

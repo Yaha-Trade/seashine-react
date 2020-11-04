@@ -36,6 +36,7 @@ import DecimalField from "../../components/formfields/DecimalField";
 import IntegerField from "../../components/formfields/IntegerField";
 import { ContainerEnum } from "../../enums/ContainerEnum";
 import ProductHistory from "../../pages/product/ProductHistory";
+import { getImageFromFile } from "../../services/Utils";
 
 const useStyles = (theme) => ({
   tabPanel: {
@@ -1288,36 +1289,11 @@ class ProductData extends React.Component {
     );
   };
 
-  dataURLtoFile = (dataurl, filename) => {
-    const arr = dataurl.split(",");
-    const mime = arr[0].match(/:(.*?);/)[1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n) {
-      u8arr[n - 1] = bstr.charCodeAt(n - 1);
-      n -= 1;
-    }
-    return new File([u8arr], filename, { type: mime });
-  };
-
-  getImageFromFile = async (file) => {
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-
-      reader.onload = () => {
-        resolve(this.dataURLtoFile(reader.result, file.name));
-      };
-
-      reader.readAsDataURL(file);
-    });
-  };
-
   saveImage = async (images) => {
     this.updateState({ isLoading: true });
     const data = new FormData();
     for (let index = 0; index < images.length; index++) {
-      data.append("images", await this.getImageFromFile(images[index]));
+      data.append("images", await getImageFromFile(images[index]));
     }
 
     const config = {

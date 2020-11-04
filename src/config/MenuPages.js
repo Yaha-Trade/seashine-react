@@ -4,14 +4,9 @@ import PackingList from "../pages/packing/PackingList";
 import ProductList from "../pages/product/ProductList";
 import SeasonList from "../pages/season/SeasonList";
 import OrderList from "../pages/order/OrderList";
+import ImageList from "../pages/image/ImageList";
 
 export const MenuPages = [
-  {
-    key: "order",
-    text: "order",
-    path: "/order",
-    component: OrderList,
-  },
   {
     key: "register",
     text: "register",
@@ -45,6 +40,18 @@ export const MenuPages = [
         text: "season",
         path: "/season",
         component: SeasonList,
+      },
+      {
+        key: "order",
+        text: "order",
+        path: "/order",
+        component: OrderList,
+      },
+      {
+        key: "image",
+        text: "picture",
+        path: "/image",
+        component: ImageList,
       },
     ],
   },
