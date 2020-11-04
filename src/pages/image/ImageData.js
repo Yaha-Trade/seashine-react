@@ -43,7 +43,6 @@ class ImageData extends React.Component {
               idProduct={this.props.idProduct}
               onAddPicture={this.fetchImages}
             />
-
             <ImageSelector
               id="2"
               imageId={this.state.imagesIds[2]}
@@ -51,7 +50,6 @@ class ImageData extends React.Component {
               idProduct={this.props.idProduct}
               onAddPicture={this.fetchImages}
             />
-
             <ImageSelector
               id="3"
               imageId={this.state.imagesIds[3]}
@@ -59,7 +57,6 @@ class ImageData extends React.Component {
               idProduct={this.props.idProduct}
               onAddPicture={this.fetchImages}
             />
-
             <ImageSelector
               id="4"
               imageId={this.state.imagesIds[4]}
@@ -67,11 +64,17 @@ class ImageData extends React.Component {
               idProduct={this.props.idProduct}
               onAddPicture={this.fetchImages}
             />
-
             <ImageSelector
               id="5"
               imageId={this.state.imagesIds[5]}
               label="picture5"
+              idProduct={this.props.idProduct}
+              onAddPicture={this.fetchImages}
+            />
+            <ImageSelector
+              id="6"
+              imageId={this.state.imagesIds[6]}
+              label="picture6"
               idProduct={this.props.idProduct}
               onAddPicture={this.fetchImages}
             />
