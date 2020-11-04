@@ -19,10 +19,10 @@ i18n
     fallbackLng: DEFAULT_LOCALE,
     debug: false,
     interpolation: {
-      escapeValue: false, // not needed for react as it escapes by default
+      escapeValue: false,
     },
     backend: {
-      loadPath: `http://192.168.1.203/locales/${DEFAULT_LOCALE}`,
+      loadPath: `http://192.168.1.203/locales/all/${DEFAULT_LOCALE}`,
     },
   });
 

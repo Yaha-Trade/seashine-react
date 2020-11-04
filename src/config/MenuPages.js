@@ -5,6 +5,7 @@ import ProductList from "../pages/product/ProductList";
 import SeasonList from "../pages/season/SeasonList";
 import OrderList from "../pages/order/OrderList";
 import ImageList from "../pages/image/ImageList";
+import LanguageList from "../pages/language/LanguageList";
 
 export const MenuPages = [
   {
@@ -52,6 +53,12 @@ export const MenuPages = [
         text: "picture",
         path: "/image",
         component: ImageList,
+      },
+      {
+        key: "language",
+        text: "language",
+        path: "/language",
+        component: LanguageList,
       },
     ],
   },
