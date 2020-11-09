@@ -20,7 +20,11 @@ export const formatDateToUTC = (inputDate) => {
   );
 };
 
-export const formatDateToDisplay = (inputDate) => {
+export const formatDateToDisplay = (inputDate, withHour) => {
+  if (withHour) {
+    return moment(inputDate).format(DateEnum.MOMENTFORMATHOUR);
+  }
+
   return moment.utc(inputDate).format(DateEnum.MOMENTFORMAT);
 };
 

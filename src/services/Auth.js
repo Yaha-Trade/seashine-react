@@ -1,4 +1,4 @@
-import { setUser, getUser } from "../services/StorageManager";
+import { setUser, getUser, setUserId } from "../services/StorageManager";
 import callServer from "./callServer";
 import jwt_decode from "jwt-decode";
 
@@ -25,7 +25,10 @@ export const login = (login, password, onSuccess, onError) => {
         token: token,
       });
 
-      onSuccess();
+      callServer.get(`/auth/getUserId?login=${login}`).then((response) => {
+        setUserId(response.data);
+        onSuccess();
+      });
     })
     .catch((error) => {
       onError();
@@ -34,6 +37,7 @@ export const login = (login, password, onSuccess, onError) => {
 
 export const logout = () => {
   setUser(null);
+  setUserId(null);
 };
 
 export const refreshToken = async () => {
