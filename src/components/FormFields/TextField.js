@@ -12,6 +12,7 @@ const CustomTextField = ({
   disabled = false,
   multiline = false,
   rows = 1,
+  type = "text",
 }) => {
   const { t } = useTranslation();
   const errorMessage = t("requiredfield");
@@ -28,6 +29,7 @@ const CustomTextField = ({
       size="small"
       multiline={multiline}
       rows={rows}
+      type={type}
       onChange={(e) => onChange(id, e.target.value)}
       error={errors.includes(id)}
       helperText={errors.includes(id) && errorMessage}
