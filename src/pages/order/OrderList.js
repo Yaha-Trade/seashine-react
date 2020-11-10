@@ -3,10 +3,15 @@ import DataTable from "../../components/datatable/DataTable";
 import { useTranslation } from "react-i18next";
 import OrderData from "./OrderData";
 import callServer from "../../services/callServer";
-import { extractId, formatDateToDisplay } from "../../services/Utils";
+import {
+  extractId,
+  formatDateToDisplay,
+  getTextOrderStatus,
+} from "../../services/Utils";
 import DisplayCurrency from "../../components/display/DisplayCurrency";
 import CubageDisplay from "../../components/display/CubageDisplay";
 import { useSnackbar } from "notistack";
+import OrderToolbar from "./OrderToolbar";
 
 const OrderList = () => {
   const { t } = useTranslation();
@@ -16,7 +21,16 @@ const OrderList = () => {
   const [hasToReloadData, setHasToReloadData] = useState(false);
 
   const columns = [
-    { name: "status", label: t("status") },
+    {
+      name: "status",
+      label: t("status"),
+      options: {
+        filter: false,
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return t(getTextOrderStatus(value));
+        },
+      },
+    },
     { name: "name", label: t("name") },
     { name: "customer", label: t("customer") },
     { name: "season", label: t("season") },
@@ -99,6 +113,15 @@ const OrderList = () => {
     setId(-1);
   };
 
+  const onSendToApproval = () => {
+    if (window.confirm(t("wishtosendtoapproval"))) {
+      callServer.post(`orderlists/sendtoapproval/${id}`).then((response) => {
+        setId(-1);
+        setHasToReloadData(true);
+      });
+    }
+  };
+
   const onSave = async (order, saveAndExit) => {
     if (id === -1) {
       const response = await callServer.post(`orderlists`, order);
@@ -133,6 +156,10 @@ const OrderList = () => {
         onEdit={onEdit}
         setHasToReloadData={setHasToReloadData}
         getHasToReloadData={getHasToReloadData}
+        customToolbarSelect={
+          <OrderToolbar onSendToApproval={onSendToApproval} />
+        }
+        onRowSelectionChange={setId}
       />
     </div>
   );

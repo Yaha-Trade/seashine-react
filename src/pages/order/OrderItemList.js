@@ -154,7 +154,7 @@ const OrderList = ({ idOrder }) => {
         columns={columns}
         dataSource={`orderlistitems/${idOrder}`}
         initialSort={{ name: "productReference", direction: "asc" }}
-        tableHeight={window.innerHeight - 90}
+        tableHeight={window.innerHeight - 172}
         onAdd={onAdd}
         onEdit={onEdit}
         setHasToReloadData={setHasToReloadData}

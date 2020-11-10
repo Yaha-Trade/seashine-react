@@ -56,3 +56,14 @@ export const getImageFromFile = async (file) => {
     reader.readAsDataURL(file);
   });
 };
+
+export const getTextOrderStatus = (status) => {
+  switch (status) {
+    case 0:
+      return "opened";
+    case 1:
+      return "onapproval";
+    default:
+      return "";
+  }
+};

@@ -1489,7 +1489,7 @@ class ProductData extends React.Component {
       <Fragment>
         <Loading isOpen={isLoading} />
         <TabContext value={selectedTab}>
-          <TabList onChange={this.handleTabChange}>
+          <TabList onChange={this.handleTabChange} variant="scrollable">
             <Tab label={t("factory")} value="1" />
             <Tab
               label={t("remarks")}
