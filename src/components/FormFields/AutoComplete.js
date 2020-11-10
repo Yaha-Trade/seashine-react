@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -22,7 +22,7 @@ const AutoComplete = ({
   const [noData, setNoData] = useState(false);
   const loading = open && options.length === 0 && !noData;
 
-  React.useEffect(() => {
+  useEffect(() => {
     let active = true;
 
     if (!loading) {
@@ -45,7 +45,7 @@ const AutoComplete = ({
     };
   }, [loading, dataSource]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!open) {
       setOptions([]);
     }

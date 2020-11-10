@@ -35,7 +35,7 @@ const FileField = ({ id, value, onChangeFile, errors }) => {
               <IconButton
                 variant="contained"
                 color="primary"
-                aria-label="upload picture"
+                aria-label="upload file"
                 component="span"
                 size="small"
               >

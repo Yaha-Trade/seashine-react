@@ -3,10 +3,7 @@ import TableFooter from "@material-ui/core/TableFooter";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import MuiTablePagination from "@material-ui/core/TablePagination";
-import { withStyles } from "@material-ui/core/styles";
 import { withTranslation } from "react-i18next";
-
-const defaultFooterStyles = {};
 
 class DataFooter extends React.Component {
   handleRowChange = (event) => {
@@ -69,6 +66,4 @@ class DataFooter extends React.Component {
   }
 }
 
-export default withStyles(defaultFooterStyles, { name: "DataFooter" })(
-  withTranslation()(DataFooter)
-);
+export default withTranslation()(DataFooter);
