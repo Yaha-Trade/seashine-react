@@ -19,6 +19,7 @@ const OrderList = () => {
   const [open, setOpen] = useState(false);
   const [id, setId] = useState();
   const [hasToReloadData, setHasToReloadData] = useState(false);
+  const [isView, setIsView] = useState(false);
 
   const columns = [
     {
@@ -103,7 +104,8 @@ const OrderList = () => {
     setId(-1);
   };
 
-  const onEdit = (id) => {
+  const onEdit = (id, values) => {
+    setIsView(values.status !== 0);
     setOpen(true);
     setId(id);
   };
@@ -146,7 +148,14 @@ const OrderList = () => {
 
   return (
     <div>
-      {open && <OrderData idOrder={id} onSave={onSave} onClose={onClose} />}
+      {open && (
+        <OrderData
+          idOrder={id}
+          onSave={onSave}
+          onClose={onClose}
+          isView={isView}
+        />
+      )}
       <DataTable
         title="order"
         columns={columns}

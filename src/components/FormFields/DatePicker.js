@@ -12,7 +12,7 @@ import { LanguageEnum } from "../../enums/LanguageEnum";
 import { DateEnum } from "../../enums/DateEnum";
 import { formatDateToUTC, isValidDate } from "../../services/Utils";
 
-const DatePicker = ({ id, label, date, onChange }) => {
+const DatePicker = ({ id, label, date, onChange, disabled = false }) => {
   const { t } = useTranslation();
   const isEnglishLanguage = getLanguage() === LanguageEnum.ENGLISH;
 
@@ -43,6 +43,7 @@ const DatePicker = ({ id, label, date, onChange }) => {
         }}
         invalidDateMessage={t("invaliddate")}
         autoOk={true}
+        disabled={disabled}
       />
     </MuiPickersUtilsProvider>
   );

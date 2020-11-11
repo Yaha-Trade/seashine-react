@@ -19,7 +19,7 @@ import { formatDateToDisplay } from "../../services/Utils";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import { getUserId } from "../../services/StorageManager";
 
-const TimelineHistory = ({ data, onAddMessage }) => {
+const TimelineHistory = ({ data, onAddMessage, isView }) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const [isOpen, setIsOpen] = useState(false);
@@ -54,20 +54,22 @@ const TimelineHistory = ({ data, onAddMessage }) => {
 
   return (
     <Fragment>
-      <Tooltip title={t("add")} aria-label="add" placement="left">
-        <Fab
-          style={fabStyle}
-          color="secondary"
-          size="large"
-          component="span"
-          aria-label="add"
-          onClick={() => {
-            setIsOpen(true);
-          }}
-        >
-          <CommentIcon />
-        </Fab>
-      </Tooltip>
+      {!isView && (
+        <Tooltip title={t("add")} aria-label="add" placement="left">
+          <Fab
+            style={fabStyle}
+            color="secondary"
+            size="large"
+            component="span"
+            aria-label="add"
+            onClick={() => {
+              setIsOpen(true);
+            }}
+          >
+            <CommentIcon />
+          </Fab>
+        </Tooltip>
+      )}
 
       {isOpen && (
         <TimelineHistoryModal

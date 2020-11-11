@@ -155,7 +155,7 @@ class OrderData extends React.Component {
   }
 
   createOrderContent = () => {
-    const { idOrder } = this.props;
+    const { idOrder, isView } = this.props;
     const {
       name,
       season,
@@ -178,6 +178,7 @@ class OrderData extends React.Component {
               required={true}
               onChange={this.onChangeForField}
               errors={errors}
+              disabled={isView}
             />
           </Grid>
           <Grid item xs={12} sm={3}>
@@ -190,6 +191,7 @@ class OrderData extends React.Component {
               selectedValue={season}
               hasErrors={errors.includes("season")}
               label="season"
+              disabled={isView}
             />
           </Grid>
           <Grid item xs={12} sm={3}>
@@ -208,10 +210,13 @@ class OrderData extends React.Component {
               onChange={(value) => {
                 this.setState({ purchaseDate: value });
               }}
+              disabled={isView}
             />
           </Grid>
           <Grid item xs={12} sm={12}>
-            {idOrder && idOrder !== -1 && <OrderItemList idOrder={idOrder} />}
+            {idOrder && idOrder !== -1 && (
+              <OrderItemList idOrder={idOrder} isView={isView} />
+            )}
           </Grid>
         </Grid>
       </Fragment>
@@ -219,11 +224,16 @@ class OrderData extends React.Component {
   };
 
   createHistory = () => {
+    const { isView } = this.props;
     const { histories } = this.state;
 
     return (
       <div style={{ backgroundColor: "#bdbdbd" }}>
-        <TimelineHistory data={histories} onAddMessage={this.onAddMessage} />
+        <TimelineHistory
+          data={histories}
+          onAddMessage={this.onAddMessage}
+          isView={isView}
+        />
       </div>
     );
   };
@@ -241,7 +251,7 @@ class OrderData extends React.Component {
   };
 
   render() {
-    const { onClose } = this.props;
+    const { onClose, isView } = this.props;
 
     return (
       <div>
@@ -251,6 +261,7 @@ class OrderData extends React.Component {
           onClose={onClose}
           title="orderdata"
           fullScreen={true}
+          hasActions={!isView}
         >
           {this.createTabs()}
         </ModalData>

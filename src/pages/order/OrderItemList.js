@@ -8,7 +8,7 @@ import DisplayCurrency from "../../components/display/DisplayCurrency";
 import CubageDisplay from "../../components/display/CubageDisplay";
 import { useSnackbar } from "notistack";
 
-const OrderList = ({ idOrder }) => {
+const OrderList = ({ idOrder, isView }) => {
   const { t } = useTranslation();
   const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = useState(false);
@@ -159,6 +159,7 @@ const OrderList = ({ idOrder }) => {
         onEdit={onEdit}
         setHasToReloadData={setHasToReloadData}
         getHasToReloadData={getHasToReloadData}
+        isView={isView}
       />
     </div>
   );
