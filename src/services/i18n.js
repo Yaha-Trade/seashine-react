@@ -3,6 +3,7 @@ import { initReactI18next } from "react-i18next";
 import HttpApi from "i18next-http-backend";
 import { getLanguage, setLanguage } from "../services/StorageManager";
 import { LanguageEnum } from "../enums/LanguageEnum";
+import { CONFIG } from "../config/Config";
 
 const language = getLanguage();
 const DEFAULT_LOCALE = language == null ? LanguageEnum.ENGLISH : language;
@@ -22,7 +23,7 @@ i18n
       escapeValue: false,
     },
     backend: {
-      loadPath: `http://192.168.1.203/locales/all/${DEFAULT_LOCALE}`,
+      loadPath: `${CONFIG.baseURL}/locales/all/${DEFAULT_LOCALE}`,
     },
   });
 
