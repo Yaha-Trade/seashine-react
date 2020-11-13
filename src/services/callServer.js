@@ -1,6 +1,7 @@
 import axios from "axios";
 import { getToken, logout } from "./Auth";
 import { CONFIG } from "../config/Config";
+import { getUserId } from "../services/StorageManager";
 
 const api = axios.create({
   baseURL: CONFIG.baseURL,
@@ -10,6 +11,11 @@ api.interceptors.request.use(async (config) => {
   const token = getToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  const userId = getUserId();
+  if (userId) {
+    config.headers.userId = userId;
   }
 
   return config;
