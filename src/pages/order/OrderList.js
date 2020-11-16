@@ -18,6 +18,7 @@ const OrderList = () => {
   const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = useState(false);
   const [id, setId] = useState();
+  const [selectedValues, setSelectedValues] = useState(null);
   const [hasToReloadData, setHasToReloadData] = useState(false);
   const [isView, setIsView] = useState(false);
 
@@ -102,24 +103,38 @@ const OrderList = () => {
   const onAdd = () => {
     setOpen(true);
     setId(-1);
+    setSelectedValues(null);
   };
 
   const onEdit = (id, values) => {
     setIsView(values.status !== 0);
     setOpen(true);
     setId(id);
+    setSelectedValues(values);
   };
 
   const onClose = () => {
     setOpen(false);
     setId(-1);
+    setSelectedValues(null);
   };
 
   const onSendToApproval = () => {
-    if (window.confirm(t("wishtosendtoapproval"))) {
+    if (
+      selectedValues.status === 0 &&
+      window.confirm(t("wishtosendtoapproval"))
+    ) {
       callServer.post(`orderlists/sendtoapproval/${id}`).then((response) => {
         setId(-1);
+        setSelectedValues(null);
         setHasToReloadData(true);
+        enqueueSnackbar(t("ordersuccesssenttoapprov"), {
+          variant: "success",
+        });
+      });
+    } else {
+      enqueueSnackbar(t("orderisinapproval"), {
+        variant: "error",
       });
     }
   };
@@ -168,7 +183,10 @@ const OrderList = () => {
         customToolbarSelect={
           <OrderToolbar onSendToApproval={onSendToApproval} />
         }
-        onRowSelectionChange={setId}
+        onRowSelectionChange={(id, values) => {
+          setId(id);
+          setSelectedValues(values);
+        }}
       />
     </div>
   );

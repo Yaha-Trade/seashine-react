@@ -317,7 +317,8 @@ class DataTable extends React.Component {
         if (this.props.onRowSelectionChange) {
           const selectedId =
             rowsSelected.length > 0 ? data[rowsSelected[0]].id : -1;
-          this.props.onRowSelectionChange(selectedId);
+          const values = rowsSelected.length > 0 ? data[rowsSelected[0]] : null;
+          this.props.onRowSelectionChange(selectedId, values);
         }
       },
     };
