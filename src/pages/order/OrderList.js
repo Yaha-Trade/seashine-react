@@ -13,7 +13,7 @@ import CubageDisplay from "../../components/display/CubageDisplay";
 import { useSnackbar } from "notistack";
 import OrderToolbar from "./OrderToolbar";
 
-const OrderList = () => {
+const OrderList = ({ isApproval = false }) => {
   const { t } = useTranslation();
   const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = useState(false);
@@ -21,6 +21,7 @@ const OrderList = () => {
   const [selectedValues, setSelectedValues] = useState(null);
   const [hasToReloadData, setHasToReloadData] = useState(false);
   const [isView, setIsView] = useState(false);
+  const listURL = isApproval ? "/approval" : "";
 
   const columns = [
     {
@@ -121,7 +122,7 @@ const OrderList = () => {
 
   const onSendToApproval = () => {
     if (
-      selectedValues.status === 0 &&
+      (selectedValues.status === 0 || selectedValues.status === 3) &&
       window.confirm(t("wishtosendtoapproval"))
     ) {
       callServer.post(`orderlists/sendtoapproval/${id}`).then((response) => {
@@ -135,6 +136,32 @@ const OrderList = () => {
     } else {
       enqueueSnackbar(t("orderisinapproval"), {
         variant: "error",
+      });
+    }
+  };
+
+  const onApproval = () => {
+    if (window.confirm(t("wanttoapprove"))) {
+      callServer.post(`orderlists/approve/${id}`).then((response) => {
+        setId(-1);
+        setSelectedValues(null);
+        setHasToReloadData(true);
+        enqueueSnackbar(t("ordersuccessapproved"), {
+          variant: "success",
+        });
+      });
+    }
+  };
+
+  const onReproval = () => {
+    if (window.confirm(t("wanttoreprove"))) {
+      callServer.post(`orderlists/reprove/${id}`).then((response) => {
+        setId(-1);
+        setSelectedValues(null);
+        setHasToReloadData(true);
+        enqueueSnackbar(t("orderreproved"), {
+          variant: "success",
+        });
       });
     }
   };
@@ -174,14 +201,29 @@ const OrderList = () => {
       <DataTable
         title="order"
         columns={columns}
-        dataSource="orderlists"
+        dataSource={`orderlists${listURL}`}
         initialSort={{ name: "name", direction: "asc" }}
         onAdd={onAdd}
+        useAdd={!isApproval}
+        useDelete={!isApproval}
         onEdit={onEdit}
+        useEdit={!isApproval}
         setHasToReloadData={setHasToReloadData}
         getHasToReloadData={getHasToReloadData}
         customToolbarSelect={
-          <OrderToolbar onSendToApproval={onSendToApproval} />
+          (!isApproval && (
+            <OrderToolbar
+              useSendToApproval={true}
+              onSendToApproval={onSendToApproval}
+            />
+          )) ||
+          (isApproval && (
+            <OrderToolbar
+              useApproval={true}
+              onApproval={onApproval}
+              onReproval={onReproval}
+            />
+          ))
         }
         onRowSelectionChange={(id, values) => {
           setId(id);

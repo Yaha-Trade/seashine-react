@@ -7,6 +7,7 @@ import OrderList from "../pages/order/OrderList";
 import ImageList from "../pages/image/ImageList";
 import LanguageList from "../pages/language/LanguageList";
 import UserList from "../pages/user/UserList";
+import OrderApprovalList from "../pages/order/OrderApprovalList";
 
 export const MenuPages = [
   {
@@ -40,12 +41,6 @@ export const MenuPages = [
     component: SeasonList,
   },
   {
-    key: "order",
-    text: "order",
-    path: "/order",
-    component: OrderList,
-  },
-  {
     key: "image",
     text: "picture",
     path: "/image",
@@ -62,5 +57,17 @@ export const MenuPages = [
     text: "user",
     path: "/user",
     component: UserList,
+  },
+  {
+    key: "order",
+    text: "order",
+    path: "/order",
+    component: OrderList,
+  },
+  {
+    key: "orderapproval",
+    text: "orderapproval",
+    path: "/orderapproval",
+    component: OrderApprovalList,
   },
 ];

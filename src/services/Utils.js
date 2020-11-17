@@ -63,6 +63,10 @@ export const getTextOrderStatus = (status) => {
       return "opened";
     case 1:
       return "onapproval";
+    case 2:
+      return "approved";
+    case 3:
+      return "reproved";
     default:
       return "";
   }
