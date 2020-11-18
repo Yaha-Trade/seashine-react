@@ -12,6 +12,7 @@ import DisplayCurrency from "../../components/display/DisplayCurrency";
 import CubageDisplay from "../../components/display/CubageDisplay";
 import { useSnackbar } from "notistack";
 import OrderToolbar from "./OrderToolbar";
+import { createUUID } from "../../services/Utils";
 
 const OrderList = ({ isApproval = false }) => {
   const { t } = useTranslation();
@@ -166,6 +167,19 @@ const OrderList = ({ isApproval = false }) => {
     }
   };
 
+  const onExport = () => {
+    callServer
+      .get(`orderlists/export/${id}`, { responseType: "blob" })
+      .then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", `${createUUID()}.xlsx`);
+        document.body.appendChild(link);
+        link.click();
+      });
+  };
+
   const onSave = async (order, saveAndExit) => {
     if (id === -1) {
       const response = await callServer.post(`orderlists`, order);
@@ -215,6 +229,8 @@ const OrderList = ({ isApproval = false }) => {
             <OrderToolbar
               useSendToApproval={true}
               onSendToApproval={onSendToApproval}
+              useExport={true}
+              onExport={onExport}
             />
           )) ||
           (isApproval && (

@@ -4,14 +4,17 @@ import Tooltip from "@material-ui/core/Tooltip";
 import SendIcon from "@material-ui/icons/Send";
 import CheckIcon from "@material-ui/icons/Check";
 import ClearIcon from "@material-ui/icons/Clear";
+import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
 import { useTranslation } from "react-i18next";
 
 const OrderToolbar = ({
   useApproval,
   useSendToApproval,
+  useExport,
   onApproval,
   onReproval,
   onSendToApproval,
+  onExport,
 }) => {
   const { t } = useTranslation();
 
@@ -37,6 +40,13 @@ const OrderToolbar = ({
             </IconButton>
           </Tooltip>
         </Fragment>
+      )}
+      {useExport && (
+        <Tooltip title={t("export")}>
+          <IconButton onClick={onExport}>
+            <CloudDownloadIcon />
+          </IconButton>
+        </Tooltip>
       )}
     </Fragment>
   );
