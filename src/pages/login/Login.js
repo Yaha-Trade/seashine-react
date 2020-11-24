@@ -15,6 +15,8 @@ import { login, isAuthenticated } from "../../services/Auth";
 import { useTranslation } from "react-i18next";
 import LanguageSelector from "../../components/LanguageSelector";
 import CollapseAlert from "../../components/CollapseAlert";
+import callServer from "../../services/callServer";
+import { getLanguage } from "../../services/StorageManager";
 
 function Copyright() {
   const { t } = useTranslation();
@@ -71,7 +73,11 @@ const Login = ({ history }) => {
 
   const goToApp = useCallback(() => {
     if (isAuthenticated()) {
-      history.push("/order");
+      callServer
+        .get(`users/changelanguage?language=${getLanguage()}`)
+        .then((response) => {
+          history.push("/order");
+        });
     }
   }, [history]);
 
