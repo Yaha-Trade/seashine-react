@@ -5,7 +5,7 @@ import CheckIcon from "@material-ui/icons/Check";
 import ClearIcon from "@material-ui/icons/Clear";
 import { useTranslation } from "react-i18next";
 
-const CertificationToolbar = ({ onApproval, onReproval }) => {
+const ApprovalToolbar = ({ onApproval, onReproval }) => {
   const { t } = useTranslation();
 
   return (
@@ -24,4 +24,4 @@ const CertificationToolbar = ({ onApproval, onReproval }) => {
   );
 };
 
-export default CertificationToolbar;
+export default ApprovalToolbar;

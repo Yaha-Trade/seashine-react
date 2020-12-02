@@ -1,4 +1,3 @@
-import React from "react";
 import FactoryList from "../pages/factory/FactoryList";
 import CustomerList from "../pages/customer/CustomerList";
 import PackingList from "../pages/packing/PackingList";
@@ -10,6 +9,7 @@ import LanguageList from "../pages/language/LanguageList";
 import UserList from "../pages/user/UserList";
 import OrderApprovalList from "../pages/order/OrderApprovalList";
 import CertificationList from "../pages/certification/CertificationList";
+import LabelingList from "../pages/labeling/LabelingList";
 
 export const MenuPages = [
   {
@@ -82,8 +82,6 @@ export const MenuPages = [
     key: "labeling",
     text: "labeling",
     path: "/labeling",
-    component: () => {
-      return <h1>Labeling</h1>;
-    },
+    component: LabelingList,
   },
 ];

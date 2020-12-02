@@ -5,24 +5,23 @@ import ProductData from "../product/ProductData";
 import ApprovalToolbar from "../../components/ApprovalToolbar";
 import callServer from "../../services/callServer";
 import { useSnackbar } from "notistack";
-import { getTextCertificationStatus } from "../../services/Utils";
+import { getTextLabelingStatus } from "../../services/Utils";
 
-const CertificationList = () => {
+const LabelingList = () => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
-  const [id, setId] = useState();
   const [productId, setProductId] = useState();
   const [hasToReloadData, setHasToReloadData] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
   const columns = [
     {
-      name: "certificationStatus",
+      name: "labelingStatus",
       label: t("status"),
       options: {
         filter: false,
         customBodyRender: (value, tableMeta, updateValue) => {
-          return t(getTextCertificationStatus(value));
+          return t(getTextLabelingStatus(value));
         },
       },
     },
@@ -48,23 +47,27 @@ const CertificationList = () => {
 
   const onApproval = () => {
     if (window.confirm(t("wanttoapprove"))) {
-      callServer.post(`/certifications/approve/${id}`).then((response) => {
-        setHasToReloadData(true);
-        enqueueSnackbar(t("certificationsuccessapproved"), {
-          variant: "success",
+      callServer
+        .post(`/products/approvelabeling/${productId}`)
+        .then((response) => {
+          setHasToReloadData(true);
+          enqueueSnackbar(t("labelingsuccessapproved"), {
+            variant: "success",
+          });
         });
-      });
     }
   };
 
   const onReproval = () => {
     if (window.confirm(t("wanttoreprove"))) {
-      callServer.post(`/certifications/reprove/${id}`).then((response) => {
-        setHasToReloadData(true);
-        enqueueSnackbar(t("certificationreproved"), {
-          variant: "success",
+      callServer
+        .post(`/products/reprovelabeling/${productId}`)
+        .then((response) => {
+          setHasToReloadData(true);
+          enqueueSnackbar(t("labelingreproved"), {
+            variant: "success",
+          });
         });
-      });
     }
   };
 
@@ -74,7 +77,7 @@ const CertificationList = () => {
         <ProductData idProduct={productId} onClose={onClose} isView={true} />
       )}
       <DataTable
-        title="certification"
+        title="labeling"
         columns={columns}
         dataSource="orderlistitems/allorderlistapproved"
         initialSort={{ name: "order", direction: "asc" }}
@@ -87,7 +90,6 @@ const CertificationList = () => {
           <ApprovalToolbar onApproval={onApproval} onReproval={onReproval} />
         }
         onRowSelectionChange={(id, values) => {
-          setId(id);
           setProductId(values ? values.productId : null);
         }}
       />
@@ -95,4 +97,4 @@ const CertificationList = () => {
   );
 };
 
-export default CertificationList;
+export default LabelingList;
