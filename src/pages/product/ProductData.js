@@ -688,7 +688,7 @@ class ProductData extends React.Component {
       orderQuantityOfBoxes,
       errors,
     } = this.state;
-    const { classes, isOrder } = this.props;
+    const { classes, isOrder, isView } = this.props;
 
     const isEnglishLanguage = getLanguage() === LanguageEnum.ENGLISH;
 
@@ -706,7 +706,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
-                  disabled={isOrder}
+                  disabled={isOrder || isView}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -719,7 +719,7 @@ class ProductData extends React.Component {
                   selectedValue={factory}
                   hasErrors={errors.includes("factory")}
                   label="factory"
-                  disabled={isOrder}
+                  disabled={isOrder || isView}
                 />
               </Grid>
               <Grid item xs={12} sm={isOrder ? 2 : 3}>
@@ -734,7 +734,7 @@ class ProductData extends React.Component {
                   selectedValue={packing}
                   hasErrors={errors.includes("packing")}
                   label="packing"
-                  disabled={isOrder}
+                  disabled={isOrder || isView}
                 />
               </Grid>
               <Grid item xs={12} sm={isOrder ? 2 : 3}>
@@ -745,6 +745,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
+                  disabled={isView}
                 />
               </Grid>
               {isOrder && (
@@ -767,7 +768,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
-                  disabled={isOrder}
+                  disabled={isOrder || isView}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -778,7 +779,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
-                  disabled={isOrder}
+                  disabled={isOrder || isView}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -789,7 +790,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
-                  disabled={isOrder}
+                  disabled={isOrder || isView}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -800,7 +801,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
-                  disabled={isOrder}
+                  disabled={isOrder || isView}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -811,6 +812,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
+                  disabled={isView}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -821,7 +823,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
-                  disabled={isOrder}
+                  disabled={isOrder || isView}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -832,7 +834,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
-                  disabled={isOrder}
+                  disabled={isOrder || isView}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -843,7 +845,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
-                  disabled={isOrder}
+                  disabled={isOrder || isView}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -855,7 +857,7 @@ class ProductData extends React.Component {
                   callBack={this.onChangeBoxLength}
                   onChange={this.onChangeForField}
                   errors={errors}
-                  disabled={isOrder}
+                  disabled={isOrder || isView}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -867,7 +869,7 @@ class ProductData extends React.Component {
                   callBack={this.onChangeBoxWidth}
                   onChange={this.onChangeForField}
                   errors={errors}
-                  disabled={isOrder}
+                  disabled={isOrder || isView}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -879,7 +881,7 @@ class ProductData extends React.Component {
                   callBack={this.onChangeBoxHeight}
                   onChange={this.onChangeForField}
                   errors={errors}
-                  disabled={isOrder}
+                  disabled={isOrder || isView}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -901,6 +903,7 @@ class ProductData extends React.Component {
                   callBack={this.onChangeQuantityOfPieces}
                   onChange={this.onChangeForField}
                   errors={errors}
+                  disabled={isView}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -931,7 +934,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
-                  disabled={isOrder}
+                  disabled={isOrder || isView}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -942,7 +945,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
-                  disabled={isOrder}
+                  disabled={isOrder || isView}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -953,7 +956,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
-                  disabled={isOrder}
+                  disabled={isOrder || isView}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -964,7 +967,7 @@ class ProductData extends React.Component {
                   required={true}
                   onChange={this.onChangeForField}
                   errors={errors}
-                  disabled={isOrder}
+                  disabled={isOrder || isView}
                 />
               </Grid>
             </Grid>
@@ -1015,7 +1018,7 @@ class ProductData extends React.Component {
       batteries,
       errors,
     } = this.state;
-    const { t, classes } = this.props;
+    const { t, classes, isOrder, isView } = this.props;
 
     return (
       <Grid container spacing={2}>
@@ -1027,6 +1030,7 @@ class ProductData extends React.Component {
             required={true}
             onChange={this.onChangeForField}
             errors={errors}
+            disabled={isOrder || isView}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -1037,6 +1041,7 @@ class ProductData extends React.Component {
             required={true}
             onChange={this.onChangeForField}
             errors={errors}
+            disabled={isOrder || isView}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -1047,6 +1052,7 @@ class ProductData extends React.Component {
             required={true}
             onChange={this.onChangeForField}
             errors={errors}
+            disabled={isOrder || isView}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -1057,6 +1063,7 @@ class ProductData extends React.Component {
             required={true}
             onChange={this.onChangeForField}
             errors={errors}
+            disabled={isOrder || isView}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -1067,6 +1074,7 @@ class ProductData extends React.Component {
             required={true}
             onChange={this.onChangeForField}
             errors={errors}
+            disabled={isOrder || isView}
           />
         </Grid>
         <Grid item xs={12} sm={12}>
@@ -1079,6 +1087,7 @@ class ProductData extends React.Component {
                 }
                 color="primary"
                 name="sound"
+                disabled={isOrder || isView}
               />
             }
             label={t("sound")}
@@ -1092,6 +1101,7 @@ class ProductData extends React.Component {
                 }
                 color="primary"
                 name="light"
+                disabled={isOrder || isView}
               />
             }
             label={t("light")}
@@ -1105,6 +1115,7 @@ class ProductData extends React.Component {
                 }
                 color="primary"
                 name="motor"
+                disabled={isOrder || isView}
               />
             }
             label={t("motor")}
@@ -1118,6 +1129,7 @@ class ProductData extends React.Component {
                 }
                 color="primary"
                 name="metalPart"
+                disabled={isOrder || isView}
               />
             }
             label={t("metalpart")}
@@ -1131,6 +1143,7 @@ class ProductData extends React.Component {
                 }
                 color="primary"
                 name="clip"
+                disabled={isOrder || isView}
               />
             }
             label={t("clip")}
@@ -1144,6 +1157,7 @@ class ProductData extends React.Component {
                 }
                 color="primary"
                 name="line"
+                disabled={isOrder || isView}
               />
             }
             label={t("line")}
@@ -1160,11 +1174,13 @@ class ProductData extends React.Component {
               >
                 {t("battery")}
               </Typography>
-              <Tooltip title={t("add")}>
-                <IconButton onClick={this.addNewLineBattery}>
-                  <Add />
-                </IconButton>
-              </Tooltip>
+              {!isOrder && !isView && (
+                <Tooltip title={t("add")}>
+                  <IconButton onClick={this.addNewLineBattery}>
+                    <Add />
+                  </IconButton>
+                </Tooltip>
+              )}
             </Toolbar>
             <TableContainer>
               <Table size="small">
@@ -1176,7 +1192,9 @@ class ProductData extends React.Component {
                     <TableCell>{t("type")}</TableCell>
                     <TableCell>{t("voltage")}</TableCell>
                     <TableCell>{t("included")}</TableCell>
-                    <TableCell>{t("actions")}</TableCell>
+                    {!isOrder && !isView && (
+                      <TableCell>{t("actions")}</TableCell>
+                    )}
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -1199,6 +1217,7 @@ class ProductData extends React.Component {
                             });
                           }}
                           errors={errors}
+                          disabled={isOrder || isView}
                         />
                       </TableCell>
                       <TableCell>
@@ -1219,6 +1238,7 @@ class ProductData extends React.Component {
                           }}
                           selectedValue={row.batteryType}
                           hasErrors={errors.includes("batteryType" + index)}
+                          disabled={isOrder || isView}
                         />
                       </TableCell>
                       <TableCell>
@@ -1239,6 +1259,7 @@ class ProductData extends React.Component {
                           }}
                           selectedValue={row.voltage}
                           hasErrors={errors.includes("voltage" + index)}
+                          disabled={isOrder || isView}
                         />
                       </TableCell>
                       <TableCell>
@@ -1255,17 +1276,20 @@ class ProductData extends React.Component {
 
                             this.updateState({ batteries: batteries });
                           }}
+                          disabled={isOrder || isView}
                         />
                       </TableCell>
-                      <TableCell>
-                        <Tooltip title={t("delete")}>
-                          <IconButton
-                            onClick={() => this.removeLineBattery(index)}
-                          >
-                            <Delete />
-                          </IconButton>
-                        </Tooltip>
-                      </TableCell>
+                      {!isOrder && !isView && (
+                        <TableCell>
+                          <Tooltip title={t("delete")}>
+                            <IconButton
+                              onClick={() => this.removeLineBattery(index)}
+                            >
+                              <Delete />
+                            </IconButton>
+                          </Tooltip>
+                        </TableCell>
+                      )}
                     </TableRow>
                   ))}
                 </TableBody>
@@ -1283,6 +1307,7 @@ class ProductData extends React.Component {
             required={true}
             onChange={this.onChangeForField}
             errors={errors}
+            disabled={isOrder || isView}
           />
         </Grid>
       </Grid>
@@ -1356,6 +1381,8 @@ class ProductData extends React.Component {
   };
 
   ImageData = () => {
+    const { isView } = this.props;
+
     return (
       <Grid container spacing={2}>
         <Grid item xs={12} sm={12}>
@@ -1363,6 +1390,7 @@ class ProductData extends React.Component {
             images={this.state.images}
             onChangeImage={this.saveImage}
             removeImage={this.removeImage}
+            isView={isView}
           />
         </Grid>
       </Grid>
@@ -1409,8 +1437,8 @@ class ProductData extends React.Component {
   };
 
   RemarksData = () => {
-    const { remarks, errors, isOrder } = this.state;
-    const { t, classes } = this.props;
+    const { remarks, errors } = this.state;
+    const { t, classes, isOrder } = this.props;
 
     return (
       <Grid item xs={12} sm={12}>
@@ -1443,7 +1471,7 @@ class ProductData extends React.Component {
                   <TableRow key={index}>
                     <TableCell component="th" scope="row">
                       <TextField
-                        disabled={isOrder}
+                        disabled={!isOrder}
                         id={"remark" + index}
                         value={row.name}
                         required={true}
@@ -1496,11 +1524,7 @@ class ProductData extends React.Component {
               value="2"
               style={{ display: isOrder ? "block" : "none" }}
             />
-            <Tab
-              label={t("certification")}
-              value="3"
-              style={{ display: isOrder ? "none" : "block" }}
-            />
+            <Tab label={t("certification")} value="3" />
             <Tab
               label={t("picture")}
               style={{
@@ -1541,6 +1565,7 @@ class ProductData extends React.Component {
       classes,
       handleBack,
       idOrdemItem,
+      isView,
     } = this.props;
 
     if (isOrder && (idOrdemItem === undefined || idOrdemItem === -1)) {
@@ -1583,6 +1608,7 @@ class ProductData extends React.Component {
             fullWidth
             fullScreen={idOrdemItem && idOrdemItem !== -1}
             minHeight="620px"
+            hasActions={!isView}
           >
             {this.getContent()}
           </ModalData>

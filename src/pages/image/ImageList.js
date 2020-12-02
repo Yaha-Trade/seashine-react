@@ -40,13 +40,7 @@ const ImageList = () => {
 
   return (
     <div>
-      {open && (
-        <ImageData
-          idProduct={id}
-          onSave={() => console.log("save")}
-          onClose={onClose}
-        />
-      )}
+      {open && <ImageData idProduct={id} onClose={onClose} />}
       <DataTable
         title="picture"
         columns={columns}

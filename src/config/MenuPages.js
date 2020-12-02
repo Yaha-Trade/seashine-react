@@ -1,3 +1,4 @@
+import React from "react";
 import FactoryList from "../pages/factory/FactoryList";
 import CustomerList from "../pages/customer/CustomerList";
 import PackingList from "../pages/packing/PackingList";
@@ -8,6 +9,7 @@ import ImageList from "../pages/image/ImageList";
 import LanguageList from "../pages/language/LanguageList";
 import UserList from "../pages/user/UserList";
 import OrderApprovalList from "../pages/order/OrderApprovalList";
+import CertificationList from "../pages/certification/CertificationList";
 
 export const MenuPages = [
   {
@@ -69,5 +71,19 @@ export const MenuPages = [
     text: "orderapproval",
     path: "/orderapproval",
     component: OrderApprovalList,
+  },
+  {
+    key: "certification",
+    text: "certification",
+    path: "/certification",
+    component: CertificationList,
+  },
+  {
+    key: "labeling",
+    text: "labeling",
+    path: "/labeling",
+    component: () => {
+      return <h1>Labeling</h1>;
+    },
   },
 ];

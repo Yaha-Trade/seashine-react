@@ -5,7 +5,7 @@ import "./ImageList.css";
 import IconButton from "@material-ui/core/IconButton";
 import Delete from "@material-ui/icons/Delete";
 
-const ImageList = ({ images, onChangeImage, removeImage }) => {
+const ImageList = ({ images, onChangeImage, removeImage, isView = false }) => {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [imageIndex, setImageIndex] = useState(0);
 
@@ -65,7 +65,7 @@ const ImageList = ({ images, onChangeImage, removeImage }) => {
             setImageIndex(0);
           }}
         />
-        <ImageUpload onChangeImage={onChangeImage} />
+        {!isView && <ImageUpload onChangeImage={onChangeImage} />}
       </div>
     </div>
   );
