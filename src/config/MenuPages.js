@@ -10,6 +10,7 @@ import UserList from "../pages/user/UserList";
 import OrderApprovalList from "../pages/order/OrderApprovalList";
 import CertificationList from "../pages/certification/CertificationList";
 import LabelingList from "../pages/labeling/LabelingList";
+import OrderFactoryList from "../pages/orderfactory/OrderFactoryList";
 
 export const MenuPages = [
   {
@@ -83,5 +84,11 @@ export const MenuPages = [
     text: "labeling",
     path: "/labeling",
     component: LabelingList,
+  },
+  {
+    key: "orderlistfactory",
+    text: "orderlistfactory",
+    path: "/orderlistfactory",
+    component: OrderFactoryList,
   },
 ];
