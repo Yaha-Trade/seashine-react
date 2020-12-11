@@ -5,9 +5,12 @@ import ProductData from "../product/ProductData";
 import { getTextProductionStatus } from "../../services/Utils";
 import OrderFactoryToolbar from "./OrderFactoryToolbar";
 import OrderFactoryData from "./OrderFactoryData";
+import { useSnackbar } from "notistack";
+import callServer from "../../services/callServer";
 
 const OrderFactoryList = () => {
   const { t } = useTranslation();
+  const { enqueueSnackbar } = useSnackbar();
   const [openProjectData, setOpenProjectData] = useState(false);
   const [idOrderListItem, setIdOrderListItem] = useState();
   const [idProduct, setIdProduct] = useState();
@@ -53,6 +56,16 @@ const OrderFactoryList = () => {
     setOpenProductionData(false);
   };
 
+  const onSaveProduction = async (production) => {
+    await callServer.put(`productions/${production.id}`, production);
+
+    setHasToReloadData(true);
+
+    enqueueSnackbar(t("savedwithsuccess"), {
+      variant: "success",
+    });
+  };
+
   return (
     <div>
       {openProjectData && (
@@ -65,7 +78,8 @@ const OrderFactoryList = () => {
 
       {openProductionData && (
         <OrderFactoryData
-          idProduct={idProduct}
+          idOrderListItem={idOrderListItem}
+          onSave={onSaveProduction}
           onClose={onCloseProductionData}
           isView={true}
         />

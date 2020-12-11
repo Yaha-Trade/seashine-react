@@ -15,6 +15,7 @@ class OrderFactoryData extends React.Component {
     orderTerms: "",
     errors: [],
     isLoading: false,
+    idProduction: -1,
   };
 
   onChangeForField = (id, newValue) => {
@@ -29,6 +30,7 @@ class OrderFactoryData extends React.Component {
   saveData = async (saveAndExit) => {
     const errors = [];
     const {
+      idProduction,
       receveidDate,
       deliveryDate,
       qualityInspectionRequirements,
@@ -45,30 +47,51 @@ class OrderFactoryData extends React.Component {
 
     this.setState({ isLoading: true });
 
-    await this.props.onSave({});
+    await this.props.onSave({
+      id: idProduction,
+      receveidDate,
+      deliveryDate,
+      qualityInspectionRequirements,
+      orderTerms,
+    });
 
     this.setState({ isLoading: false });
 
     if (saveAndExit) {
       this.props.onClose();
     } else {
-      const { idProduction } = this.props;
-      if (idProduction && idProduction !== -1) {
-        this.fetchData(idProduction);
+      const { idOrderListItem } = this.props;
+      if (idOrderListItem && idOrderListItem !== -1) {
+        this.fetchData(idOrderListItem);
       }
     }
   };
 
-  fetchData = (idProduction) => {
-    console.log("Fetch data!");
+  fetchData = (idOrderListItem) => {
+    callServer
+      .get(`orderlistitems/getIdProduction/${idOrderListItem}`)
+      .then((response) => {
+        this.setState({ idProduction: response.data });
+
+        callServer.get(`productions/${response.data}`).then((response) => {
+          this.setState({
+            receveidDate: formatDateToUTC(response.data.receveidDate),
+            deliveryDate: formatDateToUTC(response.data.deliveryDate),
+            qualityInspectionRequirements:
+              response.data.qualityInspectionRequirements,
+            orderTerms: response.data.orderTerms,
+            isLoading: false,
+          });
+        });
+      });
   };
 
   componentDidMount() {
-    const { idProduction } = this.props;
+    const { idOrderListItem } = this.props;
 
-    if (idProduction && idProduction !== -1) {
+    if (idOrderListItem && idOrderListItem !== -1) {
       this.setState({ isLoading: true });
-      this.fetchData(idProduction);
+      this.fetchData(idOrderListItem);
     }
   }
 
@@ -118,6 +141,8 @@ class OrderFactoryData extends React.Component {
                 id="qualityInspectionRequirements"
                 label="qualityinspectionrequirements"
                 value={qualityInspectionRequirements}
+                multiline={true}
+                rows={10}
                 required={true}
                 onChange={this.onChangeForField}
                 errors={errors}
@@ -128,6 +153,8 @@ class OrderFactoryData extends React.Component {
                 id="orderTerms"
                 label="orderterms"
                 value={orderTerms}
+                multiline={true}
+                rows={10}
                 required={true}
                 onChange={this.onChangeForField}
                 errors={errors}
