@@ -6,6 +6,21 @@ import Loading from "../../components/Loading";
 import TextField from "../../components/formfields/TextField";
 import DatePicker from "../../components/formfields/DatePicker";
 import { formatDateToUTC } from "../../services/Utils";
+import Tab from "@material-ui/core/Tab";
+import TabPanel from "@material-ui/lab/TabPanel";
+import TabContext from "@material-ui/lab/TabContext";
+import TabList from "@material-ui/lab/TabList";
+import TimelineHistory from "../../components/timeline/TimelineHistory";
+import { withStyles } from "@material-ui/core/styles";
+import { withTranslation } from "react-i18next";
+
+const useStyles = (theme) => ({
+  tabPanel: {
+    paddingTop: "10px",
+    paddingRight: "0px",
+    paddingLeft: "0px",
+  },
+});
 
 class OrderFactoryData extends React.Component {
   state = {
@@ -16,6 +31,8 @@ class OrderFactoryData extends React.Component {
     errors: [],
     isLoading: false,
     idProduction: -1,
+    selectedTab: "1",
+    histories: [],
   };
 
   onChangeForField = (id, newValue) => {
@@ -35,6 +52,7 @@ class OrderFactoryData extends React.Component {
       deliveryDate,
       qualityInspectionRequirements,
       orderTerms,
+      histories,
     } = this.state;
 
     this.setState({
@@ -53,6 +71,7 @@ class OrderFactoryData extends React.Component {
       deliveryDate,
       qualityInspectionRequirements,
       orderTerms,
+      histories,
     });
 
     this.setState({ isLoading: false });
@@ -80,6 +99,7 @@ class OrderFactoryData extends React.Component {
             qualityInspectionRequirements:
               response.data.qualityInspectionRequirements,
             orderTerms: response.data.orderTerms,
+            histories: response.data.histories,
             isLoading: false,
           });
         });
@@ -95,8 +115,24 @@ class OrderFactoryData extends React.Component {
     }
   }
 
+  onAddMessage = (idMessage) => {
+    this.setState({
+      histories: [
+        ...this.state.histories,
+        {
+          id: idMessage,
+        },
+      ],
+    });
+    this.saveData(false);
+  };
+
+  handleTabChange = async (event, newValue) => {
+    this.setState({ selectedTab: newValue });
+  };
+
   render() {
-    const { onClose } = this.props;
+    const { onClose, t, classes } = this.props;
     const {
       receveidDate,
       deliveryDate,
@@ -104,6 +140,8 @@ class OrderFactoryData extends React.Component {
       orderTerms,
       errors,
       isLoading,
+      selectedTab,
+      histories,
     } = this.state;
 
     return (
@@ -113,58 +151,81 @@ class OrderFactoryData extends React.Component {
           isOpen={true}
           onClose={onClose}
           title="productiondata"
+          fullScreen={true}
         >
           <Loading isOpen={isLoading} />
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={12}>
-              <DatePicker
-                id="receveidDate"
-                label="received"
-                date={receveidDate}
-                onChange={(value) => {
-                  this.setState({ receveidDate: value });
-                }}
+          <TabContext value={selectedTab}>
+            <TabList onChange={this.handleTabChange}>
+              <Tab label={t("production")} value="1" />
+              <Tab
+                label={t("history")}
+                value="2"
+                disabled={this.props.idOrder === -1}
               />
-            </Grid>
-            <Grid item xs={12} sm={12}>
-              <DatePicker
-                id="deliveryDate"
-                label="delivery"
-                date={deliveryDate}
-                onChange={(value) => {
-                  this.setState({ deliveryDate: value });
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={12}>
-              <TextField
-                id="qualityInspectionRequirements"
-                label="qualityinspectionrequirements"
-                value={qualityInspectionRequirements}
-                multiline={true}
-                rows={10}
-                required={true}
-                onChange={this.onChangeForField}
-                errors={errors}
-              />
-            </Grid>
-            <Grid item xs={12} sm={12}>
-              <TextField
-                id="orderTerms"
-                label="orderterms"
-                value={orderTerms}
-                multiline={true}
-                rows={10}
-                required={true}
-                onChange={this.onChangeForField}
-                errors={errors}
-              />
-            </Grid>
-          </Grid>
+            </TabList>
+            <TabPanel className={classes.tabPanel} value="1">
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={12}>
+                  <DatePicker
+                    id="receveidDate"
+                    label="received"
+                    date={receveidDate}
+                    onChange={(value) => {
+                      this.setState({ receveidDate: value });
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={12}>
+                  <DatePicker
+                    id="deliveryDate"
+                    label="delivery"
+                    date={deliveryDate}
+                    onChange={(value) => {
+                      this.setState({ deliveryDate: value });
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={12}>
+                  <TextField
+                    id="qualityInspectionRequirements"
+                    label="qualityinspectionrequirements"
+                    value={qualityInspectionRequirements}
+                    multiline={true}
+                    rows={10}
+                    required={true}
+                    onChange={this.onChangeForField}
+                    errors={errors}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={12}>
+                  <TextField
+                    id="orderTerms"
+                    label="orderterms"
+                    value={orderTerms}
+                    multiline={true}
+                    rows={10}
+                    required={true}
+                    onChange={this.onChangeForField}
+                    errors={errors}
+                  />
+                </Grid>
+              </Grid>
+            </TabPanel>
+            <TabPanel className={classes.tabPanel} value="2">
+              <div style={{ backgroundColor: "#bdbdbd" }}>
+                <TimelineHistory
+                  data={histories}
+                  onAddMessage={this.onAddMessage}
+                />
+              </div>
+            </TabPanel>
+          </TabContext>
         </ModalData>
       </div>
     );
   }
 }
 
-export default OrderFactoryData;
+export default withStyles(useStyles, { name: "OrderFactoryData" })(
+  withTranslation()(OrderFactoryData)
+);
