@@ -72,7 +72,7 @@ const ProductHistory = ({ idProduct, isOrder = false }) => {
       onEdit={() => {}}
       setHasToReloadData={() => {}}
       getHasToReloadData={() => {}}
-      tableHeight={isOrder ? 853 : 550}
+      tableHeight={isOrder ? 773 : 550}
       isView={true}
     />
   );

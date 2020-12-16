@@ -55,6 +55,22 @@ class OrderFactoryData extends React.Component {
       histories,
     } = this.state;
 
+    if (qualityInspectionRequirements === "") {
+      errors.push("qualityInspectionRequirements");
+    }
+
+    if (orderTerms === "") {
+      errors.push("orderTerms");
+    }
+
+    if (receveidDate === "") {
+      return;
+    }
+
+    if (deliveryDate === "") {
+      return;
+    }
+
     this.setState({
       errors: errors,
     });

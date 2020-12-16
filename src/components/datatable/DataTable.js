@@ -21,7 +21,7 @@ class DataTable extends React.Component {
     totalPages: 1,
     rowsPerPageOptions: [50],
     tableHeight: this.props.tableHeight
-      ? this.props.tableHeight
+      ? this.props.tableHeight - 215
       : window.innerHeight - 215,
   };
 
